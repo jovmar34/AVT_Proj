@@ -18,9 +18,12 @@
     <ClCompile Include="Engine\SourceFiles\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\SourceFiles\vector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\HeaderFIles\HeaderFile.h">
+    <ClInclude Include="Engine\HeaderFIles\vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

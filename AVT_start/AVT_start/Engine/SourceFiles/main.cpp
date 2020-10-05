@@ -24,6 +24,7 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "../HeaderFiles/vector.h"
 
 ////////////////////////////////////////////////// ERROR CALLBACK (OpenGL 4.3+)
 
@@ -333,12 +334,156 @@ void run(GLFWwindow* win)
 
 int main(int argc, char* argv[])
 {
+	/*
 	int gl_major = 4, gl_minor = 3;
 	int is_fullscreen = 0;
 	int is_vsync = 1;
 	GLFWwindow* win = setup(gl_major, gl_minor, 
 		640, 480, "OpenGL Viewer (GLFW)", is_fullscreen, is_vsync);
 	run(win);
+	*/
+
+	/*
+	// ====== VECTOR 2D TESTING ==========
+	Vector2D v1 = Vector2D(1, 2), v2;
+
+	// input op >>
+	std::istringstream iss("2 2");
+	iss >> v2;
+
+	// output op <<
+	std::cout << "v1 = " << v1 << "; v2 = " << v2 << std::endl;
+
+	// sum and minus op + -
+	Vector2D sum = (v1 + v2);
+	Vector2D minus = (v1 - v2);
+	std::cout << "sum: " << sum << "; minus: " << minus <<  "; dot: " << (v1*v2) << std::endl;
+
+
+	// sum and minus and assign += -=
+	sum -= v2;
+	minus += v2;
+
+	std::cout << "back to v1 " << sum << " " << minus << std::endl;
+
+	// mult and div and assign *= /=
+	sum *= 2.0f;
+	minus /= 2.0f;
+
+	std::cout << "mult x2: " << sum << "; div /2: " << minus << std::endl;
+
+
+	// assignement =
+	Vector2D v3 = v2;
+
+	std::cout << "v2: " << v2 << "; ref: " << &v2 << std::endl;
+	std::cout << "copy of v2: " << v3 << "; ref: " << &v3 << std::endl;
+
+	// compare == !=
+	std::cout << "v1 diff from v3? " << ((v1 != v3) ? "true" : "false") << std::endl;
+	std::cout << "v2 equal to v3? " <<  ((v2 == v3) ? "true" : "false") << std::endl;
+
+	// ==================================
+	*/
+
+	/*
+	// ====== VECTOR 3D TESTING ==========
+	Vector3D v1 = Vector3D(1, 2, 3), v2;
+
+	// input op >>
+	std::istringstream iss("2 2 2");
+	iss >> v2;
+
+	// output op <<
+	std::cout << "v1 = " << v1 << "; v2 = " << v2 << std::endl;
+
+	// sum and minus op + -
+	Vector3D sum = (v1 + v2);
+	Vector3D minus = (v1 - v2);
+	std::cout << "sum: " << sum << "; minus: " << minus <<  "; dot: " << (v1*v2) << std::endl;
+
+
+	// sum and minus and assign += -=
+	sum -= v2;
+	minus += v2;
+
+	std::cout << "back to v1 " << sum << " " << minus << std::endl;
+
+	// mult and div and assign *= /=
+	sum *= 2.0f;
+	minus /= 2.0f;
+
+	std::cout << "mult x2: " << sum << "; div /2: " << minus << std::endl;
+
+
+	// assignement =
+	Vector3D v3 = v2;
+
+	std::cout << "v2: " << v2 << "; ref: " << &v2 << std::endl;
+	std::cout << "copy of v2: " << v3 << "; ref: " << &v3 << std::endl;
+
+	// compare == !=
+	std::cout << "v1 diff from v3? " << ((v1 != v3) ? "true" : "false") << std::endl;
+	std::cout << "v2 equal to v3? " <<  ((v2 == v3) ? "true" : "false") << std::endl;
+
+	// normalize func
+	v3.normalize();
+	std::cout << "normalized v3: " << v3 << "; ref: " << &v3 << std::endl;
+
+	// extern prod %
+	Vector3D X = Vector3D(1, 0, 0);
+	Vector3D Y = Vector3D(0, 1, 0);
+	Vector3D Z = X%Y;
+
+	std::cout << "X x Y = Z: " << X << " x " << Y << " = " << Z;
+
+	// ==================================
+	*/
+
+	// ====== VECTOR 4D TESTING ==========
+	Vector4D v1 = Vector4D(1, 2, 3, 4), v2;
+
+	// input op >>
+	std::istringstream iss("2 2 2 2");
+	iss >> v2;
+
+	// output op <<
+	std::cout << "v1 = " << v1 << "; v2 = " << v2 << std::endl;
+
+	// sum and minus op + -
+	Vector4D sum = (v1 + v2);
+	Vector4D minus = (v1 - v2);
+	std::cout << "sum: " << sum << "; minus: " << minus <<  "; dot: " << (v1*v2) << std::endl;
+
+
+	// sum and minus and assign += -=
+	sum -= v2;
+	minus += v2;
+
+	std::cout << "back to v1 " << sum << " " << minus << std::endl;
+
+	// mult and div and assign *= /=
+	sum *= 2.0f;
+	minus /= 2.0f;
+
+	std::cout << "mult x2: " << sum << "; div /2: " << minus << std::endl;
+
+
+	// assignement =
+	Vector4D v3 = v2;
+
+	std::cout << "v2: " << v2 << "; ref: " << &v2 << std::endl;
+	std::cout << "copy of v2: " << v3 << "; ref: " << &v3 << std::endl;
+
+	// compare == !=
+	std::cout << "v1 diff from v3? " << ((v1 != v3) ? "true" : "false") << std::endl;
+	std::cout << "v2 equal to v3? " <<  ((v2 == v3) ? "true" : "false") << std::endl;
+
+	// normalize func
+	v3.normalize();
+	std::cout << "normalized v3: " << v3 << "; ref: " << &v3 << std::endl;
+	// ==================================
+
 	exit(EXIT_SUCCESS);
 }
 

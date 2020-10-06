@@ -6,6 +6,9 @@
 #include <cfloat>
 using namespace std;
 
+class Vector3D;
+class Vector4D; 
+
 class Vector2D
 {
 public:
@@ -30,6 +33,8 @@ public:
 	Vector2D& operator*=	(const float v);
 	Vector2D& operator/=	(const float v);
 	Vector2D& operator+=	(const float v);
+	Vector3D to3D();
+	Vector4D to4D();
 
 	float x;
 	float y;
@@ -75,6 +80,9 @@ public:
 	Vector3D& operator/=	(const float v);
 	Vector3D& operator+=	(const float v);
 
+	Vector2D to2D();
+	Vector4D to4D();
+
 	float x;
 	float y;
 	float z;
@@ -118,6 +126,9 @@ public:
 	Vector4D& operator*=	(const float v);
 	Vector4D& operator/=	(const float v);
 	Vector4D& operator+=	(const float v);
+
+	Vector2D to2D();
+	Vector3D to3D();
 
 	float x;
 	float y;

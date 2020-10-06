@@ -33,6 +33,14 @@ Vector2D Vector2D::operator= (const Vector2D& other) {
 	return (*this);
 }
 
+Vector3D Vector2D::to3D() {
+	return Vector3D(x,y,0);
+}
+
+Vector4D Vector2D::to4D() {
+	return Vector4D(x, y, 0, 0);
+}
+
 Vector2D Vector2D::operator+(const  Vector2D& v)
 {
 	return Vector2D(x + v.x, y + v.y);
@@ -219,6 +227,13 @@ Vector3D& Vector3D::operator/=(const float v)
 	x /= v; y /= v; z /= v; return *this;
 }
 
+Vector2D Vector3D::to2D() {
+	return Vector2D(x, y);
+}
+
+Vector4D Vector3D::to4D() {
+	return Vector4D(x, y, z, 0);
+}
 
 
 Vector3D Vector3D::operator%(const Vector3D& v)
@@ -340,5 +355,14 @@ Vector4D& Vector4D::operator/=(const float v)
 {
 	x /= v; y /= v; z /= v; w /= v; return *this;
 }
+
+Vector2D Vector4D::to2D() {
+	return Vector2D(x, y);
+}
+
+Vector3D Vector4D::to3D() {
+	return Vector3D(x, y, z);
+}
+
 
 // ================================================

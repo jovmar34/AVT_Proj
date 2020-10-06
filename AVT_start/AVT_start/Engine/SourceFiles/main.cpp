@@ -440,6 +440,7 @@ int main(int argc, char* argv[])
 	// ==================================
 	*/
 
+	/*
 	// ====== VECTOR 4D TESTING ==========
 	Vector4D v1 = Vector4D(1, 2, 3, 4), v2;
 
@@ -483,6 +484,19 @@ int main(int argc, char* argv[])
 	v3.normalize();
 	std::cout << "normalized v3: " << v3 << "; ref: " << &v3 << std::endl;
 	// ==================================
+	*/
+
+	// ======== Conversions ===========
+	Vector4D v4(1,2,3,4);
+	Vector3D v3 = v4.to3D();
+	Vector2D v2 = v4.to2D();
+
+	std::cout << "Going down: " << v4 << " >> " << v3 << " >> " << v2 << std::endl;
+
+	v3 = v2.to3D();
+	v4 = v3.to4D();
+
+	std::cout << "Going up: " << v2 << " >> " << v3 << " >> " << v4 << std::endl;
 
 	exit(EXIT_SUCCESS);
 }

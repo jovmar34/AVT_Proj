@@ -1,4 +1,4 @@
-AVT_start/.vs/*
-AVT_start/x64/*
-AVT_start/AVT_start/x64/*
-AVT_start/AVT_start/AVT_start.vcxproj.user
+AVT_start/.vs/
+AVT_start/x64/
+AVT_start/AVT_start/x64/
+*.user

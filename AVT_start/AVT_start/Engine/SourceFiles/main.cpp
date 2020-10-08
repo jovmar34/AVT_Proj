@@ -486,6 +486,7 @@ int main(int argc, char* argv[])
 	// ==================================
 	*/
 
+	/*
 	// ======== Conversions ===========
 	Vector4D v4(1,2,3,4);
 	Vector3D v3 = v4.to3D();
@@ -497,6 +498,37 @@ int main(int argc, char* argv[])
 	v4 = v3.to4D();
 
 	std::cout << "Going up: " << v2 << " >> " << v3 << " >> " << v4 << std::endl;
+	*/
+
+
+	// ======== Inverted Operators ===========
+	Vector2D v5(1, 2);
+	Vector2D mult1 = v5 * 5.0;
+	Vector2D mult2 = 5.0 * v5;
+	std::cout << "v5 * 5.0 = " << mult1 << "; 5.0 * v5 = " << mult2 << std::endl;
+	v5 *= 5.0;
+	std::cout << "v5 *= 5.0 = " << v5 << std::endl;
+
+	Vector2D v6(1, 2);
+	mult1 = v6 / 5.0;
+	mult2 = 5.0 / v6;
+	std::cout << "v6 / 5.0 = " << mult1 << "; 5.0 / v6 = " << mult2 << std::endl;
+	v6 /= 5.0;
+	std::cout << "v6 /= 5.0 = " << v6 << std::endl;
+
+	Vector2D v7(1, 2);
+	mult1 = v7 + 5.0;
+	mult2 = 5.0 + v7;
+	std::cout << "v7 + 5.0 = " << mult1 << "; 5.0 + v7 = " << mult2 << std::endl;
+	v7 += 5.0;
+	std::cout << "v7 += 5.0 = " << v7 << std::endl;
+
+	Vector2D v8(1, 2);
+	mult1 = v8 - 5.0;
+	mult2 = 5.0 - v8;
+	std::cout << "v8 - 5.0 = " << mult1 << "; 5.0 - v8 = " << mult2 << std::endl;
+	v8 -= 5.0;
+	std::cout << "v8 -= 5.0 = " << v8 << std::endl;
 
 	exit(EXIT_SUCCESS);
 }

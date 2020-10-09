@@ -18,9 +18,12 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+#define _USE_MATH_DEFINES
+
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+#include <cmath>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -330,10 +333,60 @@ void run(GLFWwindow* win)
 	glfwTerminate();
 }
 
+// ====================== Rodrigues Rotation ===============================
+
+const Vector3D RodrRot(Vector3D& v, Vector3D& k, float angle) {
+	float r_angle = angle * M_PI / 180; // convert the angle in degrees to radians
+	k.normalize();
+
+	Vector3D v1 = v * cos(r_angle);
+	Vector3D v2 = (k % v) * sin(r_angle);
+	Vector3D v3 = k * (k * v) * (1 - cos(r_angle));
+
+	return (v1 + v2 + v3);
+}
+
+// =========================================================================
+
 ////////////////////////////////////////////////////////////////////////// MAIN
 
 int main(int argc, char* argv[])
 {
+	std::cout << std::boolalpha;
+
+	// 2.1 - v = [1.5, 3.2, 0.8]; theta = 24; k = [8, 2, 0]
+	std::cout << "2.1 - v = [1.5, 3.2, 0.8]; theta = 24; k = [8, 2, 0]" << std::endl;
+
+	Vector3D v1(1.5, 3.2, 0.8);
+	float theta1 = 24;
+	Vector3D k1(8, 2, 0);
+	Vector3D res1 = RodrRot(v1, k1, theta1);
+
+	std::cout << res1 << std::endl << std::endl;
+
+	// 2.2 - v = [0.5, 0.2, 0.3]; theta = 0; k = [8, 2, 0]
+	std::cout << "2.2 - v = [0.5, 0.2, 0.3]; theta = 0; k = [8, 2, 0]" << std::endl;
+
+	Vector3D v2(0.5, 0.2, 0.3);
+	float theta2 = 0;
+	Vector3D k2(8, 2, 0);
+	Vector3D res2 = RodrRot(v2, k2, theta2);
+
+	std::cout << res2 << std::endl << std::endl;
+
+	// 3.1 - [1, 2, 3] == [0.1, 0.2, 0.3] * 10
+	std::cout << "3.1 - [1, 2, 3] == [0.1, 0.2, 0.3] * 10" << std::endl;
+	std::cout << (Vector3D(1, 2, 3) == (Vector3D(0.1, 0.2, 0.3) * 10)) << std::endl << std::endl;
+
+	// 3.2 - [0.1, 0.2, 0.3] + [1, 2, 3] == [1.1, 2.2, 3.3]
+	std::cout << "3.2 - [0.1, 0.2, 0.3] + [1, 2, 3] == [1.1, 2.2, 3.3]" << std::endl;
+	std::cout << ((Vector3D(0.1, 0.2, 0.3) + Vector3D(1, 2, 3)) == Vector3D(1.1, 2.2, 3.3)) << std::endl << std::endl;
+
+	// 3.3 - [0.1, 0.2, 0.3] - [1, 2, 3] != [-0.9, -1.79, -2.7]
+	std::cout << "3.3 - [0.1, 0.2, 0.3] - [1, 2, 3] != [-0.9, -1.79, -2.7]" << std::endl;
+	std::cout << ((Vector3D(0.1, 0.2, 0.3) - Vector3D(1, 2, 3)) != Vector3D(-0.9, -1.79, -2.7)) << std::endl << std::endl;
+
+
 	/*
 	int gl_major = 4, gl_minor = 3;
 	int is_fullscreen = 0;
@@ -500,7 +553,7 @@ int main(int argc, char* argv[])
 	std::cout << "Going up: " << v2 << " >> " << v3 << " >> " << v4 << std::endl;
 	*/
 
-
+	/*
 	// ======== Inverted Operators ===========
 	Vector2D v5(1, 2);
 	Vector2D mult1 = v5 * 5.0;
@@ -529,6 +582,7 @@ int main(int argc, char* argv[])
 	std::cout << "v8 - 5.0 = " << mult1 << "; 5.0 - v8 = " << mult2 << std::endl;
 	v8 -= 5.0;
 	std::cout << "v8 -= 5.0 = " << v8 << std::endl;
+	*/
 
 	exit(EXIT_SUCCESS);
 }

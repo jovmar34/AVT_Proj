@@ -1,5 +1,5 @@
 #include "../HeaderFiles/vector.h"
-#include <math.h>
+#include <cmath>
 
 // ================================== VECTOR 2D =====================================
 

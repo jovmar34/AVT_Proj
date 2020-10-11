@@ -152,9 +152,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Engine\SourceFiles\main.cpp" />
+    <ClCompile Include="Engine\SourceFiles\matrix.cpp" />
     <ClCompile Include="Engine\SourceFiles\vector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\HeaderFiles\matrix.h" />
     <ClInclude Include="Engine\HeaderFIles\vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

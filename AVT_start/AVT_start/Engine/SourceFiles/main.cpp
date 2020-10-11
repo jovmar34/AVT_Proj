@@ -28,6 +28,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "../HeaderFiles/vector.h"
+#include "../HeaderFiles/matrix.h"
 
 ////////////////////////////////////////////////// ERROR CALLBACK (OpenGL 4.3+)
 
@@ -354,6 +355,23 @@ int main(int argc, char* argv[])
 {
 	std::cout << std::boolalpha;
 
+	Matrix2 mat;
+
+	std::cout << mat << std::endl;
+
+	mat = Matrix2(1.234567, 0, 0, 0);
+	std::cout << mat << std::endl;
+
+	std::istringstream iss("1 3 2 4");
+	iss >> mat;
+
+	std::cout << mat << std::endl;
+
+	Matrix2 m1 = mat * mat;
+
+	std::cout << m1 << std::endl;
+
+	/*
 	// 2.1 - v = [1.5, 3.2, 0.8]; theta = 24; k = [8, 2, 0]
 	std::cout << "2.1 - v = [1.5, 3.2, 0.8]; theta = 24; k = [8, 2, 0]" << std::endl;
 
@@ -386,6 +404,7 @@ int main(int argc, char* argv[])
 	std::cout << "3.3 - [0.1, 0.2, 0.3] - [1, 2, 3] != [-0.9, -1.79, -2.7]" << std::endl;
 	std::cout << ((Vector3D(0.1, 0.2, 0.3) - Vector3D(1, 2, 3)) != Vector3D(-0.9, -1.79, -2.7)) << std::endl << std::endl;
 
+	*/
 
 	/*
 	int gl_major = 4, gl_minor = 3;

@@ -29,6 +29,7 @@
 #include <GLFW/glfw3.h>
 #include "../HeaderFiles/vector.h"
 #include "../HeaderFiles/matrix.h"
+#include "../HeaderFiles/mxfactory.h"
 
 ////////////////////////////////////////////////// ERROR CALLBACK (OpenGL 4.3+)
 
@@ -354,7 +355,13 @@ const Vector3D RodrRot(Vector3D& v, Vector3D& k, float angle) {
 int main(int argc, char* argv[])
 {
 	std::cout << std::boolalpha;
+	MxFactory m;
 
+	Matrix2 m1 = m.identity2();
+
+	std::cout << m1 << std::endl;
+
+	/*
 	Matrix2 mat;
 
 	std::cout << mat << std::endl;
@@ -371,239 +378,22 @@ int main(int argc, char* argv[])
 
 	std::cout << m1 << std::endl;
 
-	/*
-	// 2.1 - v = [1.5, 3.2, 0.8]; theta = 24; k = [8, 2, 0]
-	std::cout << "2.1 - v = [1.5, 3.2, 0.8]; theta = 24; k = [8, 2, 0]" << std::endl;
+	mat += mat;
 
-	Vector3D v1(1.5, 3.2, 0.8);
-	float theta1 = 24;
-	Vector3D k1(8, 2, 0);
-	Vector3D res1 = RodrRot(v1, k1, theta1);
+	std::cout << mat << std::endl;
 
-	std::cout << res1 << std::endl << std::endl;
+	m1 = mat - mat;
 
-	// 2.2 - v = [0.5, 0.2, 0.3]; theta = 0; k = [8, 2, 0]
-	std::cout << "2.2 - v = [0.5, 0.2, 0.3]; theta = 0; k = [8, 2, 0]" << std::endl;
+	std::cout << m1 << std::endl;
 
-	Vector3D v2(0.5, 0.2, 0.3);
-	float theta2 = 0;
-	Vector3D k2(8, 2, 0);
-	Vector3D res2 = RodrRot(v2, k2, theta2);
+	mat /= 2;
 
-	std::cout << res2 << std::endl << std::endl;
+	m1 = mat.inverse();
 
-	// 3.1 - [1, 2, 3] == [0.1, 0.2, 0.3] * 10
-	std::cout << "3.1 - [1, 2, 3] == [0.1, 0.2, 0.3] * 10" << std::endl;
-	std::cout << (Vector3D(1, 2, 3) == (Vector3D(0.1, 0.2, 0.3) * 10)) << std::endl << std::endl;
-
-	// 3.2 - [0.1, 0.2, 0.3] + [1, 2, 3] == [1.1, 2.2, 3.3]
-	std::cout << "3.2 - [0.1, 0.2, 0.3] + [1, 2, 3] == [1.1, 2.2, 3.3]" << std::endl;
-	std::cout << ((Vector3D(0.1, 0.2, 0.3) + Vector3D(1, 2, 3)) == Vector3D(1.1, 2.2, 3.3)) << std::endl << std::endl;
-
-	// 3.3 - [0.1, 0.2, 0.3] - [1, 2, 3] != [-0.9, -1.79, -2.7]
-	std::cout << "3.3 - [0.1, 0.2, 0.3] - [1, 2, 3] != [-0.9, -1.79, -2.7]" << std::endl;
-	std::cout << ((Vector3D(0.1, 0.2, 0.3) - Vector3D(1, 2, 3)) != Vector3D(-0.9, -1.79, -2.7)) << std::endl << std::endl;
-
+	std::cout << m1 << std::endl;
 	*/
 
-	/*
-	int gl_major = 4, gl_minor = 3;
-	int is_fullscreen = 0;
-	int is_vsync = 1;
-	GLFWwindow* win = setup(gl_major, gl_minor, 
-		640, 480, "OpenGL Viewer (GLFW)", is_fullscreen, is_vsync);
-	run(win);
-	*/
-
-	/*
-	// ====== VECTOR 2D TESTING ==========
-	Vector2D v1 = Vector2D(1, 2), v2;
-
-	// input op >>
-	std::istringstream iss("2 2");
-	iss >> v2;
-
-	// output op <<
-	std::cout << "v1 = " << v1 << "; v2 = " << v2 << std::endl;
-
-	// sum and minus op + -
-	Vector2D sum = (v1 + v2);
-	Vector2D minus = (v1 - v2);
-	std::cout << "sum: " << sum << "; minus: " << minus <<  "; dot: " << (v1*v2) << std::endl;
-
-
-	// sum and minus and assign += -=
-	sum -= v2;
-	minus += v2;
-
-	std::cout << "back to v1 " << sum << " " << minus << std::endl;
-
-	// mult and div and assign *= /=
-	sum *= 2.0f;
-	minus /= 2.0f;
-
-	std::cout << "mult x2: " << sum << "; div /2: " << minus << std::endl;
-
-
-	// assignement =
-	Vector2D v3 = v2;
-
-	std::cout << "v2: " << v2 << "; ref: " << &v2 << std::endl;
-	std::cout << "copy of v2: " << v3 << "; ref: " << &v3 << std::endl;
-
-	// compare == !=
-	std::cout << "v1 diff from v3? " << ((v1 != v3) ? "true" : "false") << std::endl;
-	std::cout << "v2 equal to v3? " <<  ((v2 == v3) ? "true" : "false") << std::endl;
-
-	// ==================================
-	*/
-
-	/*
-	// ====== VECTOR 3D TESTING ==========
-	Vector3D v1 = Vector3D(1, 2, 3), v2;
-
-	// input op >>
-	std::istringstream iss("2 2 2");
-	iss >> v2;
-
-	// output op <<
-	std::cout << "v1 = " << v1 << "; v2 = " << v2 << std::endl;
-
-	// sum and minus op + -
-	Vector3D sum = (v1 + v2);
-	Vector3D minus = (v1 - v2);
-	std::cout << "sum: " << sum << "; minus: " << minus <<  "; dot: " << (v1*v2) << std::endl;
-
-
-	// sum and minus and assign += -=
-	sum -= v2;
-	minus += v2;
-
-	std::cout << "back to v1 " << sum << " " << minus << std::endl;
-
-	// mult and div and assign *= /=
-	sum *= 2.0f;
-	minus /= 2.0f;
-
-	std::cout << "mult x2: " << sum << "; div /2: " << minus << std::endl;
-
-
-	// assignement =
-	Vector3D v3 = v2;
-
-	std::cout << "v2: " << v2 << "; ref: " << &v2 << std::endl;
-	std::cout << "copy of v2: " << v3 << "; ref: " << &v3 << std::endl;
-
-	// compare == !=
-	std::cout << "v1 diff from v3? " << ((v1 != v3) ? "true" : "false") << std::endl;
-	std::cout << "v2 equal to v3? " <<  ((v2 == v3) ? "true" : "false") << std::endl;
-
-	// normalize func
-	v3.normalize();
-	std::cout << "normalized v3: " << v3 << "; ref: " << &v3 << std::endl;
-
-	// extern prod %
-	Vector3D X = Vector3D(1, 0, 0);
-	Vector3D Y = Vector3D(0, 1, 0);
-	Vector3D Z = X%Y;
-
-	std::cout << "X x Y = Z: " << X << " x " << Y << " = " << Z;
-
-	// ==================================
-	*/
-
-	/*
-	// ====== VECTOR 4D TESTING ==========
-	Vector4D v1 = Vector4D(1, 2, 3, 4), v2;
-
-	// input op >>
-	std::istringstream iss("2 2 2 2");
-	iss >> v2;
-
-	// output op <<
-	std::cout << "v1 = " << v1 << "; v2 = " << v2 << std::endl;
-
-	// sum and minus op + -
-	Vector4D sum = (v1 + v2);
-	Vector4D minus = (v1 - v2);
-	std::cout << "sum: " << sum << "; minus: " << minus <<  "; dot: " << (v1*v2) << std::endl;
-
-
-	// sum and minus and assign += -=
-	sum -= v2;
-	minus += v2;
-
-	std::cout << "back to v1 " << sum << " " << minus << std::endl;
-
-	// mult and div and assign *= /=
-	sum *= 2.0f;
-	minus /= 2.0f;
-
-	std::cout << "mult x2: " << sum << "; div /2: " << minus << std::endl;
-
-
-	// assignement =
-	Vector4D v3 = v2;
-
-	std::cout << "v2: " << v2 << "; ref: " << &v2 << std::endl;
-	std::cout << "copy of v2: " << v3 << "; ref: " << &v3 << std::endl;
-
-	// compare == !=
-	std::cout << "v1 diff from v3? " << ((v1 != v3) ? "true" : "false") << std::endl;
-	std::cout << "v2 equal to v3? " <<  ((v2 == v3) ? "true" : "false") << std::endl;
-
-	// normalize func
-	v3.normalize();
-	std::cout << "normalized v3: " << v3 << "; ref: " << &v3 << std::endl;
-	// ==================================
-	*/
-
-	/*
-	// ======== Conversions ===========
-	Vector4D v4(1,2,3,4);
-	Vector3D v3 = v4.to3D();
-	Vector2D v2 = v4.to2D();
-
-	std::cout << "Going down: " << v4 << " >> " << v3 << " >> " << v2 << std::endl;
-
-	v3 = v2.to3D();
-	v4 = v3.to4D();
-
-	std::cout << "Going up: " << v2 << " >> " << v3 << " >> " << v4 << std::endl;
-	*/
-
-	/*
-	// ======== Inverted Operators ===========
-	Vector2D v5(1, 2);
-	Vector2D mult1 = v5 * 5.0;
-	Vector2D mult2 = 5.0 * v5;
-	std::cout << "v5 * 5.0 = " << mult1 << "; 5.0 * v5 = " << mult2 << std::endl;
-	v5 *= 5.0;
-	std::cout << "v5 *= 5.0 = " << v5 << std::endl;
-
-	Vector2D v6(1, 2);
-	mult1 = v6 / 5.0;
-	mult2 = 5.0 / v6;
-	std::cout << "v6 / 5.0 = " << mult1 << "; 5.0 / v6 = " << mult2 << std::endl;
-	v6 /= 5.0;
-	std::cout << "v6 /= 5.0 = " << v6 << std::endl;
-
-	Vector2D v7(1, 2);
-	mult1 = v7 + 5.0;
-	mult2 = 5.0 + v7;
-	std::cout << "v7 + 5.0 = " << mult1 << "; 5.0 + v7 = " << mult2 << std::endl;
-	v7 += 5.0;
-	std::cout << "v7 += 5.0 = " << v7 << std::endl;
-
-	Vector2D v8(1, 2);
-	mult1 = v8 - 5.0;
-	mult2 = 5.0 - v8;
-	std::cout << "v8 - 5.0 = " << mult1 << "; 5.0 - v8 = " << mult2 << std::endl;
-	v8 -= 5.0;
-	std::cout << "v8 -= 5.0 = " << v8 << std::endl;
-	*/
-
-	exit(EXIT_SUCCESS);
+	exit(EXIT_SUCCESS); 
 }
 
 /////////////////////////////////////////////////////////////////////////// END

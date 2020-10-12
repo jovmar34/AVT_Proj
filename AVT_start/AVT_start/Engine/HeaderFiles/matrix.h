@@ -1,4 +1,3 @@
-#pragma once
 #ifndef MATRIX_H
 #define MATRIX_H
 
@@ -7,6 +6,7 @@
 #include <cfloat>
 #include <array>
 #include <iomanip> // setprecision(x)
+#include "../HeaderFiles/vector.h"
 
 using namespace std;
 
@@ -39,6 +39,10 @@ class Matrix2 {
 	Matrix2(const Matrix2& other) {
 		mat[0] = other.mat[0]; mat[1] = other.mat[1]; mat[2] = other.mat[2]; mat[3] = other.mat[3];
 	}
+
+	// Getter
+	float& operator() (int row, int col);
+	float operator() (int row, int col) const;
 
 	// Vector assignment, addition and subtraction
 	Matrix2 operator=		(const Matrix2& m);
@@ -77,6 +81,23 @@ class Matrix2 {
 	friend Matrix2 operator-	(float f, const Matrix2& m);
 	Matrix2& operator-=		(const float m);
 
+	// Multiplication by Vector
+	Vector2D operator* (Vector2D point);
+
+	// Transpose
+	Matrix2 transpose();
+
+	// Determinant
+	float determinant();
+
+	// Inverse
+	Matrix2 inverse();
+
+	// toOpenGl
+	std::array<float, 4> toOpenGl() {
+		return mat;
+	}
+
 	friend inline istream& operator >> (istream& s, Matrix2& m)
 	{
 		return s >> m.mat[0] >> m.mat[1] >> m.mat[2] >> m.mat[3];
@@ -89,6 +110,5 @@ class Matrix2 {
 		return s;
 	}
 };
-
 
 #endif

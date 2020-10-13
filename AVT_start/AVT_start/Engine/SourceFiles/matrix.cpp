@@ -1,5 +1,6 @@
 #include "..\HeaderFiles\matrix.h"
 
+// For fact checking: https://matrixcalc.org/en/
 // ================================== MATRIX 2x2 =====================================
 
 float& Matrix2::operator()(int row, int col)
@@ -19,30 +20,43 @@ float Matrix2::operator()(int row, int col) const
 Matrix2 Matrix2::operator=(const Matrix2& m)
 {
 	if (this == &m) return (*this);
-	mat[0] = m.mat[0];	mat[1] = m.mat[1];
-	mat[2] = m.mat[2];	mat[3] = m.mat[3];
+	for (short i = 0; i < 4; i++) {
+		mat[i] = m.mat[i];
+	}
 	return (*this);
 }
 
 Matrix2 Matrix2::operator+(const Matrix2& m)
 {
-	return Matrix2(mat[0] + m.mat[0], mat[1] + m.mat[1], mat[2] + m.mat[2], mat[3] + m.mat[3]);
+	Matrix2 res;
+	for (short i = 0; i < 4; i++) {
+		res.mat[i] = mat[i] + m.mat[i];
+	}
+	return res;
 }
 
 Matrix2& Matrix2::operator+=(const Matrix2& m)
 {
-	mat[0] += m.mat[0]; mat[1] += m.mat[1]; mat[2] += m.mat[2]; mat[3] += m.mat[3];
+	for (short i = 0; i < 4; i++) {
+		mat[i] += m.mat[i];
+	}
 	return *this;
 }
 
 Matrix2 Matrix2::operator-(const Matrix2& m)
 {
-	return Matrix2(mat[0] - m.mat[0], mat[1] - m.mat[1], mat[2] - m.mat[2], mat[3] - m.mat[3]);
+	Matrix2 res;
+	for (short i = 0; i < 4; i++) {
+		res.mat[i] = mat[i] - m.mat[i];
+	}
+	return res;
 }
 
 Matrix2& Matrix2::operator-=(const Matrix2& m)
 {
-	mat[0] -= m.mat[0]; mat[1] -= m.mat[1]; mat[2] -= m.mat[2]; mat[3] -= m.mat[3];
+	for (short i = 0; i < 4; i++) {
+		mat[i] -= m.mat[i];
+	}
 	return *this;
 }
 
@@ -50,8 +64,8 @@ Matrix2 Matrix2::operator*(const Matrix2& m)
 {
 	return Matrix2(
 		mat[0] * m.mat[0] + mat[2] * m.mat[1],
-		mat[1] * m.mat[0] + mat[3] * m.mat[1],
 		mat[0] * m.mat[2] + mat[2] * m.mat[3],
+		mat[1] * m.mat[0] + mat[3] * m.mat[1],
 		mat[1] * m.mat[2] + mat[3] * m.mat[3]
 	);
 }
@@ -79,62 +93,89 @@ bool Matrix2::operator!=(const Matrix2& m)
 
 Matrix2 Matrix2::operator*(const float f)
 {
-	return Matrix2(mat[0]*f, mat[1]*f, mat[2] * f, mat[3] * f);
+	Matrix2 res;
+	for (short i = 0; i < 4; i++) {
+		res.mat[i] = mat[i] * f;
+	}
+	return res;
 }
 
 Matrix2& Matrix2::operator*=(const float f)
 {
-	mat[0] *= f; mat[1] *= f; mat[2] *= f; mat[3] *= f;
+	for (short i = 0; i < 4; i++) {
+		mat[i] *= f;
+	}
 	return *this;
 }
 
 Matrix2 Matrix2::operator/(const float f)
 {
-	return Matrix2(mat[0] / f, mat[1] / f, mat[2] / f, mat[3] / f);
+
+	Matrix2 res;
+	for (short i = 0; i < 4; i++) {
+		res.mat[i] = mat[i] / f;
+	}
+	return res;
 }
 
 Matrix2& Matrix2::operator/=(const float f)
 {
-	mat[0] /= f; mat[1] /= f; mat[2] /= f; mat[3] /= f;
+	for (short i = 0; i < 4; i++) {
+		mat[i] /= f;
+	}
 	return *this;
 }
 
 Matrix2 Matrix2::operator+(float f)
 {
-	return Matrix2(mat[0] + f, mat[1] + f, mat[2] + f, mat[3] + f);
+	Matrix2 res;
+	for (short i = 0; i < 4; i++) {
+		res.mat[i] = mat[i] + f;
+	}
+	return res;
 }
 
 Matrix2& Matrix2::operator+=(const float f)
 {
-	mat[0] += f; mat[1] += f; mat[2] += f; mat[3] += f;
+	for (short i = 0; i < 4; i++) {
+		mat[i] += f;
+	}
 	return *this;
 }
 
 Matrix2 Matrix2::operator-(float f)
 {
-	return Matrix2(mat[0] - f, mat[1] - f, mat[2] - f, mat[3] - f);
+	Matrix2 res;
+	for (short i = 0; i < 4; i++) {
+		res.mat[i] = mat[i] - f;
+	}
+	return res;
 }
 
 Matrix2& Matrix2::operator-=(const float f)
 {
-	mat[0] -= f; mat[1] -= f; mat[2] -= f; mat[3] -= f;
+	for (short i = 0; i < 4; i++) {
+		mat[i] += f;
+	}
 	return *this;
 }
 
 Vector2D Matrix2::operator*(Vector2D point)
 {
-	return Vector2D(mat[0]*point.x + mat[2] * point.y,
-		mat[1] * point.x + mat[3] * point.y);
+	return Vector2D(
+		mat[0] * point.x + mat[2] * point.y,
+		mat[1] * point.x + mat[3] * point.y
+	);
 }
 
 Matrix2 Matrix2::transpose()
 {
-	return Matrix2(mat[0], mat[2], mat[1], mat[3]);
+	return Matrix2(mat[0], mat[1], mat[2], mat[3]);
 }
 
 float Matrix2::determinant()
 {
-	return (mat[0] * mat[3] - mat[2] * mat[1]); // ab - bc
+	return (mat[0] * mat[3] - mat[2] * mat[1]); // ad - bc
 }
 
 Matrix2 Matrix2::inverse()
@@ -144,28 +185,44 @@ Matrix2 Matrix2::inverse()
 		throw "non invertible matrix";
 	}
 
-	Matrix2 inv(mat[3], -mat[1], -mat[2], mat[0]);
+	Matrix2 inv(mat[3], -mat[2], -mat[1], mat[0]);
 	return inv / det;
 }
 
 Matrix2 operator*(const float f, const Matrix2& m)
 {
-	return Matrix2(f * m.mat[0], f * m.mat[1], f * m.mat[2], f * m.mat[3]);
+	Matrix2 res;
+	for (short i = 0; i < 4; i++) {
+		res.mat[i] = f * m.mat[i];
+	}
+	return res;
 }
 
 Matrix2 operator/(const float f, const Matrix2& m)
 {
-	return Matrix2(f / m.mat[0], f / m.mat[1], f / m.mat[2], f / m.mat[3]);
+	Matrix2 res;
+	for (short i = 0; i < 4; i++) {
+		res.mat[i] = f / m.mat[i];
+	}
+	return res;
 }
 
 Matrix2 operator+(float f, const Matrix2& m)
 {
-	return Matrix2(f + m.mat[0], f + m.mat[1], f + m.mat[2], f + m.mat[3]);
+	Matrix2 res;
+	for (short i = 0; i < 4; i++) {
+		res.mat[i] = f + m.mat[i];
+	}
+	return res;
 }
 
 Matrix2 operator-(float f, const Matrix2& m)
 {
-	return Matrix2(f - m.mat[0], f - m.mat[1], f - m.mat[2], f - m.mat[3]);
+	Matrix2 res;
+	for (short i = 0; i < 4; i++) {
+		res.mat[i] = f - m.mat[i];
+	}
+	return res;
 }
 
 
@@ -174,30 +231,40 @@ Matrix2 operator-(float f, const Matrix2& m)
 
 Matrix3 operator*(const float f, const Matrix3& m)
 {
-	return Matrix3(f * m.mat[0], f * m.mat[1], f * m.mat[2], 
-		f * m.mat[3], f * m.mat[4], f * m.mat[5], 
-		f * m.mat[6], f * m.mat[7], f * m.mat[8]);
+	Matrix3 res;
+	for (short i = 0; i < 9; i++) {
+		res.mat[i] = f * m.mat[i];
+	}
+	return res;
 }
 
 Matrix3 operator/(const float f, const Matrix3& m)
 {
-	return Matrix3(f / m.mat[0], f / m.mat[1], f / m.mat[2],
-		f / m.mat[3], f / m.mat[4], f / m.mat[5],
-		f / m.mat[6], f / m.mat[7], f / m.mat[8]);
+	Matrix3 res;
+	for (short i = 0; i < 9; i++) {
+		res.mat[i] = f / m.mat[i];
+	}
+	return res;
 }
 
 Matrix3 operator+(float f, const Matrix3& m)
 {
-	return Matrix3(f + m.mat[0], f + m.mat[1], f + m.mat[2],
-		f + m.mat[3], f + m.mat[4], f + m.mat[5],
-		f + m.mat[6], f + m.mat[7], f + m.mat[8]);
+	Matrix3 res;
+	for (short i = 0; i < 9; i++) {
+		res.mat[i] = f + m.mat[i];
+	}
+	return res;
+
 }
 
 Matrix3 operator-(float f, const Matrix3& m)
 {
-	return Matrix3(f - m.mat[0], f - m.mat[1], f - m.mat[2],
-		f - m.mat[3], f - m.mat[4], f - m.mat[5],
-		f - m.mat[6], f - m.mat[7], f - m.mat[8]);
+	Matrix3 res;
+	for (short i = 0; i < 9; i++) {
+		res.mat[i] = f - m.mat[i];
+	}
+	return res;
+
 }
 
 float& Matrix3::operator()(int row, int col)
@@ -217,60 +284,63 @@ float Matrix3::operator()(int row, int col) const
 Matrix3 Matrix3::operator=(const Matrix3& m)
 {
 	if (this == &m) return (*this);
-	mat[0] = m.mat[0]; mat[1] = m.mat[1]; mat[2] = m.mat[2];
-	mat[3] = m.mat[3]; mat[4] = m.mat[4]; mat[5] = m.mat[5];
-	mat[6] = m.mat[6]; mat[7] = m.mat[7]; mat[8] = m.mat[8];
+	for (short i = 0; i < 9; i++) {
+		mat[i] = m.mat[i];
+	}
 	return (*this);
 }
 
 Matrix3 Matrix3::operator+(const Matrix3& m)
 {
-	return Matrix3(
-		mat[0] + m.mat[0], mat[1] + m.mat[1], mat[2] + m.mat[2], 
-		mat[3] + m.mat[3], mat[4] + m.mat[4], mat[5] + m.mat[5], 
-		mat[6] + m.mat[6], mat[7] + m.mat[7], mat[8] + m.mat[8]);
+	Matrix3 res;
+	for (short i = 0; i < 9; i++) {
+		res.mat[i] = mat[i] - m.mat[i];
+	}
+	return res;
 }
 
 Matrix3& Matrix3::operator+=(const Matrix3& m)
 {
-	mat[0] += m.mat[0]; mat[1] += m.mat[1]; mat[2] += m.mat[2];
-	mat[3] += m.mat[3]; mat[4] += m.mat[4]; mat[5] += m.mat[5];
-	mat[6] += m.mat[6]; mat[7] += m.mat[7]; mat[8] += m.mat[8];
-	return (*this);
+	for (short i = 0; i < 9; i++) {
+		mat[i] += m.mat[i];
+	}
+	return *this;
 }
 
 Matrix3 Matrix3::operator-(const Matrix3& m)
 {
-	return Matrix3(
-		mat[0] - m.mat[0], mat[1] - m.mat[1], mat[2] - m.mat[2],
-		mat[3] - m.mat[3], mat[4] - m.mat[4], mat[5] - m.mat[5],
-		mat[6] - m.mat[6], mat[7] - m.mat[7], mat[8] - m.mat[8]);
+	Matrix3 res;
+	for (short i = 0; i < 9; i++) {
+		res.mat[i] = mat[i] - m.mat[i];
+	}
+	return res;
 }
 
 Matrix3& Matrix3::operator-=(const Matrix3& m)
 {
-	mat[0] -= m.mat[0]; mat[1] -= m.mat[1]; mat[2] -= m.mat[2];
-	mat[3] -= m.mat[3]; mat[4] -= m.mat[4]; mat[5] -= m.mat[5];
-	mat[6] -= m.mat[6]; mat[7] -= m.mat[7]; mat[8] -= m.mat[8];
-	return (*this);
+	for (short i = 0; i < 9; i++) {
+		mat[i] -= m.mat[i];
+	}
+	return *this;
 }
 
 Matrix3 Matrix3::operator*(const Matrix3& m)
 {
 	return Matrix3(
 		mat[0] * m.mat[0] + mat[3] * m.mat[1] + mat[6] * m.mat[2],
-		mat[1] * m.mat[0] + mat[4] * m.mat[1] + mat[7] * m.mat[2],
-		mat[2] * m.mat[0] + mat[5] * m.mat[1] + mat[8] * m.mat[2],
 		mat[0] * m.mat[3] + mat[3] * m.mat[4] + mat[6] * m.mat[5],
-		mat[1] * m.mat[3] + mat[4] * m.mat[4] + mat[7] * m.mat[5],
-		mat[2] * m.mat[3] + mat[5] * m.mat[4] + mat[8] * m.mat[5],
 		mat[0] * m.mat[6] + mat[3] * m.mat[7] + mat[6] * m.mat[8],
+		mat[1] * m.mat[0] + mat[4] * m.mat[1] + mat[7] * m.mat[2],
+		mat[1] * m.mat[3] + mat[4] * m.mat[4] + mat[7] * m.mat[5],
 		mat[1] * m.mat[6] + mat[4] * m.mat[7] + mat[7] * m.mat[8],
+		mat[2] * m.mat[0] + mat[5] * m.mat[1] + mat[8] * m.mat[2],
+		mat[2] * m.mat[3] + mat[5] * m.mat[4] + mat[8] * m.mat[5],
 		mat[2] * m.mat[6] + mat[5] * m.mat[7] + mat[8] * m.mat[8]);
 }
 
 Matrix3 Matrix3::operator*=(const Matrix3& m)
 {
+
 	mat[0] = mat[0] * m.mat[0] + mat[3] * m.mat[1] + mat[6] * m.mat[2];
 	mat[1] = mat[1] * m.mat[0] + mat[4] * m.mat[1] + mat[7] * m.mat[2];
 	mat[2] = mat[2] * m.mat[0] + mat[5] * m.mat[1] + mat[8] * m.mat[2];
@@ -286,9 +356,10 @@ Matrix3 Matrix3::operator*=(const Matrix3& m)
 bool Matrix3::operator==(const Matrix3& m)
 {
 	if (this == &m) return true;
-	return (mat[0] == m.mat[0] && mat[1] == m.mat[1] && mat[2] == m.mat[2] &&
-		mat[3] == m.mat[3] && mat[4] == m.mat[4] && mat[5] == m.mat[5] &&
-		mat[6] == m.mat[6] && mat[7] == m.mat[7] && mat[8] == m.mat[8]);
+	for (short i = 0; i < 9; i++) {
+		if (mat[i] != m.mat[i]) return false;
+	}
+	return true;
 }
 
 bool Matrix3::operator!=(const Matrix3& m)
@@ -298,65 +369,69 @@ bool Matrix3::operator!=(const Matrix3& m)
 
 Matrix3 Matrix3::operator*(const float f)
 {
-	return Matrix3(
-		mat[0] * f, mat[1] * f, mat[2] * f,
-		mat[3] * f, mat[4] * f, mat[5] * f,
-		mat[6] * f, mat[7] * f, mat[8] * f);
+	Matrix3 res;
+	for (short i = 0; i < 9; i++) {
+		res.mat[i] = mat[i] * f;
+	}
+	return res;
 }
 
 Matrix3& Matrix3::operator*=(const float f)
 {
-	mat[0] *= f; mat[1] *= f; mat[2] *= f;
-	mat[3] *= f; mat[4] *= f; mat[5] *= f;
-	mat[6] *= f; mat[7] *= f; mat[8] *= f;
+	for (short i = 0; i < 9; i++) {
+		mat[i] *= f;
+	}
 	return *this;
 }
 
 Matrix3 Matrix3::operator/(const float f)
 {
-	return Matrix3(
-		mat[0] / f, mat[1] / f, mat[2] / f,
-		mat[3] / f, mat[4] / f, mat[5] / f,
-		mat[6] / f, mat[7] / f, mat[8] / f);
+	Matrix3 res;
+	for (short i = 0; i < 9; i++) {
+		res.mat[i] = mat[i] / f;
+	}
+	return res;
 }
 
 Matrix3& Matrix3::operator/=(const float f)
 {
-	mat[0] /= f; mat[1] /= f; mat[2] /= f;
-	mat[3] /= f; mat[4] /= f; mat[5] /= f;
-	mat[6] /= f; mat[7] /= f; mat[8] /= f;
+	for (short i = 0; i < 9; i++) {
+		mat[i] /= f;
+	}
 	return *this;
 }
 
 Matrix3 Matrix3::operator+(float f)
 {
-	return Matrix3(
-		mat[0] + f, mat[1] + f, mat[2] + f,
-		mat[3] + f, mat[4] + f, mat[5] + f,
-		mat[6] + f, mat[7] + f, mat[8] + f);
+	Matrix3 res;
+	for (short i = 0; i < 9; i++) {
+		res.mat[i] = mat[i] + f;
+	}
+	return res;
 }
 
 Matrix3& Matrix3::operator+=(const float f)
 {
-	mat[0] += f; mat[1] += f; mat[2] += f;
-	mat[3] += f; mat[4] += f; mat[5] += f;
-	mat[6] += f; mat[7] += f; mat[8] += f;
+	for (short i = 0; i < 9; i++) {
+		mat[i] += f;
+	}
 	return *this;
 }
 
 Matrix3 Matrix3::operator-(float f)
 {
-	return Matrix3(
-		mat[0] - f, mat[1] - f, mat[2] - f,
-		mat[3] - f, mat[4] - f, mat[5] - f,
-		mat[6] - f, mat[7] - f, mat[8] - f);
+	Matrix3 res;
+	for (short i = 0; i < 9; i++) {
+		res.mat[i] = mat[i] - f;
+	}
+	return res;
 }
 
 Matrix3& Matrix3::operator-=(const float f)
 {
-	mat[0] -= f; mat[1] -= f; mat[2] -= f;
-	mat[3] -= f; mat[4] -= f; mat[5] -= f;
-	mat[6] -= f; mat[7] -= f; mat[8] -= f;
+	for (short i = 0; i < 9; i++) {
+		mat[i] -= f;
+	}
 	return *this;
 }
 
@@ -371,7 +446,7 @@ Vector3D Matrix3::operator*(Vector3D point)
 
 Matrix3 Matrix3::transpose()
 {
-	return Matrix3(mat[0], mat[3], mat[6], mat[1], mat[4], mat[7], mat[2], mat[5], mat[8]);
+	return Matrix3(mat[0], mat[1], mat[2], mat[3], mat[4], mat[5], mat[6], mat[7], mat[8]);
 }
 
 float Matrix3::determinant()
@@ -389,19 +464,19 @@ Matrix3 Matrix3::inverse()
 	}
 
 	Matrix2 
-		m0(mat[4], mat[7], mat[5], mat[8]),
-		m1(mat[5], mat[8], mat[3], mat[6]),
-		m2(mat[3], mat[6], mat[4], mat[7]),
-		m3(mat[7], mat[1], mat[8], mat[2]),
-		m4(mat[8], mat[2], mat[6], mat[0]),
-		m5(mat[6], mat[0], mat[7], mat[1]),
-		m6(mat[1], mat[4], mat[2], mat[5]),
-		m7(mat[2], mat[5], mat[0], mat[3]),
-		m8(mat[0], mat[3], mat[1], mat[4]);
+		m0(mat[4], mat[5], mat[7], mat[8]),
+		m1(mat[5], mat[3], mat[8], mat[6]),
+		m2(mat[3], mat[4], mat[6], mat[7]),
+		m3(mat[7], mat[8], mat[1], mat[2]),
+		m4(mat[8], mat[6], mat[2], mat[0]),
+		m5(mat[6], mat[7], mat[0], mat[1]),
+		m6(mat[1], mat[2], mat[4], mat[5]),
+		m7(mat[2], mat[0], mat[5], mat[3]),
+		m8(mat[0], mat[1], mat[3], mat[4]);
 
-	Matrix3 inv(m0.determinant(), m3.determinant(), m6.determinant(),
-		m1.determinant(), m4.determinant(), m7.determinant(),
-		m2.determinant(), m5.determinant(), m8.determinant());
+	Matrix3 inv(m0.determinant(), m1.determinant(), m2.determinant(),
+		m3.determinant(), m4.determinant(), m5.determinant(),
+		m6.determinant(), m7.determinant(), m8.determinant());
 
 	inv /= det;
 

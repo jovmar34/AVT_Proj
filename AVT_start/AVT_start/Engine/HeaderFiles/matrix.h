@@ -29,15 +29,16 @@ class Matrix2 {
 	array<float, 4> mat;
 
 	Matrix2() { // default constructor to identity matrix
-		mat = { 1.0f, 0.0f, 0.0f, 1.0f };
+		mat = { 1.0f, 0.0f, 
+				0.0f, 1.0f };
 	}
 
-	Matrix2(float a11, float a21, float a12, float a22) {
+	Matrix2(float a11, float a12, float a21, float a22) {
 		mat = { a11, a21, a12, a22 };
 	}
 
 	Matrix2(const Matrix2& other) {
-		mat[0] = other.mat[0]; mat[1] = other.mat[1]; mat[2] = other.mat[2]; mat[3] = other.mat[3];
+		mat = { other.mat[0], other.mat[1], other.mat[2], other.mat[3] };
 	}
 
 	// Getter
@@ -119,14 +120,14 @@ public:
 		mat = { 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f };
 	}
 
-	Matrix3(float a11, float a21, float a31, float a12, float a22, float a32, float a13, float a23, float a33) {
+	Matrix3(float a11, float a12, float a13, float a21, float a22, float a23, float a31, float a32, float a33) {
 		mat = { a11, a21, a31, a12, a22, a32, a13, a23, a33 };
 	}
 
 	Matrix3(const Matrix3& other) {
-		mat[0] = other.mat[0]; mat[1] = other.mat[1]; mat[2] = other.mat[2];
-		mat[3] = other.mat[3]; mat[4] = other.mat[4]; mat[5] = other.mat[5];
-		mat[6] = other.mat[6]; mat[7] = other.mat[7]; mat[8] = other.mat[8];
+		mat = { other.mat[0], other.mat[1], other.mat[2],
+			other.mat[3], other.mat[4], other.mat[5],
+			other.mat[6], other.mat[7], other.mat[8] };
 	}
 
 	// Getter

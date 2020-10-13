@@ -183,6 +183,9 @@ public:
 	// Inverse
 	Matrix3 inverse();
 
+	// Increase dimensions
+	Matrix4 increase();
+
 	// toOpenGl
 	std::array<float, 9> toOpenGl() {
 		return mat;

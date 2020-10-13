@@ -354,12 +354,14 @@ const Vector3D RodrRot(Vector3D& v, Vector3D& k, float angle) {
 
 int main(int argc, char* argv[])
 {
+	/*
 	std::cout << std::boolalpha;
 	MxFactory m;
 
 	Matrix2 m1 = m.identity2();
 
 	std::cout << m1 << std::endl;
+	*/
 
 	/*
 	Matrix2 mat;
@@ -377,6 +379,41 @@ int main(int argc, char* argv[])
 	Matrix2 m1 = mat * mat;
 
 	std::cout << m1 << std::endl;
+
+	mat += mat;
+
+	std::cout << mat << std::endl;
+
+	m1 = mat - mat;
+
+	std::cout << m1 << std::endl;
+
+	mat /= 2;
+
+	m1 = mat.inverse();
+
+	std::cout << m1 << std::endl;
+	*/
+
+	Matrix4 mat;
+
+	std::cout << mat << std::endl;
+
+	mat = Matrix4(1, 0, 0, 0, 1, 2, 0, 0, 1, 2, 3, 0, 1, 2, 3, 4);
+	std::cout << mat << std::endl;
+
+	std::istringstream iss("1 0 0 0 1 2 0 0 1 2 3 0 1 2 3 4");
+	iss >> mat;
+
+	std::cout << mat << std::endl;
+
+	float a22 = mat(2, 2);
+	std::cout << "a22 -> " << a22 << "\n" <<  std::endl;
+
+	Matrix4 m1 = mat * mat;
+
+	std::cout << m1 << std::endl;
+	/*
 
 	mat += mat;
 

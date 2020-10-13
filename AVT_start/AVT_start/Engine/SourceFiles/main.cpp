@@ -363,35 +363,6 @@ int main(int argc, char* argv[])
 	std::cout << m1 << std::endl;
 	*/
 
-	Matrix3 mat;
-
-	std::cout << mat << std::endl;
-
-	Matrix3 m3(1, 4, 7, 2, 5, 8, 3, 6, 9);
-
-	std::cout << m3 << std::endl;
-
-	std::cout << "Row 1, Col 2: " << m3(1,2) << std::endl;
-	std::cout << "Row 2, Col 1: " << m3(2, 1) << std::endl;
-
-	Matrix3 mult = m3 * m3;
-
-	std::cout << mult << std::endl;
-
-	m3 = Matrix3(1,0,5,2,1,6,3,4,0);
-
-	Matrix3 inv = m3.inverse();
-
-	std::cout << m3 << std::endl;
-	std::cout << inv << std::endl;
-
-	m3 = Matrix3(3, 2, 0, 0, 0, 1, 2, -2, 1);
-
-	inv = m3.inverse();
-
-	std::cout << m3 << std::endl;
-	std::cout << inv << std::endl;
-
 	/*
 	Matrix2 mat;
 
@@ -424,6 +395,37 @@ int main(int argc, char* argv[])
 	std::cout << m1 << std::endl;
 	*/
 
+	/*
+	Matrix3 mat;
+
+	std::cout << mat << std::endl;
+
+	Matrix3 m3(1, 4, 7, 2, 5, 8, 3, 6, 9);
+
+	std::cout << m3 << std::endl;
+
+	std::cout << "Row 1, Col 2: " << m3(1,2) << std::endl;
+	std::cout << "Row 2, Col 1: " << m3(2, 1) << std::endl;
+
+	Matrix3 mult = m3 * m3;
+
+	std::cout << mult << std::endl;
+
+	m3 = Matrix3(1,0,5,2,1,6,3,4,0);
+
+	Matrix3 inv = m3.inverse();
+
+	std::cout << m3 << std::endl;
+	std::cout << inv << std::endl;
+
+	m3 = Matrix3(3, 2, 0, 0, 0, 1, 2, -2, 1);
+
+	inv = m3.inverse();
+
+	std::cout << m3 << std::endl;
+	std::cout << inv << std::endl;
+	*/
+
 	Matrix4 mat;
 
 	std::cout << mat << std::endl;
@@ -442,7 +444,6 @@ int main(int argc, char* argv[])
 	Matrix4 m1 = mat * mat;
 
 	std::cout << m1 << std::endl;
-	/*
 
 	mat += mat;
 
@@ -454,10 +455,10 @@ int main(int argc, char* argv[])
 
 	mat /= 2;
 
-	m1 = mat.inverse();
+	m1 = mat.transpose();
 
 	std::cout << m1 << std::endl;
-	*/
+	
 
 	exit(EXIT_SUCCESS); 
 }

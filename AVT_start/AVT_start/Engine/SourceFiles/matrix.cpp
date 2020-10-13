@@ -1,6 +1,6 @@
 #include "..\HeaderFiles\matrix.h"
 
-// ================================== MATRIX 2D =====================================
+// ================================== MATRIX 2x2 =====================================
 
 float& Matrix2::operator()(int row, int col)
 {
@@ -168,97 +168,6 @@ Matrix2 operator-(float f, const Matrix2& m)
 	return Matrix2(f - m.mat[0], f - m.mat[1], f - m.mat[2], f - m.mat[3]);
 }
 
-// ================================== MATRIX 4D =====================================
-
-float& Matrix4::operator()(int row, int col)
-{
-	if (row >= 4 || col >= 4)
-		throw "Matrix subscript out of bounds";
-	return mat[row + (col * 4)];
-}
-
-float Matrix4::operator()(int row, int col) const
-{
-	if (row >= 4 || col >= 4)
-		throw "Matrix subscript out of bounds";
-	return mat[row + (col * 4)];
-}
-
-Matrix4 Matrix4::operator=(const Matrix4& m)
-{
-	if (this == &m) return (*this);
-	std::copy(std::begin(m.mat), std::end(m.mat), std::begin(mat));
-	return (*this);
-}
-
-Matrix4 Matrix4::operator+(const Matrix4& m)
-{
-	Matrix4 new_mat = Matrix4();
-	for (int i = 0; i < 16; i++)
-	{
-		new_mat.mat[i] = mat[i] + m.mat[i];
-	}
-	return new_mat;
-}
-
-Matrix4& Matrix4::operator+=(const Matrix4& m)
-{
-	for (int i = 0; i < 16; i++)
-	{
-		mat[i] += m.mat[i];
-	}
-	return *this;
-}
-
-Matrix4 Matrix4::operator-(const Matrix4& m)
-{
-	Matrix4 new_mat = Matrix4();
-	for (int i = 0; i < 16; i++)
-	{
-		new_mat.mat[i] = mat[i] - m.mat[i];
-	}
-	return new_mat;
-
-}
-
-Matrix4& Matrix4::operator-=(const Matrix4& m)
-{
-	for (int i = 0; i < 16; i++)
-	{
-		mat[i] -= m.mat[i];
-	}
-	return *this;
-}
-
-
-Matrix4 Matrix4::operator*(const Matrix4& m)
-{
-	int ind0, ind1, ind2;
-	Matrix4 new_mat = Matrix4();
-
-	for (int row = 0; row < 4; row++) {
-		
-		for (int col = 0; col < 4; col++) {
-
-			ind0 = row + (col * 4);
-			for (int k = 0; k < 4; k++){
-
-				ind1 = row + (k * 4);
-				ind2 = k + (col * 4);
-				new_mat.mat[ind0] += mat[ind1] * m.mat[ind2];
-			}
-			std::cout << " -> " << new_mat.mat[ind0] << std::endl;
-		}
-	}
-
-	return new_mat;
-}
-
-Matrix4 Matrix4::operator*=(const Matrix4& m)
-{
-	*this = *this * m;	
-	return *this;
-}
 
 
 // ================== Matrix 3x3 ============================
@@ -497,4 +406,262 @@ Matrix3 Matrix3::inverse()
 	inv /= det;
 
 	return inv;
+}
+
+
+
+// ================================== MATRIX 4x4 =====================================
+
+// Accessors
+float& Matrix4::operator()(int row, int col)
+{
+	if (row >= 4 || col >= 4)
+		throw "Matrix subscript out of bounds";
+	return mat[row + (col * 4)];
+}
+
+float Matrix4::operator()(int row, int col) const
+{
+	if (row >= 4 || col >= 4)
+		throw "Matrix subscript out of bounds";
+	return mat[row + (col * 4)];
+}
+
+
+//Atribution
+Matrix4 Matrix4::operator=(const Matrix4& m)
+{
+	if (this == &m) return (*this);
+	std::copy(std::begin(m.mat), std::end(m.mat), std::begin(mat));
+	return (*this);
+}
+
+
+//Matrix Operations
+Matrix4 Matrix4::operator+(const Matrix4& m)
+{
+	Matrix4 new_mat = Matrix4();
+	for (int i = 0; i < 16; i++)
+	{
+		new_mat.mat[i] = mat[i] + m.mat[i];
+	}
+	return new_mat;
+}
+
+Matrix4& Matrix4::operator+=(const Matrix4& m)
+{
+	for (int i = 0; i < 16; i++)
+	{
+		mat[i] += m.mat[i];
+	}
+	return *this;
+}
+
+
+Matrix4 Matrix4::operator-(const Matrix4& m)
+{
+	Matrix4 new_mat = Matrix4();
+	for (int i = 0; i < 16; i++)
+	{
+		new_mat.mat[i] = mat[i] - m.mat[i];
+	}
+	return new_mat;
+}
+
+Matrix4& Matrix4::operator-=(const Matrix4& m)
+{
+	for (int i = 0; i < 16; i++)
+	{
+		mat[i] -= m.mat[i];
+	}
+	return *this;
+}
+
+
+Matrix4 Matrix4::operator*(const Matrix4& m)
+{
+	int ind0, ind1, ind2;
+	Matrix4 new_mat = Matrix4();
+
+	for (int row = 0; row < 4; row++) {
+
+		for (int col = 0; col < 4; col++) {
+
+			ind0 = row + (col * 4);
+			new_mat.mat[ind0] = 0;
+			for (int k = 0; k < 4; k++) {
+
+				ind1 = row + (k * 4);
+				ind2 = k + (col * 4);
+				new_mat.mat[ind0] += mat[ind1] * m.mat[ind2];
+			}
+		}
+	}
+
+	return new_mat;
+}
+
+Matrix4 Matrix4::operator*=(const Matrix4& m)
+{
+	*this = *this * m;
+	return *this;
+}
+
+
+// Comparisson
+bool Matrix4::operator==(const Matrix4& m)
+{
+	if (this == &m) return true;
+	for (int i = 0; i < 16; i++)
+	{
+		if (mat[i] != m.mat[i]) return false;
+	}
+	return true;
+}
+
+bool Matrix4::operator!=(const Matrix4& m)
+{
+	return !(*this == m);
+}
+
+
+// Scalar Operations
+Matrix4 Matrix4::operator*(const float f)
+{
+	Matrix4 new_mat = Matrix4();
+	for (int i = 0; i < 16; i++)
+	{
+		new_mat.mat[i] = mat[i] * f;
+	}
+	return new_mat;
+}
+
+Matrix4& Matrix4::operator*=(const float f)
+{
+	for (int i = 0; i < 16; i++)
+	{
+		mat[i] *= f;
+	}
+	return *this;
+}
+
+Matrix4 operator*(const float f, const Matrix4& m) 
+{
+	Matrix4 new_mat = Matrix4();
+	for (int i = 0; i < 16; i++)
+	{
+		new_mat.mat[i] = f * m.mat[i];
+	}
+	return new_mat;
+}
+
+
+
+Matrix4 Matrix4::operator/(const float f)
+{
+	Matrix4 new_mat = Matrix4();
+	for (int i = 0; i < 16; i++)
+	{
+		new_mat.mat[i] = mat[i] / f;
+	}
+	return new_mat;
+}
+
+Matrix4& Matrix4::operator/=(const float f)
+{
+	for (int i = 0; i < 16; i++)
+	{
+		mat[i] /= f;
+	}
+	return *this;
+}
+
+Matrix4 operator/(const float f, const Matrix4& m) 
+{
+	Matrix4 new_mat = Matrix4();
+	for (int i = 0; i < 16; i++)
+	{
+		new_mat.mat[i] = f / m.mat[i];
+	}
+	return new_mat;
+}
+
+
+Matrix4 Matrix4::operator+(float f)
+{
+	Matrix4 new_mat = Matrix4();
+	for (int i = 0; i < 16; i++)
+	{
+		new_mat.mat[i] = mat[i] + f;
+	}
+	return new_mat;
+}
+
+Matrix4& Matrix4::operator+=(const float f)
+{
+	for (int i = 0; i < 16; i++)
+	{
+		mat[i] += f;
+	}
+	return *this;
+}
+
+Matrix4 operator+(float f, const Matrix4& m) 
+{
+	Matrix4 new_mat = Matrix4();
+	for (int i = 0; i < 16; i++)
+	{
+		new_mat.mat[i] = f + m.mat[i];
+	}
+	return new_mat;
+}
+
+
+Matrix4 Matrix4::operator-(float f)
+{
+	Matrix4 new_mat = Matrix4();
+	for (int i = 0; i < 16; i++)
+	{
+		new_mat.mat[i] = mat[i] - f;
+	}
+	return new_mat;
+}
+
+Matrix4& Matrix4::operator-=(const float f)
+{
+	for (int i = 0; i < 16; i++)
+	{
+		mat[i] -= f;
+	}
+	return *this;
+}
+
+Matrix4 operator-(float f, const Matrix4& m) 
+{
+	Matrix4 new_mat = Matrix4();
+	for (int i = 0; i < 16; i++)
+	{
+		new_mat.mat[i] = f - m.mat[i];
+	}
+	return new_mat;
+}
+
+//Multiplication by vector
+Vector4D Matrix4::operator*(Vector4D point)
+{
+	return Vector4D(
+		mat[0] * point.x + mat[4] * point.y + mat[8]  * point.z + mat[12] * point.w,
+		mat[1] * point.x + mat[5] * point.y + mat[9]  * point.z + mat[13] * point.w,
+		mat[2] * point.x + mat[6] * point.y + mat[10] * point.z + mat[14] * point.w,
+		mat[3] * point.x + mat[7] * point.y + mat[11] * point.z + mat[15] * point.w);
+}
+
+
+//Functions
+Matrix4 Matrix4::transpose()
+{
+	return Matrix4(	mat[0],  mat[1],  mat[2],  mat[3],
+					mat[4],  mat[5],  mat[6],  mat[7],
+					mat[8],  mat[9],  mat[10], mat[11],
+					mat[12], mat[13], mat[14], mat[15]);
 }

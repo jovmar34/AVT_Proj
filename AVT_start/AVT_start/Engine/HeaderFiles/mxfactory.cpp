@@ -12,15 +12,18 @@ Matrix3 MxFactory::identity3()
 
 Matrix3 MxFactory::dual(float ax, float ay, float az)
 {
-    return Matrix3(0.0f, -az, ay, az, 0.0f, -ax, -ay, ax, 0.0f);
+    return Matrix3(
+        0.0f, -az, ay, 
+        az, 0.0f, -ax, 
+        -ay, ax, 0.0f);
 }
 
 Matrix3 MxFactory::squaredual(float ax, float ay, float az)
 {
     return Matrix3(
-        -ay*ay*(-az)*az , ax*ay           , ax*az, 
-        ax*ay           , -ax*ax*(-az)*az , ay*az, 
-        ax*az           , ay*az           , -ax*ax*(-ay)*ay);
+        -ay*ay-az*az , ax*ay        , ax*(az), 
+        ax*ay        , -ax*ax-az*az , ay*az, 
+        ax*az        , ay*az        , -ax*ax-ay*ay);
 }
 
 Matrix4 MxFactory::identity4()
@@ -49,15 +52,21 @@ Matrix4 MxFactory::translation4(float tx, float ty, float tz)
 
 Matrix4 MxFactory::rotation4(float rx, float ry, float rz, float theta)
 {
-    Matrix3 mat3 = (identity3() + (sin(theta) * dual(rx, ry, rz)) + (1-cos(theta) * squaredual(rx,ry,rz)));
+    Vector3D axis = Vector3D(rx, ry, rz);
+    axis.normalize();
+    float angle = theta * M_PI / 180.0f;
+
+    Matrix3 mat3 = identity3();
+    mat3 += dual(axis.x, axis.y, axis.z) * sin(angle);
+    mat3 += squaredual(axis.x, axis.y, axis.z) * (1 - cos(angle));
     return mat3.increase();
 }
 
 Matrix4 MxFactory::invscaling4(float sx, float sy, float sz)
 {
-    float invx = (sx) ? 1 / sx : 0.0f,
-        invy = (sy) ? 1 / sy : 0.0f,
-        invz = (sz) ? 1 / sz : 0.0f;
+    float invx = (sx != 0.0f) ? 1 / sx : 0.0f,
+        invy = (sy != 0.0f) ? 1 / sy : 0.0f,
+        invz = (sz != 0.0f) ? 1 / sz : 0.0f;
 
     return scaling4(invx, invy, invz);
 }

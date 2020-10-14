@@ -475,9 +475,9 @@ Matrix3 Matrix3::inverse()
 Matrix4 Matrix3::increase()
 {
 	return Matrix4(
-		mat[0], mat[1], mat[2], 0.0f,
-		mat[4], mat[5], mat[6], 0.0f,
-		mat[7], mat[8], mat[9], 0.0f,
+		mat[0], mat[3], mat[6], 0.0f,
+		mat[1], mat[4], mat[7], 0.0f,
+		mat[2], mat[5], mat[8], 0.0f,
 		0.0f  , 0.0f  , 0.0f  , 1.0f);
 }
 

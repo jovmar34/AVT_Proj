@@ -12,13 +12,13 @@ class Vector4D;
 class Vector2D
 {
 public:
-	Vector2D() { };
-	Vector2D(float x, float y);
-	Vector2D(const Vector2D& v);
-
 	// Attributes
 	float x;
 	float y;
+
+	Vector2D() : x(0), y(0) { };
+	Vector2D(float x, float y);
+	Vector2D(const Vector2D& v);
 
 	// Vector functions
 	float		length();
@@ -82,14 +82,14 @@ public:
 class Vector3D
 {
 public:
-	Vector3D() { };
-	Vector3D(float x, float y, float z);
-	Vector3D(const Vector3D& v);
-
 	// Attributes
 	float x;
 	float y;
 	float z;
+
+	Vector3D(): x(0), y(0), z(0) { };
+	Vector3D(float x, float y, float z);
+	Vector3D(const Vector3D& v);
 
 	// Vector functions
 	float length();
@@ -154,15 +154,15 @@ public:
 class Vector4D
 {
 public:
-	Vector4D() { };
-	Vector4D(float x, float y, float z, float w);
-	Vector4D(const Vector4D& v);
-
 	// Attributes
 	float x;
 	float y;
 	float z;
 	float w;
+
+	Vector4D(): x(0), y(0), z(0), w(1) { };
+	Vector4D(float x, float y, float z, float w);
+	Vector4D(const Vector4D& v);
 
 	// Vector functions
 	float		length();

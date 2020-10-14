@@ -144,7 +144,7 @@ Vector3D Vector2D::to3D() {
 }
 
 Vector4D Vector2D::to4D() {
-	return Vector4D(x, y, 0, 0);
+	return Vector4D(x, y, 0, 1);
 }
 
 
@@ -303,7 +303,7 @@ Vector2D Vector3D::to2D() {
 }
 
 Vector4D Vector3D::to4D() {
-	return Vector4D(x, y, z, 0);
+	return Vector4D(x, y, z, 1);
 }
 
 
@@ -317,7 +317,7 @@ Vector4D::Vector4D(const Vector4D& v)
 	x = v.x; y = v.y; z = v.z; w = v.w;
 }
 
-// Vector functions
+// Vector functions (Homogeneous coords, so the length only takes into account (x,y,z))
 float Vector4D::length()
 {
 	return sqrt(quadrance());
@@ -325,13 +325,13 @@ float Vector4D::length()
 
 float Vector4D::quadrance()
 {
-	return x * x + y * y + z * z + w * w;
+	return x * x + y * y + z * z;
 }
 
 Vector4D& Vector4D::normalize()
 {
 	float l = 1.0 / this->length();
-	x *= l; y *= l; z *= l; w *= l;
+	x *= l; y *= l; z *= l;;
 	return *this;
 }
 
@@ -348,28 +348,28 @@ Vector4D Vector4D::operator= (const Vector4D& other) {
 
 Vector4D Vector4D::operator+(const  Vector4D& v)
 {
-	return Vector4D(x + v.x, y + v.y, z + v.z, w + v.w);
+	return Vector4D(x + v.x, y + v.y, z + v.z, w);
 }
 
 Vector4D& Vector4D::operator+=(const Vector4D& v)
 {
-	x += v.x; y += v.y; z += v.z; w += v.w; return *this;
+	x += v.x; y += v.y; z += v.z; return *this;
 }
 
 Vector4D Vector4D::operator-(const Vector4D& v)
 {
-	return Vector4D(x - v.x, y - v.y, z - v.z, w - v.w);
+	return Vector4D(x - v.x, y - v.y, z - v.z, w);
 }
 
 Vector4D& Vector4D::operator-=(const Vector4D& v)
 {
-	x -= v.x; y -= v.y; z -= v.z; w -= v.w; return *this;
+	x -= v.x; y -= v.y; z -= v.z; return *this;
 }
 
-// Inner product
+// Inner product (once again, 3D homogeneous)
 float Vector4D::operator*(const  Vector4D& v)
 {
-	return x * v.x + y * v.y + z * v.z + w * v.w;
+	return x * v.x + y * v.y + z * v.z;
 }
 
 // Comparators - TODO: apply/support slight error (1E-5)
@@ -387,65 +387,65 @@ bool Vector4D::operator!=(const Vector4D& v)
 // Scalar multiplication
 Vector4D Vector4D::operator*(float f)
 {
-	return Vector4D(x * f, y * f, z * f, w * f);
+	return Vector4D(x * f, y * f, z * f, w);
 }
 
 Vector4D operator*(const float f, const Vector4D& v)
 {
-	return Vector4D(f * v.x, f * v.y, f * v.z, f * v.w);
+	return Vector4D(f * v.x, f * v.y, f * v.z, v.w);
 }
 
 Vector4D& Vector4D::operator*=(const float v)
 {
-	x *= v; y *= v; z *= z; w *= v; return *this;
+	x *= v; y *= v; z *= z; return *this;
 }
 
 // Scalar division
 Vector4D Vector4D::operator/(float f)
 {
-	return Vector4D(x / f, y / f, z / f, w / f);
+	return Vector4D(x / f, y / f, z / f, w);
 }
 
 Vector4D operator/(const float f, const Vector4D& v)
 {
-	return Vector4D(f / v.x, f / v.y, f / v.z, f / v.w);
+	return Vector4D(f / v.x, f / v.y, f / v.z, v.w);
 }
 
 Vector4D& Vector4D::operator/=(const float v)
 {
-	x /= v; y /= v; z /= v; w /= v; return *this;
+	x /= v; y /= v; z /= v; return *this;
 }
 
 // Scalar addition
 Vector4D Vector4D::operator+(float f)
 {
-	return Vector4D(x + f, y + f, z + f, w + f);
+	return Vector4D(x + f, y + f, z + f, w);
 }
 
 Vector4D operator+(const float f, const Vector4D& v)
 {
-	return Vector4D(f + v.x, f + v.y, f + v.z, f + v.w);
+	return Vector4D(f + v.x, f + v.y, f + v.z, v.w);
 }
 
 Vector4D& Vector4D::operator+=(const float v)
 {
-	x += v; y += v; z += v; w += v; return *this;
+	x += v; y += v; z += v; return *this;
 }
 
 // Scalar subtraction
 Vector4D Vector4D::operator-(float f)
 {
-	return Vector4D(x - f, y - f, z - f, w - f);
+	return Vector4D(x - f, y - f, z - f, w);
 }
 
 Vector4D operator-(const float f, const Vector4D& v)
 {
-	return Vector4D(f - v.x, f - v.y, f - v.z, f - v.w);
+	return Vector4D(f - v.x, f - v.y, f - v.z, v.w);
 }
 
 Vector4D& Vector4D::operator-=(const float v)
 {
-	x -= v; y -= v; z -= v; w -= v; return *this;
+	x -= v; y -= v; z -= v; return *this;
 }
 
 // Conversion

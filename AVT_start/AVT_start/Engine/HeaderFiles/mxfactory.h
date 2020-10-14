@@ -1,7 +1,10 @@
 #ifndef MXFACORY_H
 #define MXFACORY_H
 
+#define _USE_MATH_DEFINES
+
 #include "../HeaderFiles/matrix.h"
+#include <cmath>
 
 class MxFactory {
 public:

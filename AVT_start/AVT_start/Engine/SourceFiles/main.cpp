@@ -350,6 +350,53 @@ const Vector3D RodrRot(Vector3D& v, Vector3D& k, float angle) {
 
 // =========================================================================
 
+void transformationsTest() {
+	MxFactory mx;
+
+	// Scaling test
+	Matrix4 sc = mx.scaling4(1, 2, 3), invsc = mx.invscaling4(1, 2, 3);
+	Vector4D p1(1, 2, 3, 1);
+
+	std::cout << "The point we're scaling is " << p1 << endl;
+	std::cout << "The matrix used for scaling by (1,2,3) is:\n" << sc << endl;
+	std::cout << "Its inverse is:\n" << invsc << endl;
+
+	p1 = sc * p1;
+	std::cout << "P' = Sc * P = " << p1 << std::endl;
+
+	p1 = invsc * p1;
+	std::cout << "P = Sc^-1 * P'  = " << p1 << std::endl;
+
+	// Translation test
+	Matrix4 tx = mx.translation4(1, 2, 3), invtx = mx.invtranslation4(1, 2, 3);
+	Vector4D p2(1, 1, 1, 1);
+
+	std::cout << "The point we're tranlating is " << p2 << endl;
+	std::cout << "The matrix used for translation by (1,2,3) is:\n" << tx << endl;
+	std::cout << "Its inverse is:\n" << invtx << endl;
+
+	p2 = tx * p2;
+	std::cout << "P' = Tx * P = " << p2 << std::endl;
+
+	p2 = invtx * p2;
+	std::cout << "P = Tx^-1 * P'  = " << p2 << std::endl;
+
+	// Rotation test
+	Matrix4 rot = mx.rotation4(0, 1, 0, 90.0f), invrot = mx.invrotation4(0, 1, 0, 90.0f);
+	Vector4D p3(1, 0, 0, 1);
+
+	std::cout << "The point we're rotating is " << p3 << endl;
+	std::cout << "The matrix used for rotating around (0,1,0) by 90 is:\n" << rot << endl;
+	std::cout << "Its inverse is:\n" << invrot << endl;
+
+	p3 = rot * p3;
+	std::cout << "P' = Rot * P = " << p3 << std::endl;
+
+	p3 = invrot * p3;
+	std::cout << "P = Rot^-1 * P'  = " << p3 << std::endl;
+
+}
+
 ////////////////////////////////////////////////////////////////////////// MAIN
 
 int main(int argc, char* argv[])
@@ -669,7 +716,7 @@ int main(int argc, char* argv[])
 
 
 
-	///*  =============== MATRIX 4D ===============
+	/*  =============== MATRIX 4D ===============
 	
 	Matrix4 mat, mat1, mat2;
 
@@ -804,7 +851,9 @@ int main(int argc, char* argv[])
 	for (int i = 0; i < 16; i++) std::cout << arr[i] << " ";
 	std::cout << std::endl;
 
-	//*/
+	*/
+
+	transformationsTest();
 
 	exit(EXIT_SUCCESS); 
 }

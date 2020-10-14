@@ -354,17 +354,26 @@ const Vector3D RodrRot(Vector3D& v, Vector3D& k, float angle) {
 
 int main(int argc, char* argv[])
 {
-	/*
+
 	std::cout << std::boolalpha;
+
+	/* =============== FACTORY =============== */
+	
+	/*
+	
 	MxFactory m;
 
 	Matrix2 m1 = m.identity2();
 
 	std::cout << m1 << std::endl;
-	*/
+	
+	//*/
+
 
 	/* =============== MATRIX 2D =============== */
-
+	
+	/*
+	
 	Matrix2 mat, mat1, mat2;
 
 	// Print
@@ -486,15 +495,15 @@ int main(int argc, char* argv[])
 
 	// Transpose 
 	mat = mat1.transpose();
-	std::cout << "transpose(mat1): " << mat << std::endl;
+	std::cout << "transpose(mat1):\n" << mat << std::endl;
 
 	// Determinant
 	float det = mat1.determinant();
-	std::cout << "determinant(mat1): " << det << std::endl;
+	std::cout << "determinant(mat1): " << det << "\n" << std::endl;
 
-	// Transpose 
+	// Inverse 
 	mat = mat1.inverse();
-	std::cout << "inverse(mat1): " << mat << std::endl;
+	std::cout << "inverse(mat1):\n" << mat << std::endl;
 
 	// ToOpenGL
 	std::array<float, 4> arr = mat1.toOpenGl();
@@ -502,72 +511,300 @@ int main(int argc, char* argv[])
 	for (int i = 0; i < 4; i++) std::cout << arr[i] <<" ";
 	std::cout << std::endl;     
 	
+	//*/
+	
 
-	/*
-	Matrix3 mat;
 
-	std::cout << mat << std::endl;
 
-	Matrix3 m3(1, 2,3,4,5,6,7,8,9);
+	
+	/*  =============== MATRIX 3D ===============
 
-	std::cout << "m3:\n" << m3 << std::endl;
+	Matrix3 mat, mat1, mat2;
 
-	std::cout << "Row 1, Col 2: " << m3(1 ,2) << std::endl;
-	std::cout << "Row 2, Col 1: " << m3(2, 1) << std::endl;
+	// Print
+	std::cout << "print mat:\n" << mat << std::endl;
 
-	Matrix3 mult = m3 * m3;
+	// Contructor + print precision
+	mat = Matrix3(1.234567, 0, 0, 0, 0, 0, 0, 0, 0);
+	std::cout << "precision print:\n" << mat << std::endl;
 
-	std::cout << mult << std::endl;
-
-	m3 = Matrix3(1,2,3,0,1,4,5,6,0);
-
-	Matrix3 inv = m3.inverse();
-
-	std::cout << m3 << std::endl;
-	std::cout << inv << std::endl;
-
-	m3 = Matrix3(3, 0,2,2,0,-2,0,1,1);
-
-	inv = m3.inverse();
-
-	std::cout << m3 << std::endl;
-	std::cout << inv << std::endl;
-	*/
-
-	/*
-	Matrix4 mat;
-
-	std::cout << mat << std::endl;
-
-	mat = Matrix4(1, 0, 0, 0, 1, 2, 0, 0, 1, 2, 3, 0, 1, 2, 3, 4);
-	std::cout << mat << std::endl;
-
-	std::istringstream iss("1 0 0 0 1 2 0 0 1 2 3 0 1 2 3 4");
+	// Input stream
+	std::istringstream iss("1 3 2 4 5 6 7 8 9");
 	iss >> mat;
+	std::cout << "input stream:\n" << mat << std::endl;
 
-	std::cout << mat << std::endl;
+	// Accessor
+	float a10 = mat(1, 0);
+	std::cout << "mat(1,0): " << a10 << "\n" << std::endl;
 
-	float a22 = mat(2, 2);
-	std::cout << "a22 -> " << a22 << "\n" <<  std::endl;
 
-	Matrix4 m1 = mat * mat;
+	// Matrix operations
+	mat1 = Matrix3(
+		1, 2, 3,
+		4, 5, 6,
+		7, 8, 9
+	);
+	std::cout << "mat1:\n" << mat1 << std::endl;
+	mat2 = Matrix3(
+		10, 11, 12,
+		13, 14, 15,
+		16, 17, 18
+	);
+	std::cout << "mat2:\n" << mat2 << std::endl;
 
-	std::cout << m1 << std::endl;
+	// Dot Product
+	mat = mat1 * mat2;
+	std::cout << "mat1 * mat2:\n" << mat << std::endl;
 
-	mat += mat;
+	mat = mat1;
+	mat *= mat2;
+	std::cout << "mat1 *= mat2:\n" << mat << std::endl;
 
-	std::cout << mat << std::endl;
+	// Addition
+	mat = mat1 + mat2;
+	std::cout << "mat1 + mat2:\n" << mat << std::endl;
 
-	m1 = mat - mat;
+	mat = mat1;
+	mat += mat2;
+	std::cout << "mat1 += mat2:\n" << mat << std::endl;
 
-	std::cout << m1 << std::endl;
+	// Subtraction
+	mat = mat1 - mat2;
+	std::cout << "mat1 - mat2:\n" << mat << std::endl;
 
-	mat /= 2;
+	mat = mat1;
+	mat -= mat2;
+	std::cout << "mat1 -= mat2:\n" << mat << std::endl;
 
-	m1 = mat.transpose();
 
-	std::cout << m1 << std::endl;
-	*/	
+	// Scalar operations
+
+	// Multiplication
+	mat = mat1 * 2.0f;
+	std::cout << "mat1 * 2.0f:\n" << mat << std::endl;
+
+	mat = 2.0f * mat1;
+	std::cout << "2.0f * mat1:\n" << mat << std::endl;
+
+	mat = mat1;
+	mat *= 2.0f;
+	std::cout << "mat1 *= 2.0f:\n" << mat << std::endl;
+
+	// Division
+	mat = mat1 / 2.0f;
+	std::cout << "mat1 / 2.0f:\n" << mat << std::endl;
+
+	mat = 2.0f / mat1;
+	std::cout << "2.0f / mat1:\n" << mat << std::endl;
+
+	mat = mat1;
+	mat /= 2.0f;
+	std::cout << "mat1 /= 2.0f:\n" << mat << std::endl;
+
+	// Addition
+	mat = mat1 + 2.0f;
+	std::cout << "mat1 + 2.0f:\n" << mat << std::endl;
+
+	mat = 2.0f + mat1;
+	std::cout << "2.0f + mat1:\n" << mat << std::endl;
+
+	mat = mat1;
+	mat += 2.0f;
+	std::cout << "mat1 += 2.0f:\n" << mat << std::endl;
+
+	// Subtraction
+	mat = mat1 - 2.0f;
+	std::cout << "mat1 - 2.0f:\n" << mat << std::endl;
+
+	mat = 2.0f - mat1;
+	std::cout << "2.0f - mat1:\n" << mat << std::endl;
+
+	mat = mat1;
+	mat -= 2.0f;
+	std::cout << "mat1 -= 2.0f:\n" << mat << std::endl;
+
+
+	// Comparission
+	std::cout << "mat1 == mat2: " << (mat1 == mat2) << "\n" << std::endl;
+	std::cout << "mat1 != mat2: " << (mat1 != mat2) << "\n" << std::endl;
+
+
+	// Multiplication by Vector
+	Vector3D vec;
+	Vector3D vec1 = Vector3D(1, 2, 3);
+	std::cout << "vec1: " << vec1 << "\n" << std::endl;
+
+	vec = mat1 * vec;
+	std::cout << "mat1 * vec1: " << vec << "\n" << std::endl;
+
+
+	// Matrix Functions
+
+	// Transpose 
+	mat = mat1.transpose();
+	std::cout << "transpose(mat1):\n" << mat << std::endl;
+
+	// Determinant
+	float det = mat1.determinant();
+	std::cout << "determinant(mat1): " << det << "\n" << std::endl;
+
+	// Inverse 
+	Matrix3 mat_inv = Matrix3(
+		1, 2, 3,
+		0, 1, 5,
+		5, 6, 0
+	);
+	std::cout << "mat_inv:\n" << mat_inv << std::endl;
+	mat_inv = mat_inv.inverse();
+	std::cout << "inverse(mat_inv):\n" << mat_inv << std::endl;
+
+	// ToOpenGL
+	std::array<float, 9> arr = mat1.toOpenGl();
+	std::cout << "ToOpengGL(mat1): ";
+	for (int i = 0; i < 9; i++) std::cout << arr[i] << " ";
+	std::cout << std::endl;
+	
+	//*/
+
+
+
+
+	///*  =============== MATRIX 4D ===============
+	
+	Matrix4 mat, mat1, mat2;
+
+	// Print
+	std::cout << "print mat:\n" << mat << std::endl;
+
+	// Contructor + print precision
+	mat = Matrix4(1.234567, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+	std::cout << "precision print:\n" << mat << std::endl;
+
+	// Input stream
+	std::istringstream iss("1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16");
+	iss >> mat;
+	std::cout << "input stream:\n" << mat << std::endl;
+
+	// Accessor
+	float a10 = mat(1, 0);
+	std::cout << "mat(1,0): " << a10 << "\n" << std::endl;
+
+
+	// Matrix operations
+	mat1 = Matrix4(
+		1,  2,  3,  4, 
+		5,  6,  7,  8, 
+		9,  10, 11, 12,
+		13, 14, 15, 16
+	);
+	std::cout << "mat1:\n" << mat1 << std::endl;
+	mat2 = Matrix4(
+		17, 18, 19, 20,
+		21, 22, 23, 24,
+		25, 26, 27, 28,
+		29, 30, 31, 32
+	);
+	std::cout << "mat2:\n" << mat2 << std::endl;
+
+	// Dot Product
+	mat = mat1 * mat2;
+	std::cout << "mat1 * mat2:\n" << mat << std::endl;
+
+	mat = mat1;
+	mat *= mat2;
+	std::cout << "mat1 *= mat2:\n" << mat << std::endl;
+
+	// Addition
+	mat = mat1 + mat2;
+	std::cout << "mat1 + mat2:\n" << mat << std::endl;
+
+	mat = mat1;
+	mat += mat2;
+	std::cout << "mat1 += mat2:\n" << mat << std::endl;
+
+	// Subtraction
+	mat = mat1 - mat2;
+	std::cout << "mat1 - mat2:\n" << mat << std::endl;
+
+	mat = mat1;
+	mat -= mat2;
+	std::cout << "mat1 -= mat2:\n" << mat << std::endl;
+
+
+	// Scalar operations
+
+	// Multiplication
+	mat = mat1 * 2.0f;
+	std::cout << "mat1 * 2.0f:\n" << mat << std::endl;
+
+	mat = 2.0f * mat1;
+	std::cout << "2.0f * mat1:\n" << mat << std::endl;
+
+	mat = mat1;
+	mat *= 2.0f;
+	std::cout << "mat1 *= 2.0f:\n" << mat << std::endl;
+
+	// Division
+	mat = mat1 / 2.0f;
+	std::cout << "mat1 / 2.0f:\n" << mat << std::endl;
+
+	mat = 2.0f / mat1;
+	std::cout << "2.0f / mat1:\n" << mat << std::endl;
+
+	mat = mat1;
+	mat /= 2.0f;
+	std::cout << "mat1 /= 2.0f:\n" << mat << std::endl;
+
+	// Addition
+	mat = mat1 + 2.0f;
+	std::cout << "mat1 + 2.0f:\n" << mat << std::endl;
+
+	mat = 2.0f + mat1;
+	std::cout << "2.0f + mat1:\n" << mat << std::endl;
+
+	mat = mat1;
+	mat += 2.0f;
+	std::cout << "mat1 += 2.0f:\n" << mat << std::endl;
+
+	// Subtraction
+	mat = mat1 - 2.0f;
+	std::cout << "mat1 - 2.0f:\n" << mat << std::endl;
+
+	mat = 2.0f - mat1;
+	std::cout << "2.0f - mat1:\n" << mat << std::endl;
+
+	mat = mat1;
+	mat -= 2.0f;
+	std::cout << "mat1 -= 2.0f:\n" << mat << std::endl;
+
+
+	// Comparission
+	std::cout << "mat1 == mat2: " << (mat1 == mat2) << "\n" << std::endl;
+	std::cout << "mat1 != mat2: " << (mat1 != mat2) << "\n" << std::endl;
+
+
+	// Multiplication by Vector
+	Vector4D vec;
+	Vector4D vec1 = Vector4D(1, 2, 3, 4);
+	std::cout << "vec1: " << vec1 << "\n" << std::endl;
+
+	vec = mat1 * vec;
+	std::cout << "mat1 * vec1: " << vec << "\n" << std::endl;
+
+
+	// Matrix Functions
+
+	// Transpose
+	mat = mat1.transpose();
+	std::cout << "transpose(mat1):\n" << mat << std::endl;
+
+	// ToOpenGL
+	std::array<float, 16> arr = mat1.toOpenGl();
+	std::cout << "ToOpengGL(mat1): ";
+	for (int i = 0; i < 16; i++) std::cout << arr[i] << " ";
+	std::cout << std::endl;
+
+	//*/
 
 	exit(EXIT_SUCCESS); 
 }

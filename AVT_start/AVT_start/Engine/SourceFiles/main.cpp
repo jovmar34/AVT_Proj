@@ -385,9 +385,9 @@ void transformationsTest() {
 	Matrix4 rot = mx.rotation4(0, 1, 0, 90.0f), invrot = mx.invrotation4(0, 1, 0, 90.0f);
 	Vector4D p3(1, 0, 0, 1);
 
-	std::cout << "The point we're rotating is " << p3 << endl;
-	std::cout << "The matrix used for rotating around (0,1,0) by 90 is:\n" << rot << endl;
-	std::cout << "Its inverse is:\n" << invrot << endl;
+	std::cout << "The point we're rotating is " << p3 << std::endl;
+	std::cout << "The matrix used for rotating around (0,1,0) by 90 is:\n" << rot << std::endl;
+	std::cout << "Its inverse is:\n" << invrot << std::endl;
 
 	p3 = rot * p3;
 	std::cout << "P' = Rot * P = " << p3 << std::endl;

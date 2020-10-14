@@ -14,14 +14,11 @@ class Matrix2;
 class Matrix3;
 class Matrix4;
 
-/*
-	TODO: (Joao) matrizes no formato column major (para estar ja alinhado com o OpenGl
+/* Internal representation format: Column Major
 
 	| a11 a12 a13 | 
 	| a21 a22 a23 | => [a11 a21 a31 a12 a22 a32 a13 a23 a33]
 	| a31 a32 a33 |
-
-	index(row i, col j) = i + a*j (em matriz a x a) 
 */
 
 class Matrix2 {
@@ -138,38 +135,38 @@ public:
 	Matrix3 operator=		(const Matrix3& m);
 
 	Matrix3 operator+		(const Matrix3& m);
-	Matrix3& operator+=	(const Matrix3& m);
+	Matrix3& operator+=		(const Matrix3& m);
 
 	Matrix3 operator-		(const Matrix3& m);
-	Matrix3& operator-=	(const Matrix3& m);
+	Matrix3& operator-=		(const Matrix3& m);
 
 	// Multiplication
-	Matrix3 operator* (const Matrix3& m);
-	Matrix3 operator*= (const Matrix3& m);
+	Matrix3 operator*	(const Matrix3& m);
+	Matrix3 operator*=	(const Matrix3& m);
 
 	// Comparators
-	bool operator==	(const Matrix3& m);
-	bool operator!=	(const Matrix3& m);
+	bool operator==		(const Matrix3& m);
+	bool operator!=		(const Matrix3& m);
 
 	// Scalar multiplication
 	Matrix3 operator*			(const float f);
 	friend Matrix3 operator*	(const float f, const Matrix3& m);
-	Matrix3& operator*=		(const float m);
+	Matrix3& operator*=			(const float m);
 
 	// Scalar division
 	Matrix3 operator/			(const float f);
 	friend Matrix3 operator/	(const float f, const Matrix3& m);
-	Matrix3& operator/=		(const float m);
+	Matrix3& operator/=			(const float m);
 
 	// Scalar addition
 	Matrix3 operator+			(float f);
 	friend Matrix3 operator+	(float f, const Matrix3& m);
-	Matrix3& operator+=		(const float m);
+	Matrix3& operator+=			(const float m);
 
 	// Scalar subtraction
 	Matrix3 operator-			(float f);
 	friend Matrix3 operator-	(float f, const Matrix3& m);
-	Matrix3& operator-=		(const float m);
+	Matrix3& operator-=			(const float m);
 
 	// Multiplication by Vector
 	Vector3D operator* (Vector3D point);
@@ -201,8 +198,8 @@ public:
 	{
 		s << setprecision(4);
 		s << "[" << m.mat[0] << " " << m.mat[3] << " " << m.mat[6] << "]\n[" 
-			<< m.mat[1] << " " << m.mat[4] << " " << m.mat[7] << "]\n["
-			<< m.mat[2] << " " << m.mat[5] << " " << m.mat[8] << "]\n";
+				 << m.mat[1] << " " << m.mat[4] << " " << m.mat[7] << "]\n["
+				 << m.mat[2] << " " << m.mat[5] << " " << m.mat[8] << "]\n";
 		return s;
 	}
 };
@@ -296,9 +293,9 @@ public:
 	friend inline istream& operator >> (istream& s, Matrix4& m)
 	{
 		return s >> m.mat[0] >> m.mat[4] >> m.mat[8] >> m.mat[12]
-			>> m.mat[1] >> m.mat[5] >> m.mat[9] >> m.mat[13]
-			>> m.mat[2] >> m.mat[6] >> m.mat[10] >> m.mat[14]
-			>> m.mat[3] >> m.mat[7] >> m.mat[11] >> m.mat[15];
+				 >> m.mat[1] >> m.mat[5] >> m.mat[9] >> m.mat[13]
+				 >> m.mat[2] >> m.mat[6] >> m.mat[10] >> m.mat[14]
+				 >> m.mat[3] >> m.mat[7] >> m.mat[11] >> m.mat[15];
 	}
 
 	friend inline ostream& operator << (ostream& s, Matrix4& m)

@@ -7,14 +7,14 @@ float& Matrix2::operator()(int row, int col)
 {
 	if (row >= 2 || col >= 2)
 		throw "Matrix subscript out of bounds";
-	return mat[row + col * 2];
+	return mat[row + (col * 2)];
 }
 
 float Matrix2::operator()(int row, int col) const
 {
 	if (row >= 2 || col >= 2)
 		throw "Matrix subscript out of bounds";
-	return mat[row + col*2];
+	return mat[row + (col * 2)];
 }
 
 Matrix2 Matrix2::operator=(const Matrix2& m)
@@ -72,10 +72,7 @@ Matrix2 Matrix2::operator*(const Matrix2& m)
 
 Matrix2 Matrix2::operator*=(const Matrix2& m)
 {
-	mat[0] = mat[0] * m.mat[0] + mat[2] * m.mat[1];
-	mat[1] = mat[1] * m.mat[0] + mat[3] * m.mat[1];
-	mat[2] = mat[0] * m.mat[2] + mat[2] * m.mat[3];
-	mat[3] = mat[1] * m.mat[2] + mat[3] * m.mat[3];
+	*this = *this * m;
 	return *this;
 }
 
@@ -335,22 +332,14 @@ Matrix3 Matrix3::operator*(const Matrix3& m)
 		mat[1] * m.mat[6] + mat[4] * m.mat[7] + mat[7] * m.mat[8],
 		mat[2] * m.mat[0] + mat[5] * m.mat[1] + mat[8] * m.mat[2],
 		mat[2] * m.mat[3] + mat[5] * m.mat[4] + mat[8] * m.mat[5],
-		mat[2] * m.mat[6] + mat[5] * m.mat[7] + mat[8] * m.mat[8]);
+		mat[2] * m.mat[6] + mat[5] * m.mat[7] + mat[8] * m.mat[8]
+	);
 }
 
 Matrix3 Matrix3::operator*=(const Matrix3& m)
 {
-
-	mat[0] = mat[0] * m.mat[0] + mat[3] * m.mat[1] + mat[6] * m.mat[2];
-	mat[1] = mat[1] * m.mat[0] + mat[4] * m.mat[1] + mat[7] * m.mat[2];
-	mat[2] = mat[2] * m.mat[0] + mat[5] * m.mat[1] + mat[8] * m.mat[2];
-	mat[3] = mat[0] * m.mat[3] + mat[3] * m.mat[4] + mat[6] * m.mat[5];
-	mat[4] = mat[1] * m.mat[3] + mat[4] * m.mat[4] + mat[7] * m.mat[5];
-	mat[5] = mat[2] * m.mat[3] + mat[5] * m.mat[4] + mat[8] * m.mat[5];
-	mat[6] = mat[0] * m.mat[6] + mat[3] * m.mat[7] + mat[6] * m.mat[8];
-	mat[7] = mat[1] * m.mat[6] + mat[4] * m.mat[7] + mat[7] * m.mat[8];
-	mat[8] = mat[2] * m.mat[6] + mat[5] * m.mat[7] + mat[8] * m.mat[8];
-	return (*this);
+	*this = *this * m;
+	return *this;
 }
 
 bool Matrix3::operator==(const Matrix3& m)

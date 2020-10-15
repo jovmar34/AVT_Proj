@@ -6,6 +6,9 @@
 #include <cfloat>
 using namespace std;
 
+#define EQERR 1E-5
+
+class Vector2D;
 class Vector3D;
 class Vector4D; 
 
@@ -13,16 +16,16 @@ class Vector2D
 {
 public:
 	// Attributes
-	float x;
-	float y;
+	double x;
+	double y;
 
 	Vector2D() : x(0), y(0) { };
-	Vector2D(float x, float y);
+	Vector2D(double x, double y);
 	Vector2D(const Vector2D& v);
 
 	// Vector functions
-	float		length();
-	float		quadrance();
+	double		length();
+	double		quadrance();
 	Vector2D&	normalize();
 
 	// Vector assignment, addition and subtraction
@@ -35,31 +38,32 @@ public:
 	Vector2D& operator-=	(const Vector2D& v);
 
 	// Inner product
-	float operator* (const Vector2D& v);
+	double operator* (const Vector2D& v);
 
 	// Comparators
 	bool operator==	(const Vector2D& v);
 	bool operator!=	(const Vector2D& v);
+	bool equals		(const Vector2D& v);
 
 	// Scalar multiplication
-	Vector2D operator*			(const float f);
-	friend Vector2D operator*	(const float f, const Vector2D& v);
-	Vector2D& operator*=		(const float v);
+	Vector2D operator*			(const double f);
+	friend Vector2D operator*	(const double f, const Vector2D& v);
+	Vector2D& operator*=		(const double v);
 
 	// Scalar division
-	Vector2D operator/			(const float f);
-	friend Vector2D operator/	(const float f, const Vector2D& v);
-	Vector2D& operator/=		(const float v);
+	Vector2D operator/			(const double f);
+	friend Vector2D operator/	(const double f, const Vector2D& v);
+	Vector2D& operator/=		(const double v);
 	
 	// Scalar addition
-	Vector2D operator+			(float f);
-	friend Vector2D operator+	(float f, const Vector2D& v);
-	Vector2D& operator+=		(const float v);
+	Vector2D operator+			(double f);
+	friend Vector2D operator+	(double f, const Vector2D& v);
+	Vector2D& operator+=		(const double v);
 	
 	// Scalar subtraction
-	Vector2D operator-			(float f);
-	friend Vector2D operator-	(float f, const Vector2D& v);
-	Vector2D& operator-=		(const float v);
+	Vector2D operator-			(double f);
+	friend Vector2D operator-	(double f, const Vector2D& v);
+	Vector2D& operator-=		(const double v);
 	
 	// Conversion
 	Vector3D to3D();
@@ -83,17 +87,17 @@ class Vector3D
 {
 public:
 	// Attributes
-	float x;
-	float y;
-	float z;
+	double x;
+	double y;
+	double z;
 
 	Vector3D(): x(0), y(0), z(0) { };
-	Vector3D(float x, float y, float z);
+	Vector3D(double x, double y, double z);
 	Vector3D(const Vector3D& v);
 
 	// Vector functions
-	float length();
-	float quadrance();
+	double length();
+	double quadrance();
 	Vector3D& normalize();
 
 	// Vector assignment, addition and subtraction
@@ -106,32 +110,33 @@ public:
 	Vector3D& operator-=	(const Vector3D& v);
 
 	// Inner and Cross product
-	float  operator*	(const Vector3D& v);   
+	double  operator*	(const Vector3D& v);   
 	Vector3D operator%	(const Vector3D& v); 
 
 	// Comparators
 	bool operator==	(const Vector3D& v);
 	bool operator!=	(const Vector3D& v);
+	bool equals		(const Vector3D& v);
 
 	// Scalar multiplication
-	Vector3D operator*			(const float f);
-	friend Vector3D operator*	(const float f, const Vector3D& v);
-	Vector3D& operator*=		(const float f);
+	Vector3D operator*			(const double f);
+	friend Vector3D operator*	(const double f, const Vector3D& v);
+	Vector3D& operator*=		(const double f);
 
 	// Scalar division
-	Vector3D operator/			(const float f);
-	friend Vector3D operator/	(const float f, const Vector3D& v);
-	Vector3D& operator/=		(const float f);
+	Vector3D operator/			(const double f);
+	friend Vector3D operator/	(const double f, const Vector3D& v);
+	Vector3D& operator/=		(const double f);
 
 	// Scalar addition
-	Vector3D operator+			(const float f);
-	friend Vector3D operator+	(const float f, const Vector3D& v);
-	Vector3D& operator+=		(const float f);
+	Vector3D operator+			(const double f);
+	friend Vector3D operator+	(const double f, const Vector3D& v);
+	Vector3D& operator+=		(const double f);
 
 	// Scalar subtraction
-	Vector3D operator-			(const float f);
-	friend Vector3D operator-	(const float f, const Vector3D& v);
-	Vector3D& operator-=		(const float fv);
+	Vector3D operator-			(const double f);
+	friend Vector3D operator-	(const double f, const Vector3D& v);
+	Vector3D& operator-=		(const double fv);
 
 	// Conversion
 	Vector2D to2D();
@@ -155,18 +160,18 @@ class Vector4D
 {
 public:
 	// Attributes
-	float x;
-	float y;
-	float z;
-	float w;
+	double x;
+	double y;
+	double z;
+	double w;
 
 	Vector4D(): x(0), y(0), z(0), w(1) { };
-	Vector4D(float x, float y, float z, float w);
+	Vector4D(double x, double y, double z, double w);
 	Vector4D(const Vector4D& v);
 
 	// Vector functions
-	float		length();
-	float		quadrance();
+	double		length();
+	double		quadrance();
 	Vector4D&	normalize();
 
 	// Vector assignment, addition and subtraction
@@ -179,31 +184,32 @@ public:
 	Vector4D& operator-=	(const Vector4D& v);
 
 	// Inner product
-	float  operator*(const Vector4D& v);
+	double  operator*(const Vector4D& v);
 
 	// Comparators
 	bool operator==	(const Vector4D& v);
 	bool operator!=	(const Vector4D& v);
+	bool equals		(const Vector4D& v);
 
 	// Scalar multiplication
-	Vector4D operator*			(float f);
-	friend Vector4D operator*	(const float f, const Vector4D& v);
-	Vector4D& operator*=		(const float v);
+	Vector4D operator*			(double f);
+	friend Vector4D operator*	(const double f, const Vector4D& v);
+	Vector4D& operator*=		(const double v);
 
 	// Scalar division
-	Vector4D operator/			(float f);
-	friend Vector4D operator/	(const float f, const Vector4D& v);
-	Vector4D& operator/=		(const float v);
+	Vector4D operator/			(double f);
+	friend Vector4D operator/	(const double f, const Vector4D& v);
+	Vector4D& operator/=		(const double v);
 
 	// Scalar addition
-	Vector4D operator+			(float f);
-	friend Vector4D operator+	(const float f, const Vector4D& v);
-	Vector4D& operator+=		(const float v);
+	Vector4D operator+			(double f);
+	friend Vector4D operator+	(const double f, const Vector4D& v);
+	Vector4D& operator+=		(const double v);
 
 	// Scalar subtraction
-	Vector4D operator-			(float f);
-	friend Vector4D operator-	(const float f, const Vector4D& v);
-	Vector4D& operator-=		(const float v);
+	Vector4D operator-			(double f);
+	friend Vector4D operator-	(const double f, const Vector4D& v);
+	Vector4D& operator-=		(const double v);
 
 	// Conversion
 	Vector2D to2D();

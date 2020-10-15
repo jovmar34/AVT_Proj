@@ -337,8 +337,8 @@ void run(GLFWwindow* win)
 
 // ====================== Rodrigues Rotation ===============================
 
-const Vector3D RodrRot(Vector3D& v, Vector3D& k, float angle) {
-	float r_angle = angle * M_PI / 180; // convert the angle in degrees to radians
+const Vector3D RodrRot(Vector3D& v, Vector3D& k, double angle) {
+	double r_angle = angle * M_PI / 180; // convert the angle in degrees to radians
 	k.normalize();
 
 	Vector3D v1 = v * cos(r_angle);
@@ -393,8 +393,16 @@ void transformationsTest() {
 	std::cout << "P' = Rot * P = " << p3 << std::endl;
 
 	p3 = invrot * p3;
-	std::cout << "P = Rot^-1 * P'  = " << p3 << std::endl;
+	std::cout << "P = Rot^-1 * P'  = " << p3 << std::endl << std::endl;
 
+}
+
+void errorsTest() {
+	Vector3D v1(1, 1, 1), v2(1.1, 0.9, 1), v3(1.000001, 0.99999, 1);
+
+	std::cout << "v1, v2, v3 = " << v1 << ", " << v2 << ", " << v3 << std::endl;
+	std::cout << "v1 == v2? " << (v1 == v2) << std::endl;
+	std::cout << "v1 == v3? " << (v1 == v3) << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////// MAIN
@@ -716,7 +724,7 @@ int main(int argc, char* argv[])
 
 
 
-	/*  =============== MATRIX 4D ===============
+	///*  =============== MATRIX 4D ===============
 	
 	Matrix4 mat, mat1, mat2;
 
@@ -733,7 +741,7 @@ int main(int argc, char* argv[])
 	std::cout << "input stream:\n" << mat << std::endl;
 
 	// Accessor
-	float a10 = mat(1, 0);
+	double a10 = mat(1, 0);
 	std::cout << "mat(1,0): " << a10 << "\n" << std::endl;
 
 
@@ -846,14 +854,21 @@ int main(int argc, char* argv[])
 	std::cout << "transpose(mat1):\n" << mat << std::endl;
 
 	// ToOpenGL
-	std::array<float, 16> arr = mat1.toOpenGl();
+	std::array<double, 16> arr = mat1.toOpenGl();
 	std::cout << "ToOpengGL(mat1): ";
 	for (int i = 0; i < 16; i++) std::cout << arr[i] << " ";
 	std::cout << std::endl;
 
-	*/
+	// Error testing
+	mat = mat1 - 0.000001;
+	std::cout << "mat = mat1 - 0.000001:\n" << mat << std::endl;
 
-	transformationsTest();
+	std::cout << "mat1 == mat? " << (mat == mat1) << std::endl;
+	std::cout << "mat1.equals(mat)? " << (mat1.equals(mat)) << std::endl << std::endl;
+	//*/
+
+	//transformationsTest();
+	errorsTest();
 
 	exit(EXIT_SUCCESS); 
 }

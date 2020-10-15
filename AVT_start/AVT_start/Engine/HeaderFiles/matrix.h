@@ -23,14 +23,14 @@ class Matrix4;
 
 class Matrix2 {
 	public:
-	array<float, 4> mat;
+	array<double, 4> mat;
 
 	Matrix2() { // default constructor to identity matrix
 		mat = { 1.0f, 0.0f, 
 				0.0f, 1.0f };
 	}
 
-	Matrix2(float a11, float a12, float a21, float a22) {
+	Matrix2(double a11, double a12, double a21, double a22) {
 		mat = { a11, a21, a12, a22 };
 	}
 
@@ -39,8 +39,8 @@ class Matrix2 {
 	}
 
 	// Getter
-	float& operator() (int row, int col);
-	float operator() (int row, int col) const;
+	double& operator() (long int row, long int col);
+	double operator() (long int row, long int col) const;
 
 	// Vector assignment, addition and subtraction
 	Matrix2 operator=		(const Matrix2& m);
@@ -58,26 +58,27 @@ class Matrix2 {
 	// Comparators
 	bool operator==		(const Matrix2& m);
 	bool operator!=		(const Matrix2& m);
+	bool equals			(const Matrix2& m);
 
 	// Scalar multiplication
-	Matrix2 operator*			(const float f);
-	friend Matrix2 operator*	(const float f, const Matrix2& m);
-	Matrix2& operator*=			(const float m);
+	Matrix2 operator*			(const double f);
+	friend Matrix2 operator*	(const double f, const Matrix2& m);
+	Matrix2& operator*=			(const double m);
 
 	// Scalar division
-	Matrix2 operator/			(const float f);
-	friend Matrix2 operator/	(const float f, const Matrix2& m);
-	Matrix2& operator/=			(const float m);
+	Matrix2 operator/			(const double f);
+	friend Matrix2 operator/	(const double f, const Matrix2& m);
+	Matrix2& operator/=			(const double m);
 
 	// Scalar addition
-	Matrix2 operator+			(float f);
-	friend Matrix2 operator+	(float f, const Matrix2& m);
-	Matrix2& operator+=			(const float m);
+	Matrix2 operator+			(double f);
+	friend Matrix2 operator+	(double f, const Matrix2& m);
+	Matrix2& operator+=			(const double m);
 
 	// Scalar subtraction
-	Matrix2 operator-			(float f);
-	friend Matrix2 operator-	(float f, const Matrix2& m);
-	Matrix2& operator-=			(const float m);
+	Matrix2 operator-			(double f);
+	friend Matrix2 operator-	(double f, const Matrix2& m);
+	Matrix2& operator-=			(const double m);
 
 	// Multiplication by Vector
 	Vector2D operator* (Vector2D point);
@@ -86,13 +87,13 @@ class Matrix2 {
 	Matrix2 transpose();
 
 	// Determinant
-	float determinant();
+	double determinant();
 
 	// Inverse
 	Matrix2 inverse();
 
 	// toOpenGl
-	std::array<float, 4> toOpenGl() {
+	std::array<double, 4> toOpenGl() {
 		return mat;
 	}
 
@@ -111,13 +112,13 @@ class Matrix2 {
 
 class Matrix3 {
 public:
-	array<float, 9> mat;
+	array<double, 9> mat;
 
 	Matrix3() { // default constructor to identity matrix
 		mat = { 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f };
 	}
 
-	Matrix3(float a11, float a12, float a13, float a21, float a22, float a23, float a31, float a32, float a33) {
+	Matrix3(double a11, double a12, double a13, double a21, double a22, double a23, double a31, double a32, double a33) {
 		mat = { a11, a21, a31, a12, a22, a32, a13, a23, a33 };
 	}
 
@@ -128,8 +129,8 @@ public:
 	}
 
 	// Getter
-	float& operator() (int row, int col);
-	float operator() (int row, int col) const;
+	double& operator() (long int row, long int col);
+	double operator() (long int row, long int col) const;
 
 	// Vector assignment, addition and subtraction
 	Matrix3 operator=		(const Matrix3& m);
@@ -145,28 +146,29 @@ public:
 	Matrix3 operator*=	(const Matrix3& m);
 
 	// Comparators
-	bool operator==		(const Matrix3& m);
+	bool operator==		(const Matrix3& m); // equality with error 1E-5
 	bool operator!=		(const Matrix3& m);
+	bool equals			(const Matrix3& m); // exact equality
 
 	// Scalar multiplication
-	Matrix3 operator*			(const float f);
-	friend Matrix3 operator*	(const float f, const Matrix3& m);
-	Matrix3& operator*=			(const float m);
+	Matrix3 operator*			(const double f);
+	friend Matrix3 operator*	(const double f, const Matrix3& m);
+	Matrix3& operator*=			(const double m);
 
 	// Scalar division
-	Matrix3 operator/			(const float f);
-	friend Matrix3 operator/	(const float f, const Matrix3& m);
-	Matrix3& operator/=			(const float m);
+	Matrix3 operator/			(const double f);
+	friend Matrix3 operator/	(const double f, const Matrix3& m);
+	Matrix3& operator/=			(const double m);
 
 	// Scalar addition
-	Matrix3 operator+			(float f);
-	friend Matrix3 operator+	(float f, const Matrix3& m);
-	Matrix3& operator+=			(const float m);
+	Matrix3 operator+			(double f);
+	friend Matrix3 operator+	(double f, const Matrix3& m);
+	Matrix3& operator+=			(const double m);
 
 	// Scalar subtraction
-	Matrix3 operator-			(float f);
-	friend Matrix3 operator-	(float f, const Matrix3& m);
-	Matrix3& operator-=			(const float m);
+	Matrix3 operator-			(double f);
+	friend Matrix3 operator-	(double f, const Matrix3& m);
+	Matrix3& operator-=			(const double m);
 
 	// Multiplication by Vector
 	Vector3D operator* (Vector3D point);
@@ -175,7 +177,7 @@ public:
 	Matrix3 transpose();
 
 	// Determinant
-	float determinant();
+	double determinant();
 
 	// Inverse
 	Matrix3 inverse();
@@ -184,7 +186,7 @@ public:
 	Matrix4 increase();
 
 	// toOpenGl
-	std::array<float, 9> toOpenGl() {
+	std::array<double, 9> toOpenGl() {
 		return mat;
 	}
 
@@ -206,7 +208,7 @@ public:
 
 class Matrix4 {
 public:
-	array<float, 16> mat;
+	array<double, 16> mat;
 
 	Matrix4() { // default constructor to identity matrix
 		mat = { 1.0f, 0.0f, 0.0f, 0.0f,
@@ -215,10 +217,10 @@ public:
 				0.0f, 0.0f, 0.0f, 1.0f, };
 	}
 
-	Matrix4(float a11, float a12, float a13, float a14,
-		float a21, float a22, float a23, float a24,
-		float a31, float a32, float a33, float a34,
-		float a41, float a42, float a43, float a44) {
+	Matrix4(double a11, double a12, double a13, double a14,
+		double a21, double a22, double a23, double a24,
+		double a31, double a32, double a33, double a34,
+		double a41, double a42, double a43, double a44) {
 
 		mat = { a11, a21, a31, a41,
 				a12, a22, a32, a42,
@@ -226,7 +228,7 @@ public:
 				a14, a24, a34, a44, };
 	}
 
-	Matrix4(std::array<float, 16> arr) {
+	Matrix4(std::array<double, 16> arr) {
 
 		mat = { arr[0], arr[4], arr[8],  arr[12],
 				arr[1], arr[5], arr[9],  arr[13],
@@ -239,8 +241,8 @@ public:
 	}
 
 	// Getter
-	float& operator() (int row, int col);
-	float operator() (int row, int col) const;
+	double& operator() (long int row, long int col);
+	double operator() (long int row, long int col) const;
 
 	// Vector assignment, addition and subtraction
 	Matrix4 operator=		(const Matrix4& m);
@@ -256,28 +258,29 @@ public:
 	Matrix4 operator*=		(const Matrix4& m);
 
 	// Comparators
-	bool operator==			(const Matrix4& m);
+	bool operator==			(const Matrix4& m); // equality with error 1E-5
 	bool operator!=			(const Matrix4& m);
+	bool equals				(const Matrix4& m); // exact equality
 
 	// Scalar multiplication
-	Matrix4 operator*			(const float f);
-	friend Matrix4 operator*	(const float f, const Matrix4& m);
-	Matrix4& operator*=			(const float m);
+	Matrix4 operator*			(const double f);
+	friend Matrix4 operator*	(const double f, const Matrix4& m);
+	Matrix4& operator*=			(const double m);
 
 	// Scalar division
-	Matrix4 operator/			(const float f);
-	friend Matrix4 operator/	(const float f, const Matrix4& m);
-	Matrix4& operator/=			(const float m);
+	Matrix4 operator/			(const double f);
+	friend Matrix4 operator/	(const double f, const Matrix4& m);
+	Matrix4& operator/=			(const double m);
 
 	// Scalar addition
-	Matrix4 operator+			(float f);
-	friend Matrix4 operator+	(float f, const Matrix4& m);
-	Matrix4& operator+=			(const float m);
+	Matrix4 operator+			(double f);
+	friend Matrix4 operator+	(double f, const Matrix4& m);
+	Matrix4& operator+=			(const double m);
 
 	// Scalar subtraction
-	Matrix4 operator-			(float f);
-	friend Matrix4 operator-	(float f, const Matrix4& m);
-	Matrix4& operator-=			(const float m);
+	Matrix4 operator-			(double f);
+	friend Matrix4 operator-	(double f, const Matrix4& m);
+	Matrix4& operator-=			(const double m);
 
 	// Multiplication by Vector
 	Vector4D operator* (Vector4D point);
@@ -286,7 +289,7 @@ public:
 	Matrix4 transpose();
 
 	// toOpenGl
-	std::array<float, 16> toOpenGl() {
+	std::array<double, 16> toOpenGl() {
 		return mat;
 	}
 

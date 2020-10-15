@@ -3,19 +3,21 @@
 // For fact checking: https://matrixcalc.org/en/
 // ================================== MATRIX 2x2 =====================================
 
-float& Matrix2::operator()(int row, int col)
+double& Matrix2::operator()(long int row, long int col)
 {
+
 	if (row >= 2 || col >= 2)
 		throw "Matrix subscript out of bounds";
-	return mat[row + (col * 2)];
+	long int index = row + (col * 2l);
+	return mat[index];
 }
 
-float Matrix2::operator()(int row, int col) const
+double Matrix2::operator()(long int row, long int col) const
 {
 	if (row >= 2 || col >= 2)
 		throw "Matrix subscript out of bounds";
-	return mat[row + (col * 2)];
-}
+	long int index = row + (col * 2l);
+	return mat[index];}
 
 Matrix2 Matrix2::operator=(const Matrix2& m)
 {
@@ -79,8 +81,10 @@ Matrix2 Matrix2::operator*=(const Matrix2& m)
 bool Matrix2::operator==(const Matrix2& m)
 {
 	if (this == &m) return true;
-	return (mat[0] == m.mat[0] && mat[1] == m.mat[1] &&
-		mat[2] == m.mat[2] && mat[3] == m.mat[3]);
+	for (short i = 0; i < 4; i++) {
+		if (abs(mat[i] - m.mat[i]) >= EQERR) return false;
+	}
+	return true;
 }
 
 bool Matrix2::operator!=(const Matrix2& m)
@@ -88,7 +92,16 @@ bool Matrix2::operator!=(const Matrix2& m)
 	return !(*this == m);
 }
 
-Matrix2 Matrix2::operator*(const float f)
+bool Matrix2::equals(const Matrix2& m)
+{
+	if (this == &m) return true;
+	for (short i = 0; i < 4; i++) {
+		if (mat[i] != m.mat[i]) return false;
+	}
+	return true;
+}
+
+Matrix2 Matrix2::operator*(const double f)
 {
 	Matrix2 res;
 	for (short i = 0; i < 4; i++) {
@@ -97,7 +110,7 @@ Matrix2 Matrix2::operator*(const float f)
 	return res;
 }
 
-Matrix2& Matrix2::operator*=(const float f)
+Matrix2& Matrix2::operator*=(const double f)
 {
 	for (short i = 0; i < 4; i++) {
 		mat[i] *= f;
@@ -105,7 +118,7 @@ Matrix2& Matrix2::operator*=(const float f)
 	return *this;
 }
 
-Matrix2 Matrix2::operator/(const float f)
+Matrix2 Matrix2::operator/(const double f)
 {
 
 	Matrix2 res;
@@ -115,7 +128,7 @@ Matrix2 Matrix2::operator/(const float f)
 	return res;
 }
 
-Matrix2& Matrix2::operator/=(const float f)
+Matrix2& Matrix2::operator/=(const double f)
 {
 	for (short i = 0; i < 4; i++) {
 		mat[i] /= f;
@@ -123,7 +136,7 @@ Matrix2& Matrix2::operator/=(const float f)
 	return *this;
 }
 
-Matrix2 Matrix2::operator+(float f)
+Matrix2 Matrix2::operator+(double f)
 {
 	Matrix2 res;
 	for (short i = 0; i < 4; i++) {
@@ -132,7 +145,7 @@ Matrix2 Matrix2::operator+(float f)
 	return res;
 }
 
-Matrix2& Matrix2::operator+=(const float f)
+Matrix2& Matrix2::operator+=(const double f)
 {
 	for (short i = 0; i < 4; i++) {
 		mat[i] += f;
@@ -140,7 +153,7 @@ Matrix2& Matrix2::operator+=(const float f)
 	return *this;
 }
 
-Matrix2 Matrix2::operator-(float f)
+Matrix2 Matrix2::operator-(double f)
 {
 	Matrix2 res;
 	for (short i = 0; i < 4; i++) {
@@ -149,7 +162,7 @@ Matrix2 Matrix2::operator-(float f)
 	return res;
 }
 
-Matrix2& Matrix2::operator-=(const float f)
+Matrix2& Matrix2::operator-=(const double f)
 {
 	for (short i = 0; i < 4; i++) {
 		mat[i] += f;
@@ -170,14 +183,14 @@ Matrix2 Matrix2::transpose()
 	return Matrix2(mat[0], mat[1], mat[2], mat[3]);
 }
 
-float Matrix2::determinant()
+double Matrix2::determinant()
 {
 	return (mat[0] * mat[3] - mat[2] * mat[1]); // ad - bc
 }
 
 Matrix2 Matrix2::inverse()
 {
-	float det = determinant();
+	double det = determinant();
 	if (det == 0) {
 		throw "non invertible matrix";
 	}
@@ -186,7 +199,7 @@ Matrix2 Matrix2::inverse()
 	return inv / det;
 }
 
-Matrix2 operator*(const float f, const Matrix2& m)
+Matrix2 operator*(const double f, const Matrix2& m)
 {
 	Matrix2 res;
 	for (short i = 0; i < 4; i++) {
@@ -195,7 +208,7 @@ Matrix2 operator*(const float f, const Matrix2& m)
 	return res;
 }
 
-Matrix2 operator/(const float f, const Matrix2& m)
+Matrix2 operator/(const double f, const Matrix2& m)
 {
 	Matrix2 res;
 	for (short i = 0; i < 4; i++) {
@@ -204,7 +217,7 @@ Matrix2 operator/(const float f, const Matrix2& m)
 	return res;
 }
 
-Matrix2 operator+(float f, const Matrix2& m)
+Matrix2 operator+(double f, const Matrix2& m)
 {
 	Matrix2 res;
 	for (short i = 0; i < 4; i++) {
@@ -213,7 +226,7 @@ Matrix2 operator+(float f, const Matrix2& m)
 	return res;
 }
 
-Matrix2 operator-(float f, const Matrix2& m)
+Matrix2 operator-(double f, const Matrix2& m)
 {
 	Matrix2 res;
 	for (short i = 0; i < 4; i++) {
@@ -226,7 +239,7 @@ Matrix2 operator-(float f, const Matrix2& m)
 
 // ================== Matrix 3x3 ============================
 
-Matrix3 operator*(const float f, const Matrix3& m)
+Matrix3 operator*(const double f, const Matrix3& m)
 {
 	Matrix3 res;
 	for (short i = 0; i < 9; i++) {
@@ -235,7 +248,7 @@ Matrix3 operator*(const float f, const Matrix3& m)
 	return res;
 }
 
-Matrix3 operator/(const float f, const Matrix3& m)
+Matrix3 operator/(const double f, const Matrix3& m)
 {
 	Matrix3 res;
 	for (short i = 0; i < 9; i++) {
@@ -244,7 +257,7 @@ Matrix3 operator/(const float f, const Matrix3& m)
 	return res;
 }
 
-Matrix3 operator+(float f, const Matrix3& m)
+Matrix3 operator+(double f, const Matrix3& m)
 {
 	Matrix3 res;
 	for (short i = 0; i < 9; i++) {
@@ -254,7 +267,7 @@ Matrix3 operator+(float f, const Matrix3& m)
 
 }
 
-Matrix3 operator-(float f, const Matrix3& m)
+Matrix3 operator-(double f, const Matrix3& m)
 {
 	Matrix3 res;
 	for (short i = 0; i < 9; i++) {
@@ -264,18 +277,20 @@ Matrix3 operator-(float f, const Matrix3& m)
 
 }
 
-float& Matrix3::operator()(int row, int col)
+double& Matrix3::operator()(long int row, long int col)
 {
 	if (row >= 3 || col >= 3)
 		throw "Matrix subscript out of bounds";
-	return mat[row + col * 3];
+	long int index = row + col * 3l;
+	return mat[index];
 }
 
-float Matrix3::operator()(int row, int col) const
+double Matrix3::operator()(long int row, long int col) const
 {
 	if (row >= 3 || col >= 3)
 		throw "Matrix subscript out of bounds";
-	return mat[row + col * 3];
+	long int index = row + col * 3l;
+	return mat[index];
 }
 
 Matrix3 Matrix3::operator=(const Matrix3& m)
@@ -346,7 +361,7 @@ bool Matrix3::operator==(const Matrix3& m)
 {
 	if (this == &m) return true;
 	for (short i = 0; i < 9; i++) {
-		if (mat[i] != m.mat[i]) return false;
+		if (abs(mat[i] - m.mat[i]) >= EQERR) return false;
 	}
 	return true;
 }
@@ -356,7 +371,16 @@ bool Matrix3::operator!=(const Matrix3& m)
 	return !(*this == m);
 }
 
-Matrix3 Matrix3::operator*(const float f)
+bool Matrix3::equals(const Matrix3& m)
+{
+	if (this == &m) return true;
+	for (short i = 0; i < 9; i++) {
+		if (mat[i] != m.mat[i]) return false;
+	}
+	return true;
+}
+
+Matrix3 Matrix3::operator*(const double f)
 {
 	Matrix3 res;
 	for (short i = 0; i < 9; i++) {
@@ -365,7 +389,7 @@ Matrix3 Matrix3::operator*(const float f)
 	return res;
 }
 
-Matrix3& Matrix3::operator*=(const float f)
+Matrix3& Matrix3::operator*=(const double f)
 {
 	for (short i = 0; i < 9; i++) {
 		mat[i] *= f;
@@ -373,7 +397,7 @@ Matrix3& Matrix3::operator*=(const float f)
 	return *this;
 }
 
-Matrix3 Matrix3::operator/(const float f)
+Matrix3 Matrix3::operator/(const double f)
 {
 	Matrix3 res;
 	for (short i = 0; i < 9; i++) {
@@ -382,7 +406,7 @@ Matrix3 Matrix3::operator/(const float f)
 	return res;
 }
 
-Matrix3& Matrix3::operator/=(const float f)
+Matrix3& Matrix3::operator/=(const double f)
 {
 	for (short i = 0; i < 9; i++) {
 		mat[i] /= f;
@@ -390,7 +414,7 @@ Matrix3& Matrix3::operator/=(const float f)
 	return *this;
 }
 
-Matrix3 Matrix3::operator+(float f)
+Matrix3 Matrix3::operator+(double f)
 {
 	Matrix3 res;
 	for (short i = 0; i < 9; i++) {
@@ -399,7 +423,7 @@ Matrix3 Matrix3::operator+(float f)
 	return res;
 }
 
-Matrix3& Matrix3::operator+=(const float f)
+Matrix3& Matrix3::operator+=(const double f)
 {
 	for (short i = 0; i < 9; i++) {
 		mat[i] += f;
@@ -407,7 +431,7 @@ Matrix3& Matrix3::operator+=(const float f)
 	return *this;
 }
 
-Matrix3 Matrix3::operator-(float f)
+Matrix3 Matrix3::operator-(double f)
 {
 	Matrix3 res;
 	for (short i = 0; i < 9; i++) {
@@ -416,7 +440,7 @@ Matrix3 Matrix3::operator-(float f)
 	return res;
 }
 
-Matrix3& Matrix3::operator-=(const float f)
+Matrix3& Matrix3::operator-=(const double f)
 {
 	for (short i = 0; i < 9; i++) {
 		mat[i] -= f;
@@ -438,7 +462,7 @@ Matrix3 Matrix3::transpose()
 	return Matrix3(mat[0], mat[1], mat[2], mat[3], mat[4], mat[5], mat[6], mat[7], mat[8]);
 }
 
-float Matrix3::determinant()
+double Matrix3::determinant()
 {
 	return mat[0] * (mat[4] * mat[8] - mat[7] * mat[5])
 		+ mat[3] * (mat[7] * mat[2] - mat[1] * mat[8]) // = - mat[3] * (mat[1] * mat[8] - mat[7] * mat[2])
@@ -447,7 +471,7 @@ float Matrix3::determinant()
 
 Matrix3 Matrix3::inverse()
 {
-	float det = determinant();
+	double det = determinant();
 	if (det == 0) {
 		throw "non invertible matrix";
 	}
@@ -486,18 +510,20 @@ Matrix4 Matrix3::increase()
 // ================================== MATRIX 4x4 =====================================
 
 // Accessors
-float& Matrix4::operator()(int row, int col)
+double& Matrix4::operator()(long int row, long int col)
 {
 	if (row >= 4 || col >= 4)
 		throw "Matrix subscript out of bounds";
-	return mat[row + (col * 4)];
+	long int index = row + (col * 4l);
+	return mat[index];
 }
 
-float Matrix4::operator()(int row, int col) const
+double Matrix4::operator()(long int row, long int col) const
 {
 	if (row >= 4 || col >= 4)
 		throw "Matrix subscript out of bounds";
-	return mat[row + (col * 4)];
+	long int index = row + (col * 4l);
+	return mat[index];
 }
 
 
@@ -585,11 +611,9 @@ Matrix4 Matrix4::operator*=(const Matrix4& m)
 bool Matrix4::operator==(const Matrix4& m)
 {
 	if (this == &m) return true;
-	for (int i = 0; i < 16; i++)
-	{
-		if (mat[i] != m.mat[i]) return false;
+	for (short i = 0; i < 16; i++) {
+		if (abs(mat[i] - m.mat[i]) >= EQERR) return false;
 	}
-	return true;
 }
 
 bool Matrix4::operator!=(const Matrix4& m)
@@ -597,9 +621,18 @@ bool Matrix4::operator!=(const Matrix4& m)
 	return !(*this == m);
 }
 
+bool Matrix4::equals(const Matrix4& m)
+{
+	if (this == &m) return true;
+	for (short i = 0; i < 16; i++) {
+		if (mat[i] != m.mat[i]) return false;
+	}
+	return true;
+}
+
 
 // Scalar Operations
-Matrix4 Matrix4::operator*(const float f)
+Matrix4 Matrix4::operator*(const double f)
 {
 	Matrix4 new_mat = Matrix4();
 	for (int i = 0; i < 16; i++)
@@ -609,7 +642,7 @@ Matrix4 Matrix4::operator*(const float f)
 	return new_mat;
 }
 
-Matrix4& Matrix4::operator*=(const float f)
+Matrix4& Matrix4::operator*=(const double f)
 {
 	for (int i = 0; i < 16; i++)
 	{
@@ -618,7 +651,7 @@ Matrix4& Matrix4::operator*=(const float f)
 	return *this;
 }
 
-Matrix4 operator*(const float f, const Matrix4& m) 
+Matrix4 operator*(const double f, const Matrix4& m) 
 {
 	Matrix4 new_mat = Matrix4();
 	for (int i = 0; i < 16; i++)
@@ -630,7 +663,7 @@ Matrix4 operator*(const float f, const Matrix4& m)
 
 
 
-Matrix4 Matrix4::operator/(const float f)
+Matrix4 Matrix4::operator/(const double f)
 {
 	Matrix4 new_mat = Matrix4();
 	for (int i = 0; i < 16; i++)
@@ -640,7 +673,7 @@ Matrix4 Matrix4::operator/(const float f)
 	return new_mat;
 }
 
-Matrix4& Matrix4::operator/=(const float f)
+Matrix4& Matrix4::operator/=(const double f)
 {
 	for (int i = 0; i < 16; i++)
 	{
@@ -649,7 +682,7 @@ Matrix4& Matrix4::operator/=(const float f)
 	return *this;
 }
 
-Matrix4 operator/(const float f, const Matrix4& m) 
+Matrix4 operator/(const double f, const Matrix4& m) 
 {
 	Matrix4 new_mat = Matrix4();
 	for (int i = 0; i < 16; i++)
@@ -660,7 +693,7 @@ Matrix4 operator/(const float f, const Matrix4& m)
 }
 
 
-Matrix4 Matrix4::operator+(float f)
+Matrix4 Matrix4::operator+(double f)
 {
 	Matrix4 new_mat = Matrix4();
 	for (int i = 0; i < 16; i++)
@@ -670,7 +703,7 @@ Matrix4 Matrix4::operator+(float f)
 	return new_mat;
 }
 
-Matrix4& Matrix4::operator+=(const float f)
+Matrix4& Matrix4::operator+=(const double f)
 {
 	for (int i = 0; i < 16; i++)
 	{
@@ -679,7 +712,7 @@ Matrix4& Matrix4::operator+=(const float f)
 	return *this;
 }
 
-Matrix4 operator+(float f, const Matrix4& m) 
+Matrix4 operator+(double f, const Matrix4& m) 
 {
 	Matrix4 new_mat = Matrix4();
 	for (int i = 0; i < 16; i++)
@@ -690,7 +723,7 @@ Matrix4 operator+(float f, const Matrix4& m)
 }
 
 
-Matrix4 Matrix4::operator-(float f)
+Matrix4 Matrix4::operator-(double f)
 {
 	Matrix4 new_mat = Matrix4();
 	for (int i = 0; i < 16; i++)
@@ -700,7 +733,7 @@ Matrix4 Matrix4::operator-(float f)
 	return new_mat;
 }
 
-Matrix4& Matrix4::operator-=(const float f)
+Matrix4& Matrix4::operator-=(const double f)
 {
 	for (int i = 0; i < 16; i++)
 	{
@@ -709,7 +742,7 @@ Matrix4& Matrix4::operator-=(const float f)
 	return *this;
 }
 
-Matrix4 operator-(float f, const Matrix4& m) 
+Matrix4 operator-(double f, const Matrix4& m) 
 {
 	Matrix4 new_mat = Matrix4();
 	for (int i = 0; i < 16; i++)

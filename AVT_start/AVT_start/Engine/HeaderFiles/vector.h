@@ -4,6 +4,8 @@
 #include <iostream>
 #include <cmath>
 #include <cfloat>
+#include <GLFW/glfw3.h>
+
 using namespace std;
 
 #define EQERR 1E-5
@@ -18,6 +20,7 @@ public:
 	// Attributes
 	double x;
 	double y;
+	GLfloat data[2];
 
 	Vector2D() : x(0), y(0) { };
 	Vector2D(double x, double y);
@@ -69,6 +72,13 @@ public:
 	Vector3D to3D();
 	Vector4D to4D();
 
+	// Open GL
+	GLfloat* toOpenGL() {
+		data[0] = (GLfloat) x;
+		data[1] = (GLfloat) y;
+		return data;
+	}
+
 	// Stream operators
 	friend inline istream& operator >> (istream& s, Vector2D& v)
 	{
@@ -90,6 +100,8 @@ public:
 	double x;
 	double y;
 	double z;
+
+	GLfloat data[3];
 
 	Vector3D(): x(0), y(0), z(0) { };
 	Vector3D(double x, double y, double z);
@@ -142,6 +154,14 @@ public:
 	Vector2D to2D();
 	Vector4D to4D();
 
+	// Open GL
+	GLfloat* toOpenGL() {
+		data[0] = (GLfloat) x;
+		data[1] = (GLfloat) y;
+		data[2] = (GLfloat) z;
+		return data;
+	}
+
 	// Stream operators
 	friend inline istream& operator >> (istream& s, Vector3D& v)
 	{
@@ -164,6 +184,8 @@ public:
 	double y;
 	double z;
 	double w;
+
+	GLfloat data[4];
 
 	Vector4D(): x(0), y(0), z(0), w(1) { };
 	Vector4D(double x, double y, double z, double w);
@@ -214,6 +236,16 @@ public:
 	// Conversion
 	Vector2D to2D();
 	Vector3D to3D();
+
+	// Open GL
+	GLfloat* toOpenGL() {
+		data[0] = (GLfloat)x;
+		data[1] = (GLfloat)y;
+		data[2] = (GLfloat)z;
+		data[3] = (GLfloat)w;
+		return data;
+	}
+
 
 	// Stream operators
 	friend inline istream& operator >> (istream& s, Vector4D& v)

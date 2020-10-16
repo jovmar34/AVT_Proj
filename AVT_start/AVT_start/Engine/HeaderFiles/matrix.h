@@ -25,6 +25,7 @@ class Matrix4;
 class Matrix2 {
 	public:
 	array<double, 4> mat;
+	GLfloat data[16];
 
 	Matrix2() { // default constructor to identity matrix
 		mat = { 1.0f, 0.0f, 
@@ -94,8 +95,11 @@ class Matrix2 {
 	Matrix2 inverse();
 
 	// toOpenGl
-	std::array<double, 4> toOpenGl() {
-		return mat;
+	GLfloat* toOpenGl() {
+		for (int i = 0; i < 4; i++) {
+			data[i] = (GLfloat) mat[i];
+		}
+		return data;
 	}
 
 	friend inline istream& operator >> (istream& s, Matrix2& m)
@@ -218,6 +222,7 @@ public:
 class Matrix4 {
 public:
 	array<double, 16> mat;
+	GLfloat data[16];
 
 	Matrix4() { // default constructor to identity matrix
 		mat = { 1.0f, 0.0f, 0.0f, 0.0f,
@@ -298,8 +303,11 @@ public:
 	Matrix4 transpose();
 
 	// toOpenGl
-	std::array<double, 16> toOpenGl() {
-		return mat;
+	GLfloat* toOpenGl() {
+		for (int i = 0; i < 16; i++) {
+			data[i] = (GLfloat) mat[i];
+		}
+		return data;
 	}
 
 	friend inline istream& operator >> (istream& s, Matrix4& m)

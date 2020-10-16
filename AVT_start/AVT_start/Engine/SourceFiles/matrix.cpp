@@ -587,7 +587,6 @@ Matrix4 Matrix4::operator*(const Matrix4& m)
 		for (int col = 0; col < 4; col++) {
 
 			ind0 = row + (col * 4);
-			new_mat.mat[ind0] = 0;
 			for (int k = 0; k < 4; k++) {
 
 				ind1 = row + (k * 4);

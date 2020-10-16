@@ -7,6 +7,7 @@
 #include <array>
 #include <iomanip> // setprecision(x)
 #include "../HeaderFiles/vector.h"
+#include <GLFW/glfw3.h>
 
 using namespace std;
 
@@ -113,6 +114,7 @@ class Matrix2 {
 class Matrix3 {
 public:
 	array<double, 9> mat;
+	GLfloat data[9];
 
 	Matrix3() { // default constructor to identity matrix
 		mat = { 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f };
@@ -126,6 +128,10 @@ public:
 		mat = { other.mat[0], other.mat[1], other.mat[2],
 			other.mat[3], other.mat[4], other.mat[5],
 			other.mat[6], other.mat[7], other.mat[8] };
+	}
+
+	Matrix3(const array<double, 9> arr) {
+		std::copy(std::begin(arr), std::end(arr), std::begin(mat));
 	}
 
 	// Getter
@@ -186,8 +192,11 @@ public:
 	Matrix4 increase();
 
 	// toOpenGl
-	std::array<double, 9> toOpenGl() {
-		return mat;
+	GLfloat* toOpenGl() {
+		for (int i = 0; i < 9; i++) {
+			data[i] = (GLfloat) mat[i];
+		}
+		return data;
 	}
 
 	friend inline istream& operator >> (istream& s, Matrix3& m)

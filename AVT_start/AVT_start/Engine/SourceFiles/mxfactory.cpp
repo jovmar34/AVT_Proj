@@ -1,4 +1,4 @@
-#include "mxfactory.h"
+#include "../HeaderFiles/mxfactory.h"
 
 Matrix2 MxFactory::identity2()
 {
@@ -10,7 +10,7 @@ Matrix3 MxFactory::identity3()
     return Matrix3(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-Matrix3 MxFactory::dual(float ax, float ay, float az)
+Matrix3 MxFactory::dual(double ax, double ay, double az)
 {
     return Matrix3(
         0.0f, -az, ay, 
@@ -18,7 +18,7 @@ Matrix3 MxFactory::dual(float ax, float ay, float az)
         -ay, ax, 0.0f);
 }
 
-Matrix3 MxFactory::squaredual(float ax, float ay, float az)
+Matrix3 MxFactory::squaredual(double ax, double ay, double az)
 {
     return Matrix3(
         -ay*ay-az*az , ax*ay        , ax*(az), 
@@ -34,7 +34,7 @@ Matrix4 MxFactory::identity4()
                    0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-Matrix4 MxFactory::scaling4(float sx, float sy, float sz)
+Matrix4 MxFactory::scaling4(double sx, double sy, double sz)
 {
     return Matrix4( sx  , 0.0f, 0.0f, 0.0f,
                     0.0f, sy  , 0.0f, 0.0f,
@@ -42,7 +42,7 @@ Matrix4 MxFactory::scaling4(float sx, float sy, float sz)
                     0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-Matrix4 MxFactory::translation4(float tx, float ty, float tz)
+Matrix4 MxFactory::translation4(double tx, double ty, double tz)
 {
     return Matrix4( 1.0f, 0.0f, 0.0f, tx  ,
                     0.0f, 1.0f, 0.0f, ty  ,
@@ -50,11 +50,11 @@ Matrix4 MxFactory::translation4(float tx, float ty, float tz)
                     0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-Matrix4 MxFactory::rotation4(float rx, float ry, float rz, float theta)
+Matrix4 MxFactory::rotation4(double rx, double ry, double rz, double theta)
 {
-    Vector3D axis = Vector3D(rx, ry, rz);
+    Vector3D axis = Vector3D(rx, ry, rz); // assume axis may not be normalized
     axis.normalize();
-    float angle = theta * M_PI / 180.0f;
+    double angle = theta * M_PI / 180.0f; // degree to radian
 
     Matrix3 mat3 = identity3();
     mat3 += dual(axis.x, axis.y, axis.z) * sin(angle);
@@ -62,21 +62,21 @@ Matrix4 MxFactory::rotation4(float rx, float ry, float rz, float theta)
     return mat3.increase();
 }
 
-Matrix4 MxFactory::invscaling4(float sx, float sy, float sz)
+Matrix4 MxFactory::invscaling4(double sx, double sy, double sz)
 {
-    float invx = (sx != 0.0f) ? 1 / sx : 0.0f,
+    double invx = (sx != 0.0f) ? 1 / sx : 0.0f,
         invy = (sy != 0.0f) ? 1 / sy : 0.0f,
         invz = (sz != 0.0f) ? 1 / sz : 0.0f;
 
     return scaling4(invx, invy, invz);
 }
 
-Matrix4 MxFactory::invtranslation4(float tx, float ty, float tz)
+Matrix4 MxFactory::invtranslation4(double tx, double ty, double tz)
 {
     return translation4(-tx, -ty, -tz);
 }
 
-Matrix4 MxFactory::invrotation4(float rx, float ry, float rz, float theta)
+Matrix4 MxFactory::invrotation4(double rx, double ry, double rz, double theta)
 {
     return rotation4(rx, ry, rz, -theta);
 }

@@ -24,12 +24,18 @@
     <ClCompile Include="Engine\SourceFiles\matrix.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\SourceFiles\mxfactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\HeaderFIles\vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Engine\HeaderFiles\matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\HeaderFiles\mxfactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

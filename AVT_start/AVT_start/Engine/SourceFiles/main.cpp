@@ -221,22 +221,33 @@ void destroyShaderProgram()
 
 /////////////////////////////////////////////////////////////////////// VAOs & VBOs
 
-typedef struct
+typedef struct vertex
 {
 	GLfloat XYZW[4];
 	GLfloat RGBA[4];
+
+	void set_RGBA(GLfloat r, GLfloat g, GLfloat b, GLfloat a) {
+		RGBA[0] = r;
+		RGBA[1] = g;
+		RGBA[2] = b;
+		RGBA[3] = a;
+	}
 } Vertex;
 
-const Vertex Vertices[] =
+Vertex Vertices[] =
 {
-	{{ 0.25f, 0.25f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }},
-	{{ 0.75f, 0.25f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }},
-	{{ 0.50f, 0.75f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }}
+	{{ -0.605f, -0.48f,  0.0f, 1.0f }, { 0.2f, 0.0f, 0.0f, 1.0f }},
+	{{ -0.54f,  -0.605f, 0.0f, 1.0f }, { 0.2f, 0.0f, 0.0f, 1.0f }},
+	{{ 0.01f,    0.58f,  0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }},
+	{{ 0.01f,    0.34f,  0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }},
+	{{ 0.56f,   -0.37f,  0.0f, 1.0f }, { 0.2f, 0.0f, 0.0f, 1.0f }},
+	{{ 0.42f,   -0.37f,  0.0f, 1.0f }, { 0.2f, 0.0f, 0.0f, 1.0f }},
 };
+
 
 const GLushort Indices[] =
 {
-	0,1,2
+	0,1,2,3,4,5
 };
 
 void createBufferObjects()
@@ -286,11 +297,10 @@ void destroyBufferObjects()
 
 /////////////////////////////////////////////////////////////////////// SCENE
 
-MxFactory factory;
 
-Matrix4 I = factory.identity4();
-
-Matrix4 M = factory.translation4(-1.0f, -1.0f, 0.0f);
+Matrix4 I = MxFactory::identity4();
+Matrix4 M = MxFactory::rotation4(0.0f, 0.0f, 1.0f, 120) * MxFactory::translation4(-0.5, 0, 0);
+Matrix4 N = MxFactory::rotation4(0.0f, 0.0f, 1.0f, 240);
 
 void drawScene()
 {
@@ -299,11 +309,65 @@ void drawScene()
 	glBindVertexArray(VaoId);
 	glUseProgram(ProgramId);
 
+	//FIXME
+	Vertices[0].set_RGBA(1, 0, 0, 1);
+	Vertices[1].set_RGBA(1, 0, 0, 1);
+	Vertices[2].set_RGBA(1, 0, 0, 1);
+	Vertices[3].set_RGBA(1, 0, 0, 1);
+	Vertices[4].set_RGBA(1, 0, 0, 1);
+	Vertices[5].set_RGBA(1, 0, 0, 1);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
+	{
+		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(VERTICES);
+		glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+		glEnableVertexAttribArray(COLORS);
+		glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Vertices[0].XYZW));
+	}
+
 	glUniformMatrix4fv(UniformId, 1, GL_TRUE, I.toOpenGl());
-	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, (GLvoid*)0);
+	glDrawElements(GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_SHORT, (GLvoid*)0);
+
+	//FIXME
+	Vertices[0].set_RGBA(0, 1, 0, 1);
+	Vertices[1].set_RGBA(0, 1, 0, 1);
+	Vertices[2].set_RGBA(0, 1, 0, 1);
+	Vertices[3].set_RGBA(0, 1, 0, 1);
+	Vertices[4].set_RGBA(0, 1, 0, 1);
+	Vertices[5].set_RGBA(0, 1, 0, 1);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
+	{
+		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(VERTICES);
+		glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+		glEnableVertexAttribArray(COLORS);
+		glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Vertices[0].XYZW));
+	}
 
 	glUniformMatrix4fv(UniformId, 1, GL_FALSE, M.toOpenGl());
-	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, (GLvoid*)0);
+	glDrawElements(GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_SHORT, (GLvoid*)0);
+
+	//FIXME
+	Vertices[0].set_RGBA(0, 0, 1, 1);
+	Vertices[1].set_RGBA(0, 0, 1, 1);
+	Vertices[2].set_RGBA(0, 0, 1, 1);
+	Vertices[3].set_RGBA(0, 0, 1, 1);
+	Vertices[4].set_RGBA(0, 0, 1, 1);
+	Vertices[5].set_RGBA(0, 0, 1, 1);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
+	{
+		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(VERTICES);
+		glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+		glEnableVertexAttribArray(COLORS);
+		glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Vertices[0].XYZW));
+	}
+
+	glUniformMatrix4fv(UniformId, 1, GL_FALSE, N.toOpenGl());
+	glDrawElements(GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_SHORT, (GLvoid*)0);
 
 	glUseProgram(0);
 	glBindVertexArray(0);
@@ -525,6 +589,13 @@ void run(GLFWwindow* win)
 
 int main(int argc, char* argv[])
 {
+
+	Vertex triangle_part1 = {};
+
+	Matrix4 transf1 = MxFactory::rotation4(0.0f, 0.0f, 1.0f, 120);
+
+
+
 	int gl_major = 4, gl_minor = 3;
 	int is_fullscreen = 0;
 	int is_vsync = 1;

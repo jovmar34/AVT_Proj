@@ -82,6 +82,8 @@ static void error(GLenum source, GLenum type, GLuint id, GLenum severity, GLsize
 	std::cerr << "  type:       " << errorType(type) << std::endl;
 	std::cerr << "  severity:   " << errorSeverity(severity) << std::endl;
 	std::cerr << "  debug call: " << std::endl << message << std::endl << std::endl;
+	std::cerr << "Press <return>.";
+	std::cin.ignore();
 }
 
 void setupErrorCallback()
@@ -90,6 +92,7 @@ void setupErrorCallback()
 	glDebugMessageCallback(error, 0);
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, 0, GL_TRUE);
+	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, 0, GL_FALSE);
 	// params: source, type, severity, count, ids, enabled
 }
 
@@ -137,10 +140,194 @@ static void checkOpenGLError(std::string error)
 	}
 }
 
+/////////////////////////////////////////////////////////////////////// SHADERs
+
+#define VERTICES 0
+#define COLORS 1
+
+GLuint VaoId, VboId[2];
+GLuint VertexShaderId, FragmentShaderId, ProgramId;
+GLint UniformId;
+
+const GLchar* VertexShader =
+{
+	"#version 330 core\n"
+
+	"in vec4 in_Position;\n"
+	"in vec4 in_Color;\n"
+	"out vec4 ex_Color;\n"
+
+	"uniform mat4 Matrix;\n"
+
+	"void main(void)\n"
+	"{\n"
+	"	gl_Position = Matrix * in_Position;\n"
+	"	ex_Color = in_Color;\n"
+	"}\n"
+};
+
+const GLchar* FragmentShader =
+{
+	"#version 330 core\n"
+
+	"in vec4 ex_Color;\n"
+	"out vec4 out_Color;\n"
+
+	"void main(void)\n"
+	"{\n"
+	"	out_Color = ex_Color;\n"
+	"}\n"
+};
+
+void createShaderProgram()
+{
+	VertexShaderId = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(VertexShaderId, 1, &VertexShader, 0);
+	glCompileShader(VertexShaderId);
+
+	FragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(FragmentShaderId, 1, &FragmentShader, 0);
+	glCompileShader(FragmentShaderId);
+
+	ProgramId = glCreateProgram();
+	glAttachShader(ProgramId, VertexShaderId);
+	glAttachShader(ProgramId, FragmentShaderId);
+
+	glBindAttribLocation(ProgramId, VERTICES, "in_Position");
+	glBindAttribLocation(ProgramId, COLORS, "in_Color");
+
+	glLinkProgram(ProgramId);
+	UniformId = glGetUniformLocation(ProgramId, "Matrix");
+
+	glDetachShader(ProgramId, VertexShaderId);
+	glDeleteShader(VertexShaderId);
+	glDetachShader(ProgramId, FragmentShaderId);
+	glDeleteShader(FragmentShaderId);
+
+#ifndef ERROR_CALLBACK
+	checkOpenGLError("ERROR: Could not create shaders.");
+#endif
+}
+
+void destroyShaderProgram()
+{
+	glUseProgram(0);
+	glDeleteProgram(ProgramId);
+
+#ifndef ERROR_CALLBACK
+	checkOpenGLError("ERROR: Could not destroy shaders.");
+#endif
+}
+
+/////////////////////////////////////////////////////////////////////// VAOs & VBOs
+
+typedef struct
+{
+	GLfloat XYZW[4];
+	GLfloat RGBA[4];
+} Vertex;
+
+const Vertex Vertices[] =
+{
+	{{ 0.25f, 0.25f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }},
+	{{ 0.75f, 0.25f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }},
+	{{ 0.50f, 0.75f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }}
+};
+
+const GLushort Indices[] =
+{
+	0,1,2
+};
+
+void createBufferObjects()
+{
+	glGenVertexArrays(1, &VaoId);
+	glBindVertexArray(VaoId);
+	{
+		glGenBuffers(2, VboId);
+
+		glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
+		{
+			glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
+			glEnableVertexAttribArray(VERTICES);
+			glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+			glEnableVertexAttribArray(COLORS);
+			glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Vertices[0].XYZW));
+		}
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
+		{
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
+		}
+	}
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+#ifndef ERROR_CALLBACK
+	checkOpenGLError("ERROR: Could not create VAOs and VBOs.");
+#endif
+}
+
+void destroyBufferObjects()
+{
+	glBindVertexArray(VaoId);
+	glDisableVertexAttribArray(VERTICES);
+	glDisableVertexAttribArray(COLORS);
+	glDeleteBuffers(2, VboId);
+	glDeleteVertexArrays(1, &VaoId);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
+#ifndef ERROR_CALLBACK
+	checkOpenGLError("ERROR: Could not destroy VAOs and VBOs.");
+#endif
+}
+
+/////////////////////////////////////////////////////////////////////// SCENE
+
+Matrix4 I = Matrix4(
+	1.0f,  0.0f,  0.0f,  0.0f,
+	0.0f,  1.0f,  0.0f,  0.0f,
+	0.0f,  0.0f,  1.0f,  0.0f,
+	0.0f,  0.0f,  0.0f,  1.0f
+); // Row Major (GLSL is Column Major)
+
+Matrix4 M = Matrix4(
+	1.0f,  0.0f,  0.0f, -1.0f,
+	0.0f,  1.0f,  0.0f, -1.0f,
+	0.0f,  0.0f,  1.0f,  0.0f,
+	0.0f,  0.0f,  0.0f,  1.0f
+); // Row Major (GLSL is Column Major)
+
+void drawScene()
+{
+	// Drawing directly in clip space
+
+	glBindVertexArray(VaoId);
+	glUseProgram(ProgramId);
+
+	glUniformMatrix4fv(UniformId, 1, GL_TRUE, I.toOpenGl());
+	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, (GLvoid*)0);
+
+	glUniformMatrix4fv(UniformId, 1, GL_FALSE, M.toOpenGl());
+	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, (GLvoid*)0);
+
+	glUseProgram(0);
+	glBindVertexArray(0);
+
+#ifndef ERROR_CALLBACK
+	checkOpenGLError("ERROR: Could not draw scene.");
+#endif
+}
+
+
 ///////////////////////////////////////////////////////////////////// CALLBACKS
 
 void window_close_callback(GLFWwindow* win)
 {
+	destroyShaderProgram();
+	destroyBufferObjects();
 	std::cout << "closing..." << std::endl;
 }
 
@@ -204,12 +391,13 @@ GLFWwindow* setupWindow(int winx, int winy, const char* title,
 
 void setupCallbacks(GLFWwindow* win)
 {
+	/*
 	glfwSetKeyCallback(win, key_callback);
 	glfwSetCursorPosCallback(win, mouse_callback);
 	glfwSetMouseButtonCallback(win, mouse_button_callback);
 	glfwSetScrollCallback(win, scroll_callback);
 	glfwSetJoystickCallback(joystick_callback);
-
+	*/
 	glfwSetWindowCloseCallback(win, window_close_callback);
 	glfwSetWindowSizeCallback(win, window_size_callback);
 }
@@ -286,6 +474,8 @@ GLFWwindow* setup(int major, int minor,
 	setupGLEW();
 	setupOpenGL(winx, winy);
 	setupErrorCallback();
+	createShaderProgram();
+	createBufferObjects();
 	return win;
 }
 
@@ -311,9 +501,12 @@ void updateFPS(GLFWwindow* win, double elapsed_sec)
 	}
 }
 
+
+
 void display_callback(GLFWwindow* win, double elapsed_sec)
 {
-	updateFPS(win, elapsed_sec);
+	//updateFPS(win, elapsed_sec);
+	drawScene();
 }
 
 void run(GLFWwindow* win)
@@ -336,210 +529,21 @@ void run(GLFWwindow* win)
 	glfwTerminate();
 }
 
-// ====================== Rodrigues Rotation ===============================
-
-const Vector3D RodrRot(Vector3D& v, Vector3D& k, double angle) {
-	double r_angle = angle * M_PI / 180; // convert the angle in degrees to radians
-	k.normalize();
-
-	Vector3D v1 = v * cos(r_angle);
-	Vector3D v2 = (k % v) * sin(r_angle);
-	Vector3D v3 = k * (k * v) * (1 - cos(r_angle));
-
-	return (v1 + v2 + v3);
-}
-
-// =========================================================================
-
-void transformationsTest() {
-	MxFactory mx;
-
-	// Scaling test
-	Matrix4 sc = mx.scaling4(1, 2, 3), invsc = mx.invscaling4(1, 2, 3);
-	Vector4D p1(1, 2, 3, 1);
-
-	std::cout << "The point we're scaling is " << p1 << endl;
-	std::cout << "The matrix used for scaling by (1,2,3) is:\n" << sc << endl;
-	std::cout << "Its inverse is:\n" << invsc << endl;
-
-	p1 = sc * p1;
-	std::cout << "P' = Sc * P = " << p1 << std::endl;
-
-	p1 = invsc * p1;
-	std::cout << "P = Sc^-1 * P'  = " << p1 << std::endl;
-
-	// Translation test
-	Matrix4 tx = mx.translation4(1, 2, 3), invtx = mx.invtranslation4(1, 2, 3);
-	Vector4D p2(1, 1, 1, 1);
-
-	std::cout << "The point we're tranlating is " << p2 << endl;
-	std::cout << "The matrix used for translation by (1,2,3) is:\n" << tx << endl;
-	std::cout << "Its inverse is:\n" << invtx << endl;
-
-	p2 = tx * p2;
-	std::cout << "P' = Tx * P = " << p2 << std::endl;
-
-	p2 = invtx * p2;
-	std::cout << "P = Tx^-1 * P'  = " << p2 << std::endl;
-
-	// Rotation test
-	Matrix4 rot = mx.rotation4(0, 1, 0, 90.0f), invrot = mx.invrotation4(0, 1, 0, 90.0f);
-	Vector4D p3(1, 0, 0, 1);
-
-	std::cout << "The point we're rotating is " << p3 << std::endl;
-	std::cout << "The matrix used for rotating around (0,1,0) by 90 is:\n" << rot << std::endl;
-	std::cout << "Its inverse is:\n" << invrot << std::endl;
-
-	p3 = rot * p3;
-	std::cout << "P' = Rot * P = " << p3 << std::endl;
-
-	p3 = invrot * p3;
-	std::cout << "P = Rot^-1 * P'  = " << p3 << std::endl << std::endl;
-
-}
-
-void errorsTest() {
-	Vector3D v1(1, 1, 1), v2(1.1, 0.9, 1), v3(1.000001, 0.99999, 1);
-
-	std::cout << "v1, v2, v3 = " << v1 << ", " << v2 << ", " << v3 << std::endl;
-	std::cout << "v1 == v2? " << (v1 == v2) << std::endl;
-	std::cout << "v1 == v3? " << (v1 == v3) << std::endl;
-}
-
-// ========================= Assignment 2 ========================================
-void Assignment2() {
-	srand((unsigned int)time(NULL));
-
-	// Part 1: 10 random pairs, prove equalities
-	float r;
-	array<double, 9> args;
-	int mxs = 0;
-	Matrix3 lcombo, rcombo;
-
-	std::cout << "========== Part 1 ===========" << std::endl;
-	while (mxs < 10) {
-		for (int j = 0; j < 9; j++) {
-			r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-			r = r * 20 - 10;
-			args[j] = r;
-		}
-
-		Matrix3 A(args), invA, trA;
-
-		for (int j = 0; j < 9; j++) {
-			r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-			r = r * 20 - 10;
-			args[j] = r;
-		}
-
-		Matrix3 B(args), invB, trB;
-
-		try {
-			invA = A.inverse();
-			invB = B.inverse();
-		}
-		catch (char const* e) {
-			std::cout << "at least one of the matrix wasn't invertible" << std::endl;
-			continue;
-		}
-
-		mxs++;
-
-		trA = A.transpose();
-		trB = B.transpose();
-
-		lcombo = (A * B).transpose();
-		rcombo = trB * trA;
-
-		std::cout << "(A" << mxs << "*B" << mxs << ")^T = B" << mxs << "^T*A" << mxs << "^T ? " << (lcombo == rcombo) << std::endl;
-
-		lcombo = (A * B).inverse();
-		rcombo = invB * invA;
-
-		std::cout << "(A" << mxs << "*B" << mxs << ")^-1 = B" << mxs << "^-1*A" << mxs << "^-1 ? " << (lcombo == rcombo) << std::endl << std::endl;
-
-	}
-
-	// Part 2
-	std::cout << "========== Part 2 ===========" << std::endl;
-
-	Matrix3 M(
-		2,3,1,
-		3,4,1,
-		3,7,2), trM, invM;
-
-	Matrix3 N(
-		1, 0, 0,
-		0, 0, -2,
-		-5, 0, 9), trN, invN;
-
-	double detM, detN;
-
-	trM = M.transpose();
-	std::cout << "M^T\n" << trM << std::endl;
-
-	trN = N.transpose();
-	std::cout << "N^T\n" << trN << std::endl;
-
-	detM = M.determinant();
-	detN = N.determinant();
-
-	std::cout << "|M| = " << detM << "\n|N| = " << detN << std::endl << std::endl;
-
-	try {
-		invM = M.inverse();
-		std::cout << "M^-1:\n" << invM << std::endl;
-	}
-	catch (char const* e) {
-		std::cout << e << "(matrix M)" << std::endl;
-	}
-
-	try {
-		invN = N.inverse();
-		std::cout << "N^-1:\n" << invN << std::endl;
-	}
-	catch (char const* e) {
-		std::cout << e << "(matrix N)" << std::endl;
-	}
-
-	GLfloat *arrM = M.toOpenGl(), *arrN = N.toOpenGl();
-
-	std::cout << "M in OpenGL: [ ";
-	for (int i = 0; i < 9; i++) {
-		std::cout << arrM[i] << " ";
-	}
-	std::cout << "]\n";
-
-	std::cout << "N in OpenGL: [ ";
-	for (int i = 0; i < 9; i++) {
-		std::cout << arrN[i] << " ";
-	}
-	std::cout << "]\n";
-
-	// Part 3: transformations
-	std::cout << "========== Part 3 ===========" << std::endl;
-
-	MxFactory mx;
-	Matrix4 tr = mx.translation4(4,5,6);
-	Matrix4 sc = mx.scaling4(4, 5, 6);
-	Matrix4 rot = mx.rotation4(0, 0, 1, 34);
-
-	std::cout << "Matrix for (4,5,6) tranlation:\n" << tr << std::endl;
-	std::cout << "Matrix for (4,5,6) scale:\n" << sc << std::endl;
-	std::cout << "Matrix for 34 degree rotation around z axis:\n" << rot << std::endl;
-
-}
-
 ////////////////////////////////////////////////////////////////////////// MAIN
 
 int main(int argc, char* argv[])
 {
 
-	std::cout << std::boolalpha;
+	MxFactory factory;
+	Matrix4 test = factory.identity4();
 
-	Assignment2();
-
-	exit(EXIT_SUCCESS); 
+	int gl_major = 4, gl_minor = 3;
+	int is_fullscreen = 0;
+	int is_vsync = 1;
+	GLFWwindow* win = setup(gl_major, gl_minor,
+		640, 480, "Hello Modern 2D World", is_fullscreen, is_vsync);
+	run(win);
+	exit(EXIT_SUCCESS);
 }
 
 /////////////////////////////////////////////////////////////////////////// END

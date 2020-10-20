@@ -286,19 +286,11 @@ void destroyBufferObjects()
 
 /////////////////////////////////////////////////////////////////////// SCENE
 
-Matrix4 I = Matrix4(
-	1.0f,  0.0f,  0.0f,  0.0f,
-	0.0f,  1.0f,  0.0f,  0.0f,
-	0.0f,  0.0f,  1.0f,  0.0f,
-	0.0f,  0.0f,  0.0f,  1.0f
-); // Row Major (GLSL is Column Major)
+MxFactory factory;
 
-Matrix4 M = Matrix4(
-	1.0f,  0.0f,  0.0f, -1.0f,
-	0.0f,  1.0f,  0.0f, -1.0f,
-	0.0f,  0.0f,  1.0f,  0.0f,
-	0.0f,  0.0f,  0.0f,  1.0f
-); // Row Major (GLSL is Column Major)
+Matrix4 I = factory.identity4();
+
+Matrix4 M = factory.translation4(-1.0f, -1.0f, 0.0f);
 
 void drawScene()
 {
@@ -533,10 +525,6 @@ void run(GLFWwindow* win)
 
 int main(int argc, char* argv[])
 {
-
-	MxFactory factory;
-	Matrix4 test = factory.identity4();
-
 	int gl_major = 4, gl_minor = 3;
 	int is_fullscreen = 0;
 	int is_vsync = 1;

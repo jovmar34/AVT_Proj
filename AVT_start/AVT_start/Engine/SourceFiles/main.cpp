@@ -299,8 +299,8 @@ void destroyBufferObjects()
 
 
 Matrix4 I = MxFactory::identity4();
-Matrix4 M = MxFactory::rotation4(0.0f, 0.0f, 1.0f, 120) * MxFactory::translation4(-0.5, 0, 0);
-Matrix4 N = MxFactory::rotation4(0.0f, 0.0f, 1.0f, 240);
+Matrix4 N = MxFactory::translation4(-0.0304, -0.329, 0) * MxFactory::rotation4(0.0f, 0.0f, 1.0f, 120);
+Matrix4 M = MxFactory::translation4(0.263, -0.190, 0) * MxFactory::rotation4(0.0f, 0.0f, 1.0f, 240);
 
 void drawScene()
 {
@@ -310,12 +310,12 @@ void drawScene()
 	glUseProgram(ProgramId);
 
 	//FIXME
-	Vertices[0].set_RGBA(1, 0, 0, 1);
-	Vertices[1].set_RGBA(1, 0, 0, 1);
+	Vertices[0].set_RGBA(0.5, 0, 0, 1);
+	Vertices[1].set_RGBA(0.5, 0, 0, 1);
 	Vertices[2].set_RGBA(1, 0, 0, 1);
 	Vertices[3].set_RGBA(1, 0, 0, 1);
-	Vertices[4].set_RGBA(1, 0, 0, 1);
-	Vertices[5].set_RGBA(1, 0, 0, 1);
+	Vertices[4].set_RGBA(0.5, 0, 0, 1);
+	Vertices[5].set_RGBA(0.5, 0, 0, 1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
 	{
@@ -330,12 +330,12 @@ void drawScene()
 	glDrawElements(GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_SHORT, (GLvoid*)0);
 
 	//FIXME
-	Vertices[0].set_RGBA(0, 1, 0, 1);
-	Vertices[1].set_RGBA(0, 1, 0, 1);
+	Vertices[0].set_RGBA(0, 0.5, 0, 1);
+	Vertices[1].set_RGBA(0, 0.5, 0, 1);
 	Vertices[2].set_RGBA(0, 1, 0, 1);
 	Vertices[3].set_RGBA(0, 1, 0, 1);
-	Vertices[4].set_RGBA(0, 1, 0, 1);
-	Vertices[5].set_RGBA(0, 1, 0, 1);
+	Vertices[4].set_RGBA(0, 0.5, 0, 1);
+	Vertices[5].set_RGBA(0, 0.5, 0, 1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
 	{
@@ -350,12 +350,12 @@ void drawScene()
 	glDrawElements(GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_SHORT, (GLvoid*)0);
 
 	//FIXME
-	Vertices[0].set_RGBA(0, 0, 1, 1);
-	Vertices[1].set_RGBA(0, 0, 1, 1);
-	Vertices[2].set_RGBA(0, 0, 1, 1);
-	Vertices[3].set_RGBA(0, 0, 1, 1);
-	Vertices[4].set_RGBA(0, 0, 1, 1);
-	Vertices[5].set_RGBA(0, 0, 1, 1);
+	Vertices[0].set_RGBA(0, 0, 0.5, 1);
+	Vertices[1].set_RGBA(0, 0, 0.5, 1);
+	Vertices[2].set_RGBA(0, 0, 0.9, 1);
+	Vertices[3].set_RGBA(0, 0, 0.9, 1);
+	Vertices[4].set_RGBA(0, 0, 0.5, 1);
+	Vertices[5].set_RGBA(0, 0, 0.5, 1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
 	{
@@ -589,12 +589,13 @@ void run(GLFWwindow* win)
 
 int main(int argc, char* argv[])
 {
+	Vector4D v(0.01, 0.58, 0, 1);
+	Vector4D v1(-0.54, -0.605, 0,1);
+	Matrix4 rot = MxFactory::rotation4(0, 0, 1, 240);
+	v1 = rot * v1;
+	v1 = v - v1;
 
-	Vertex triangle_part1 = {};
-
-	Matrix4 transf1 = MxFactory::rotation4(0.0f, 0.0f, 1.0f, 120);
-
-
+	cout << v1 << endl;
 
 	int gl_major = 4, gl_minor = 3;
 	int is_fullscreen = 0;
@@ -602,6 +603,7 @@ int main(int argc, char* argv[])
 	GLFWwindow* win = setup(gl_major, gl_minor,
 		640, 480, "Hello Modern 2D World", is_fullscreen, is_vsync);
 	run(win);
+	
 	exit(EXIT_SUCCESS);
 }
 

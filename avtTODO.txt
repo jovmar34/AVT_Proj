@@ -1,0 +1,12 @@
+
+* Create Object class 
+	* init -> create array/buffer methods
+	* Vertex Positions array
+	* Vertex Colors array
+	* Transform Matrix (starts as identity)
+	* Translate, Rotate, Scale methods
+
+* Scene class:
+	* Object array
+
+* Shader Abstraction -> Load Shader from file loadVertShader(path) & loadFragShader(path)

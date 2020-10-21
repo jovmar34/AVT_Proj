@@ -7,7 +7,6 @@
 #include <array>
 #include <iomanip> // setprecision(x)
 #include "../HeaderFiles/vector.h"
-#include <GLFW/glfw3.h>
 
 using namespace std;
 
@@ -25,7 +24,10 @@ class Matrix4;
 class Matrix2 {
 	public:
 	array<double, 4> mat;
-	GLfloat data[16];
+	GLfloat data[4] = { 
+		0,0,
+		0,0,
+	};
 
 	Matrix2() { // default constructor to additive identity matrix
 		mat = { 0.0f, 0.0f, 
@@ -118,7 +120,11 @@ class Matrix2 {
 class Matrix3 {
 public:
 	array<double, 9> mat;
-	GLfloat data[9];
+	GLfloat data[9] = {
+		0,0,0,
+		0,0,0,
+		0,0,0,
+	};
 
 	Matrix3() { // default constructor to identity matrix
 		mat = { 0.0f, 0.0f, 0.0f, 
@@ -224,7 +230,12 @@ public:
 class Matrix4 {
 public:
 	array<double, 16> mat;
-	GLfloat data[16];
+	GLfloat data[16] = {
+		0,0,0,0,
+		0,0,0,0,
+		0,0,0,0,
+		0,0,0,0,
+	};
 
 	Matrix4() { // default constructor to identity matrix
 		mat = { 0.0f, 0.0f, 0.0f, 0.0f,

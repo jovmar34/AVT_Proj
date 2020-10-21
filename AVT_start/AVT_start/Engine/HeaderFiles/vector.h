@@ -4,7 +4,7 @@
 #include <iostream>
 #include <cmath>
 #include <cfloat>
-#include <GLFW/glfw3.h>
+#include <GL\glew.h>
 
 using namespace std;
 
@@ -20,7 +20,7 @@ public:
 	// Attributes
 	double x;
 	double y;
-	GLfloat data[2];
+	GLfloat data[2] = { 0,0 };
 
 	Vector2D() : x(0), y(0) { };
 	Vector2D(double x, double y);
@@ -101,7 +101,7 @@ public:
 	double y;
 	double z;
 
-	GLfloat data[3];
+	GLfloat data[3] = {0,0,0};
 
 	Vector3D(): x(0), y(0), z(0) { };
 	Vector3D(double x, double y, double z);
@@ -185,7 +185,7 @@ public:
 	double z;
 	double w;
 
-	GLfloat data[4];
+	GLfloat data[4] = { 0,0,0,0 };
 
 	Vector4D(): x(0), y(0), z(0), w(1) { };
 	Vector4D(double x, double y, double z, double w);

@@ -613,6 +613,7 @@ bool Matrix4::operator==(const Matrix4& m)
 	for (short i = 0; i < 16; i++) {
 		if (abs(mat[i] - m.mat[i]) >= EQERR) return false;
 	}
+	return true;
 }
 
 bool Matrix4::operator!=(const Matrix4& m)

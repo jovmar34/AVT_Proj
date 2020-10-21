@@ -22,6 +22,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <iomanip>
 #include <cmath>
 #include <time.h>
@@ -145,49 +146,65 @@ static void checkOpenGLError(std::string error)
 #define VERTICES 0
 #define COLORS 1
 
+struct ShaderSource {
+	std::string VertexSource;
+	std::string FragmentSource;
+
+};
+
 GLuint VaoId, VboId[2];
 GLuint VertexShaderId, FragmentShaderId, ProgramId;
 GLint UniformId;
 
-const GLchar* VertexShader =
-{
-	"#version 330 core\n"
+static ShaderSource ParseShader(const std::string& filepath) {
+	std::ifstream stream(filepath);
 
-	"in vec4 in_Position;\n"
-	"in vec4 in_Color;\n"
-	"out vec4 ex_Color;\n"
+	enum class ShaderType {
+		NONE = -1, VERTEX = 0, FRAGMENT = 1
+	};
 
-	"uniform mat4 Matrix;\n"
+	std::string line;
+	std::stringstream ss[2];
+	ShaderType type = ShaderType::NONE;
 
-	"void main(void)\n"
-	"{\n"
-	"	gl_Position = Matrix * in_Position;\n"
-	"	ex_Color = in_Color;\n"
-	"}\n"
-};
+	while (getline(stream, line))
+	{
+		if (line.find("#shader") != std::string::npos) 
+		{
+			if (line.find("vertex") != std::string::npos)
+				type = ShaderType::VERTEX;
+			else if (line.find("fragment") != std::string::npos)
+				type = ShaderType::FRAGMENT;
+		}
+		else {
+			ss[(int) type] << line << '\n';
+		}
+	}
 
-const GLchar* FragmentShader =
-{
-	"#version 330 core\n"
+	return { ss[0].str(), ss[1].str() };
+}
 
-	"in vec4 ex_Color;\n"
-	"out vec4 out_Color;\n"
+static GLuint CompileShader(GLuint type, const std::string& source) {
+	GLuint id = glCreateShader(type);
+	const char* src = source.c_str();
+	glShaderSource(id, 1, &src, nullptr);
+	glCompileShader(id);
 
-	"void main(void)\n"
-	"{\n"
-	"	out_Color = ex_Color;\n"
-	"}\n"
-};
+	// TODO: Error Handling
+
+	return id;
+}
 
 void createShaderProgram()
 {
-	VertexShaderId = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(VertexShaderId, 1, &VertexShader, 0);
-	glCompileShader(VertexShaderId);
+	ShaderSource sources = ParseShader("res/shaders/Basic.shader");
 
-	FragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(FragmentShaderId, 1, &FragmentShader, 0);
-	glCompileShader(FragmentShaderId);
+	std::string VertexShader = sources.VertexSource, 
+		FragmentShader = sources.FragmentSource;
+
+	VertexShaderId = CompileShader(GL_VERTEX_SHADER, VertexShader);
+
+	FragmentShaderId = CompileShader(GL_FRAGMENT_SHADER, FragmentShader);
 
 	ProgramId = glCreateProgram();
 	glAttachShader(ProgramId, VertexShaderId);

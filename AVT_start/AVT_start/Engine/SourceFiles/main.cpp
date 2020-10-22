@@ -144,9 +144,6 @@ static void checkOpenGLError(std::string error)
 
 /////////////////////////////////////////////////////////////////////// SHADERs
 
-#define VERTICES 0
-#define COLORS 1
-
 struct ShaderSource {
 	std::string VertexSource;
 	std::string FragmentSource;
@@ -191,6 +188,26 @@ static GLuint CompileShader(GLuint type, const std::string& source) {
 	glShaderSource(id, 1, &src, nullptr);
 	glCompileShader(id);
 
+	GLint isCompiled = 0;
+	glGetShaderiv(id, GL_COMPILE_STATUS, &isCompiled);
+	if (isCompiled == GL_FALSE)
+	{
+		GLint maxLength = 0;
+		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &maxLength);
+
+		// The maxLength includes the NULL character
+		std::vector<GLchar> errorLog(maxLength);
+		glGetShaderInfoLog(id, maxLength, &maxLength, &errorLog[0]);
+
+		// Provide the infolog in whatever manor you deem best.
+		std::cerr << errorLog.data() << std::endl;
+
+		// Exit with failure.
+		glDeleteShader(id); // Don't leak the shader.
+		return -1;
+	}
+
+
 	return id;
 }
 
@@ -209,7 +226,7 @@ void createShaderProgram()
 	glAttachShader(ProgramId, VertexShaderId);
 	glAttachShader(ProgramId, FragmentShaderId);
 
-	glBindAttribLocation(ProgramId, VERTICES, "in_Position");
+	glBindAttribLocation(ProgramId, POSITIONS, "in_Position");
 	glBindAttribLocation(ProgramId, COLORS, "in_Color");
 
 	glLinkProgram(ProgramId);
@@ -237,48 +254,24 @@ void destroyShaderProgram()
 
 /////////////////////////////////////////////////////////////////////// VAOs & VBOs
 
-typedef struct vertex
-{
-	GLfloat XYZW[4];
-	GLfloat RGBA[4];
-
-	void set_RGBA(GLfloat r, GLfloat g, GLfloat b, GLfloat a) {
-		RGBA[0] = r;
-		RGBA[1] = g;
-		RGBA[2] = b;
-		RGBA[3] = a;
-	}
-} Vertex;
-
-Vertex Vertices[] =
-{
-	{{ -0.605f, -0.48f,  0.0f, 1.0f }, { 0.2f, 0.0f, 0.0f, 1.0f }},
-	{{ -0.54f,  -0.605f, 0.0f, 1.0f }, { 0.2f, 0.0f, 0.0f, 1.0f }},
-	{{ 0.01f,    0.58f,  0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }},
-	{{ 0.01f,    0.34f,  0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }},
-	{{ 0.56f,   -0.37f,  0.0f, 1.0f }, { 0.2f, 0.0f, 0.0f, 1.0f }},
-	{{ 0.42f,   -0.37f,  0.0f, 1.0f }, { 0.2f, 0.0f, 0.0f, 1.0f }},
-};
-
 Object* obj;
-
-const GLushort Indices[] =
-{
-	0,1,2,3,2,1,2,3,5,5,4,2
-};
-
 std::vector<Object*> scene;
 
 void createBufferObjects()
 {
 	obj = new Object();
 
-	obj->addVertex(-0.605f , -0.48f  , 0.0f , 0.2f, 0.0f, 0.0f, 1.0f);
-	obj->addVertex(-0.54f  , -0.605f , 0.0f , 0.2f, 0.0f, 0.0f, 1.0f);
+	obj->addVertex(-0.605f , -0.48f  , 0.0f , 0.3f, 0.0f, 0.0f, 1.0f);
+	obj->addVertex(-0.54f  , -0.605f , 0.0f , 0.3f, 0.0f, 0.0f, 1.0f);
 	obj->addVertex( 0.01f  ,  0.58f  , 0.0f , 1.0f, 0.0f, 0.0f, 1.0f);
 	obj->addVertex( 0.01f  ,  0.34f  , 0.0f , 1.0f, 0.0f, 0.0f, 1.0f);
-	obj->addVertex( 0.56f  , -0.37f  , 0.0f , 0.2f, 0.0f, 0.0f, 1.0f);
-	obj->addVertex( 0.42f  , -0.37f  , 0.0f , 0.2f, 0.0f, 0.0f, 1.0f);
+	obj->addVertex( 0.56f  , -0.37f  , 0.0f , 0.3f, 0.0f, 0.0f, 1.0f);
+	obj->addVertex( 0.42f  , -0.37f  , 0.0f , 0.3f, 0.0f, 0.0f, 1.0f);
+
+	obj->addTriangle(0, 1, 2);
+	obj->addTriangle(3, 2, 1);
+	obj->addTriangle(2, 3, 5);
+	obj->addTriangle(5, 4, 2);
 
 	obj->initObject();
 
@@ -286,12 +279,18 @@ void createBufferObjects()
 
 	obj = new Object();
 
-	obj->addVertex(-0.605f, -0.48f, 0.0f, 0.0f, 0.2f, 0.0f, 1.0f);
-	obj->addVertex(-0.54f, -0.605f, 0.0f, 0.0f, 0.2f, 0.0f, 1.0f);
+	obj->addVertex(-0.605f, -0.48f, 0.0f, 0.0f, 0.3f, 0.0f, 1.0f);
+	obj->addVertex(-0.54f, -0.605f, 0.0f, 0.0f, 0.3f, 0.0f, 1.0f);
 	obj->addVertex(0.01f, 0.58f, 0.0f,	  0.0f, 1.0f, 0.0f, 1.0f);
 	obj->addVertex(0.01f, 0.34f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f);
-	obj->addVertex(0.56f, -0.37f, 0.0f,	  0.0f, 0.2f, 0.0f, 1.0f);
-	obj->addVertex(0.42f, -0.37f, 0.0f,   0.0f, 0.2f, 0.0f, 1.0f);
+	obj->addVertex(0.56f, -0.37f, 0.0f,	  0.0f, 0.3f, 0.0f, 1.0f);
+	obj->addVertex(0.42f, -0.37f, 0.0f,   0.0f, 0.3f, 0.0f, 1.0f);
+
+	obj->addTriangle(0, 1, 2);
+	obj->addTriangle(3, 2, 1);
+	obj->addTriangle(2, 3, 5);
+	obj->addTriangle(5, 4, 2);
+
 	obj->rotateAroundAxis(0.0f, 0.0f, 1.0f, 240);
 	obj->translate(0.263, -0.190, 0);
 
@@ -301,42 +300,24 @@ void createBufferObjects()
 
 	obj = new Object();
 
-	obj->addVertex(-0.605f, -0.48f, 0.0f, 0.0f, 0.0f, 0.2f, 1.0f);
-	obj->addVertex(-0.54f, -0.605f, 0.0f, 0.0f, 0.0f, 0.2f, 1.0f);
+	obj->addVertex(-0.605f, -0.48f, 0.0f, 0.0f, 0.0f, 0.3f, 1.0f);
+	obj->addVertex(-0.54f, -0.605f, 0.0f, 0.0f, 0.0f, 0.3f, 1.0f);
 	obj->addVertex(0.01f, 0.58f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f);
 	obj->addVertex(0.01f, 0.34f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f);
-	obj->addVertex(0.56f, -0.37f, 0.0f, 0.0f, 0.0f, 0.2f, 1.0f);
-	obj->addVertex(0.42f, -0.37f, 0.0f, 0.0f, 0.0f, 0.2f, 1.0f);
+	obj->addVertex(0.56f, -0.37f, 0.0f, 0.0f, 0.0f, 0.3f, 1.0f);
+	obj->addVertex(0.42f, -0.37f, 0.0f, 0.0f, 0.0f, 0.3f, 1.0f);
+
+	obj->addTriangle(0, 1, 2);
+	obj->addTriangle(3, 2, 1);
+	obj->addTriangle(2, 3, 5);
+	obj->addTriangle(5, 4, 2);
+
 	obj->rotateAroundAxis(0.0f, 0.0f, 1.0f, 120);
 	obj->translate(-0.0304, -0.329, 0);
 
 	obj->initObject();
 
 	scene.push_back(obj);
-
-	/*
-	glGenVertexArrays(1, &VaoId);
-	glBindVertexArray(VaoId);
-	{
-		glGenBuffers(2, VboId);
-
-		glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
-		{
-			glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
-			glEnableVertexAttribArray(VERTICES);
-			glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-			glEnableVertexAttribArray(COLORS);
-			glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Vertices[0].XYZW));
-		}
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
-		{
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
-		}
-	}
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	*/
 
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not create VAOs and VBOs.");
@@ -345,14 +326,9 @@ void createBufferObjects()
 
 void destroyBufferObjects()
 {
-	glBindVertexArray(VaoId);
-	glDisableVertexAttribArray(VERTICES);
-	glDisableVertexAttribArray(COLORS);
-	glDeleteBuffers(2, VboId);
-	glDeleteVertexArrays(1, &VaoId);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	for (Object* obj_ptr : scene) {
+		obj_ptr->deleteObject();
+	}
 
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not destroy VAOs and VBOs.");
@@ -361,86 +337,11 @@ void destroyBufferObjects()
 
 /////////////////////////////////////////////////////////////////////// SCENE
 
-
-Matrix4 I = MxFactory::identity4();
-Matrix4 N = MxFactory::translation4(-0.0304, -0.329, 0) * MxFactory::rotation4(0.0f, 0.0f, 1.0f, 120);
-Matrix4 M = MxFactory::translation4(0.263, -0.190, 0) * MxFactory::rotation4(0.0f, 0.0f, 1.0f, 240);
-
 void drawScene()
 {
 	for (Object* obj_ptr : scene) {
 		obj_ptr->drawObject(ProgramId);
 	}
-
-	/*
-	// Drawing directly in clip space
-
-	glBindVertexArray(VaoId);
-	glUseProgram(ProgramId);
-
-	//FIXME
-	Vertices[0].set_RGBA(0.5, 0, 0, 1);
-	Vertices[1].set_RGBA(0.5, 0, 0, 1);
-	Vertices[2].set_RGBA(1, 0, 0, 1);
-	Vertices[3].set_RGBA(1, 0, 0, 1);
-	Vertices[4].set_RGBA(0.5, 0, 0, 1);
-	Vertices[5].set_RGBA(0.5, 0, 0, 1);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
-	{
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
-		glEnableVertexAttribArray(VERTICES);
-		glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-		glEnableVertexAttribArray(COLORS);
-		glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Vertices[0].XYZW));
-	}
-
-	glUniformMatrix4fv(UniformId, 1, GL_TRUE, I.toOpenGl());
-	glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_SHORT, (GLvoid*)0);
-
-	//FIXME
-	Vertices[0].set_RGBA(0, 0.5, 0, 1);
-	Vertices[1].set_RGBA(0, 0.5, 0, 1);
-	Vertices[2].set_RGBA(0, 1, 0, 1);
-	Vertices[3].set_RGBA(0, 1, 0, 1);
-	Vertices[4].set_RGBA(0, 0.5, 0, 1);
-	Vertices[5].set_RGBA(0, 0.5, 0, 1);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
-	{
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
-		glEnableVertexAttribArray(VERTICES);
-		glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-		glEnableVertexAttribArray(COLORS);
-		glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Vertices[0].XYZW));
-	}
-
-	glUniformMatrix4fv(UniformId, 1, GL_FALSE, M.toOpenGl());
-	glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_SHORT, (GLvoid*)0);
-
-	//FIXME
-	Vertices[0].set_RGBA(0, 0, 0.5, 1);
-	Vertices[1].set_RGBA(0, 0, 0.5, 1);
-	Vertices[2].set_RGBA(0, 0, 0.9, 1);
-	Vertices[3].set_RGBA(0, 0, 0.9, 1);
-	Vertices[4].set_RGBA(0, 0, 0.5, 1);
-	Vertices[5].set_RGBA(0, 0, 0.5, 1);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
-	{
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
-		glEnableVertexAttribArray(VERTICES);
-		glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-		glEnableVertexAttribArray(COLORS);
-		glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Vertices[0].XYZW));
-	}
-
-	glUniformMatrix4fv(UniformId, 1, GL_FALSE, N.toOpenGl());
-	glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_SHORT, (GLvoid*)0);
-
-	glUseProgram(0);
-	glBindVertexArray(0);
-	*/
 
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not draw scene.");
@@ -659,8 +560,6 @@ void run(GLFWwindow* win)
 
 int main(int argc, char* argv[])
 {
-	std::cout << N << std::endl;
-
 	int gl_major = 4, gl_minor = 3;
 	int is_fullscreen = 0;
 	int is_vsync = 1;

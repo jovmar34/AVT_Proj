@@ -8,6 +8,7 @@ void Object::rotateAroundAxis(double ax, double ay, double az, double angle)
 void Object::translate(double ax, double ay, double az)
 {
 	transformations = MxFactory::translation4(ax, ay, az) * transformations;
+	std::cout << transformations << std::endl;
 }
 
 void Object::scale(double ax, double ay, double az)
@@ -21,29 +22,36 @@ void Object::addVertex(double posx, double posy, double posz, double r, double g
 	vertexColors.push_back(Vector4D(r, g, b, a));
 }
 
-void Strip::drawObject(GLint UniformId, GLint ProgramId) {
-	glBindVertexArray(VaoId);
-	glUseProgram(ProgramId);
-
-	glUniformMatrix4fv(UniformId, 1, GL_FALSE, transformations.toOpenGl());
-	glDrawElements(GL_TRIANGLE_STRIP, (GLsizei) positions.size(), GL_UNSIGNED_SHORT, (GLvoid*)0);
-
-	glBindVertexArray(0);
-	glUseProgram(0);
-
-}
-
-void Strip::initObject()
+void Object::initObject()
 {
-	GLfloat*** Vertices = new GLfloat** [positions.size()];
-	GLushort* Indices = new GLushort[positions.size()];
+	size_t size = 2 * positions.size() * 4 * sizeof(GLfloat);
+	std::cout << size << std::endl;
 
-	for (unsigned short i = 0; i < positions.size(); i++) {
-		Vertices[i] = new GLfloat* [2];
-		Vertices[i][0] = positions[i].toOpenGL();
-		Vertices[i][1] = vertexColors[i].toOpenGL();
-		Indices[i] = i;
+	GLfloat* Vertices = (GLfloat*) alloca(size);
+	GLfloat* curr = Vertices;
+
+	for (int i = 0; i < positions.size(); i++) {
+		curr[0] = positions[i].x;
+		curr[1] = positions[i].y;
+		curr[2] = positions[i].z;
+		curr[3] = positions[i].w;
+		curr[4] = vertexColors[i].x;
+		curr[5] = vertexColors[i].y;
+		curr[6] = vertexColors[i].z;
+		curr[7] = vertexColors[i].w;
+		curr += 8;
 	}
+
+	for (int i = 0; i < (2 * positions.size() * 4); i++) {
+		std::cout << Vertices[i] << " ";
+	}
+
+	std::cout << std::endl;
+
+	GLushort Indices[] =
+	{	
+		0,1,2,3,2,1,2,3,5,5,4,2
+	};
 
 	glGenVertexArrays(1, &VaoId);
 	glBindVertexArray(VaoId);
@@ -52,11 +60,11 @@ void Strip::initObject()
 
 		glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
 		{
-			glBufferData(GL_ARRAY_BUFFER, sizeof(positions), Vertices, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, size, Vertices, GL_STATIC_DRAW);
 			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertices[0]), 0);
+			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 2 * 4 * sizeof(GLfloat), 0);
 			glEnableVertexAttribArray(1);
-			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertices[0]), (GLvoid*) sizeof(Vertices[0][0]));
+			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 2 * 4 * sizeof(GLfloat), (GLvoid*) (4 * sizeof(GLfloat)));
 		}
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
 		{
@@ -66,4 +74,18 @@ void Strip::initObject()
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void Object::drawObject(GLuint ProgramId)
+{
+	glBindVertexArray(VaoId);
+	glUseProgram(ProgramId);
+
+	GLuint UniformId = glGetUniformLocation(ProgramId, "Matrix");
+
+	glUniformMatrix4fv(UniformId, 1, GL_FALSE, transformations.toOpenGl());
+	glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_SHORT, (GLvoid*) 0);
+
+	glUseProgram(0);
+	glBindVertexArray(0);
 }

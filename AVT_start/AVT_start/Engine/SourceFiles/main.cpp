@@ -32,6 +32,7 @@
 #include "../HeaderFiles/vector.h"
 #include "../HeaderFiles/matrix.h"
 #include "../HeaderFiles/mxfactory.h"
+#include "../HeaderFiles/object.h"
 
 ////////////////////////////////////////////////// ERROR CALLBACK (OpenGL 4.3+)
 
@@ -259,15 +260,61 @@ Vertex Vertices[] =
 	{{ 0.42f,   -0.37f,  0.0f, 1.0f }, { 0.2f, 0.0f, 0.0f, 1.0f }},
 };
 
+Object* obj;
 
 const GLushort Indices[] =
 {
 	0,1,2,3,2,1,2,3,5,5,4,2
 };
 
+std::vector<Object*> scene;
+
 void createBufferObjects()
 {
+	obj = new Object();
 
+	obj->addVertex(-0.605f , -0.48f  , 0.0f , 0.2f, 0.0f, 0.0f, 1.0f);
+	obj->addVertex(-0.54f  , -0.605f , 0.0f , 0.2f, 0.0f, 0.0f, 1.0f);
+	obj->addVertex( 0.01f  ,  0.58f  , 0.0f , 1.0f, 0.0f, 0.0f, 1.0f);
+	obj->addVertex( 0.01f  ,  0.34f  , 0.0f , 1.0f, 0.0f, 0.0f, 1.0f);
+	obj->addVertex( 0.56f  , -0.37f  , 0.0f , 0.2f, 0.0f, 0.0f, 1.0f);
+	obj->addVertex( 0.42f  , -0.37f  , 0.0f , 0.2f, 0.0f, 0.0f, 1.0f);
+
+	obj->initObject();
+
+	scene.push_back(obj);
+
+	obj = new Object();
+
+	obj->addVertex(-0.605f, -0.48f, 0.0f, 0.0f, 0.2f, 0.0f, 1.0f);
+	obj->addVertex(-0.54f, -0.605f, 0.0f, 0.0f, 0.2f, 0.0f, 1.0f);
+	obj->addVertex(0.01f, 0.58f, 0.0f,	  0.0f, 1.0f, 0.0f, 1.0f);
+	obj->addVertex(0.01f, 0.34f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f);
+	obj->addVertex(0.56f, -0.37f, 0.0f,	  0.0f, 0.2f, 0.0f, 1.0f);
+	obj->addVertex(0.42f, -0.37f, 0.0f,   0.0f, 0.2f, 0.0f, 1.0f);
+	obj->rotateAroundAxis(0.0f, 0.0f, 1.0f, 240);
+	obj->translate(0.263, -0.190, 0);
+
+	obj->initObject();
+
+	scene.push_back(obj);
+
+	obj = new Object();
+
+	obj->addVertex(-0.605f, -0.48f, 0.0f, 0.0f, 0.0f, 0.2f, 1.0f);
+	obj->addVertex(-0.54f, -0.605f, 0.0f, 0.0f, 0.0f, 0.2f, 1.0f);
+	obj->addVertex(0.01f, 0.58f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+	obj->addVertex(0.01f, 0.34f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+	obj->addVertex(0.56f, -0.37f, 0.0f, 0.0f, 0.0f, 0.2f, 1.0f);
+	obj->addVertex(0.42f, -0.37f, 0.0f, 0.0f, 0.0f, 0.2f, 1.0f);
+	obj->rotateAroundAxis(0.0f, 0.0f, 1.0f, 120);
+	obj->translate(-0.0304, -0.329, 0);
+
+	obj->initObject();
+
+	scene.push_back(obj);
+
+	/*
 	glGenVertexArrays(1, &VaoId);
 	glBindVertexArray(VaoId);
 	{
@@ -289,6 +336,7 @@ void createBufferObjects()
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	*/
 
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not create VAOs and VBOs.");
@@ -320,6 +368,11 @@ Matrix4 M = MxFactory::translation4(0.263, -0.190, 0) * MxFactory::rotation4(0.0
 
 void drawScene()
 {
+	for (Object* obj_ptr : scene) {
+		obj_ptr->drawObject(ProgramId);
+	}
+
+	/*
 	// Drawing directly in clip space
 
 	glBindVertexArray(VaoId);
@@ -387,6 +440,7 @@ void drawScene()
 
 	glUseProgram(0);
 	glBindVertexArray(0);
+	*/
 
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not draw scene.");
@@ -605,17 +659,15 @@ void run(GLFWwindow* win)
 
 int main(int argc, char* argv[])
 {
-	
+	std::cout << N << std::endl;
 
-
-	/*
 	int gl_major = 4, gl_minor = 3;
 	int is_fullscreen = 0;
 	int is_vsync = 1;
 	GLFWwindow* win = setup(gl_major, gl_minor,
 		640, 480, "Hello Modern 2D World", is_fullscreen, is_vsync);
+
 	run(win);
-	*/
 	
 	exit(EXIT_SUCCESS);
 }

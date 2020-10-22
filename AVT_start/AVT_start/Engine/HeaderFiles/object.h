@@ -21,13 +21,8 @@ public:
 	void translate(double ax, double ay, double az);
 	void scale(double ax, double ay, double az);
 	void addVertex(double posx, double posy, double posz, double r, double g, double b, double a);
+	//GLfloat* getVertexInfo();
 
-	virtual void drawObject(GLint, GLint) = 0;
-	virtual void initObject() = 0;
-};
-
-class Strip: public Object {
-public:
-	void drawObject(GLint, GLint);
 	void initObject();
+	void drawObject(GLuint ProgramId);
 };

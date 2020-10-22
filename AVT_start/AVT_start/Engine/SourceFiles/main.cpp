@@ -190,8 +190,6 @@ static GLuint CompileShader(GLuint type, const std::string& source) {
 	glShaderSource(id, 1, &src, nullptr);
 	glCompileShader(id);
 
-	// TODO: Error Handling
-
 	return id;
 }
 
@@ -264,11 +262,12 @@ Vertex Vertices[] =
 
 const GLushort Indices[] =
 {
-	0,1,2,3,4,5
+	0,1,2,3,2,1,2,3,5,5,4,2
 };
 
 void createBufferObjects()
 {
+
 	glGenVertexArrays(1, &VaoId);
 	glBindVertexArray(VaoId);
 	{
@@ -344,7 +343,7 @@ void drawScene()
 	}
 
 	glUniformMatrix4fv(UniformId, 1, GL_TRUE, I.toOpenGl());
-	glDrawElements(GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_SHORT, (GLvoid*)0);
+	glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_SHORT, (GLvoid*)0);
 
 	//FIXME
 	Vertices[0].set_RGBA(0, 0.5, 0, 1);
@@ -364,7 +363,7 @@ void drawScene()
 	}
 
 	glUniformMatrix4fv(UniformId, 1, GL_FALSE, M.toOpenGl());
-	glDrawElements(GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_SHORT, (GLvoid*)0);
+	glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_SHORT, (GLvoid*)0);
 
 	//FIXME
 	Vertices[0].set_RGBA(0, 0, 0.5, 1);
@@ -384,7 +383,7 @@ void drawScene()
 	}
 
 	glUniformMatrix4fv(UniformId, 1, GL_FALSE, N.toOpenGl());
-	glDrawElements(GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_SHORT, (GLvoid*)0);
+	glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_SHORT, (GLvoid*)0);
 
 	glUseProgram(0);
 	glBindVertexArray(0);
@@ -606,20 +605,17 @@ void run(GLFWwindow* win)
 
 int main(int argc, char* argv[])
 {
-	Vector4D v(0.01, 0.58, 0, 1);
-	Vector4D v1(-0.54, -0.605, 0,1);
-	Matrix4 rot = MxFactory::rotation4(0, 0, 1, 240);
-	v1 = rot * v1;
-	v1 = v - v1;
+	
 
-	cout << v1 << endl;
 
+	/*
 	int gl_major = 4, gl_minor = 3;
 	int is_fullscreen = 0;
 	int is_vsync = 1;
 	GLFWwindow* win = setup(gl_major, gl_minor,
 		640, 480, "Hello Modern 2D World", is_fullscreen, is_vsync);
 	run(win);
+	*/
 	
 	exit(EXIT_SUCCESS);
 }

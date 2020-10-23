@@ -254,70 +254,13 @@ void destroyShaderProgram()
 
 /////////////////////////////////////////////////////////////////////// VAOs & VBOs
 
-Object* obj;
 std::vector<Object*> scene;
 
 void createBufferObjects()
 {
-	obj = new Object();
-
-	obj->addVertex(-0.605f , -0.48f  , 0.0f , 0.3f, 0.0f, 0.0f, 1.0f);
-	obj->addVertex(-0.54f  , -0.605f , 0.0f , 0.3f, 0.0f, 0.0f, 1.0f);
-	obj->addVertex( 0.01f  ,  0.58f  , 0.0f , 1.0f, 0.0f, 0.0f, 1.0f);
-	obj->addVertex( 0.01f  ,  0.34f  , 0.0f , 1.0f, 0.0f, 0.0f, 1.0f);
-	obj->addVertex( 0.56f  , -0.37f  , 0.0f , 0.3f, 0.0f, 0.0f, 1.0f);
-	obj->addVertex( 0.42f  , -0.37f  , 0.0f , 0.3f, 0.0f, 0.0f, 1.0f);
-
-	obj->addTriangle(0, 1, 2);
-	obj->addTriangle(3, 2, 1);
-	obj->addTriangle(2, 3, 5);
-	obj->addTriangle(5, 4, 2);
-
-	obj->initObject();
-
-	scene.push_back(obj);
-
-	obj = new Object();
-
-	obj->addVertex(-0.605f, -0.48f, 0.0f, 0.0f, 0.3f, 0.0f, 1.0f);
-	obj->addVertex(-0.54f, -0.605f, 0.0f, 0.0f, 0.3f, 0.0f, 1.0f);
-	obj->addVertex(0.01f, 0.58f, 0.0f,	  0.0f, 1.0f, 0.0f, 1.0f);
-	obj->addVertex(0.01f, 0.34f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f);
-	obj->addVertex(0.56f, -0.37f, 0.0f,	  0.0f, 0.3f, 0.0f, 1.0f);
-	obj->addVertex(0.42f, -0.37f, 0.0f,   0.0f, 0.3f, 0.0f, 1.0f);
-
-	obj->addTriangle(0, 1, 2);
-	obj->addTriangle(3, 2, 1);
-	obj->addTriangle(2, 3, 5);
-	obj->addTriangle(5, 4, 2);
-
-	obj->rotateAroundAxis(0.0f, 0.0f, 1.0f, 240);
-	obj->translate(0.263, -0.190, 0);
-
-	obj->initObject();
-
-	scene.push_back(obj);
-
-	obj = new Object();
-
-	obj->addVertex(-0.605f, -0.48f, 0.0f, 0.0f, 0.0f, 0.3f, 1.0f);
-	obj->addVertex(-0.54f, -0.605f, 0.0f, 0.0f, 0.0f, 0.3f, 1.0f);
-	obj->addVertex(0.01f, 0.58f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f);
-	obj->addVertex(0.01f, 0.34f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f);
-	obj->addVertex(0.56f, -0.37f, 0.0f, 0.0f, 0.0f, 0.3f, 1.0f);
-	obj->addVertex(0.42f, -0.37f, 0.0f, 0.0f, 0.0f, 0.3f, 1.0f);
-
-	obj->addTriangle(0, 1, 2);
-	obj->addTriangle(3, 2, 1);
-	obj->addTriangle(2, 3, 5);
-	obj->addTriangle(5, 4, 2);
-
-	obj->rotateAroundAxis(0.0f, 0.0f, 1.0f, 120);
-	obj->translate(-0.0304, -0.329, 0);
-
-	obj->initObject();
-
-	scene.push_back(obj);
+	for (Object* obj_ptr : scene) {
+		obj_ptr->initObject();
+	}
 
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not create VAOs and VBOs.");
@@ -528,8 +471,6 @@ void updateFPS(GLFWwindow* win, double elapsed_sec)
 	}
 }
 
-
-
 void display_callback(GLFWwindow* win, double elapsed_sec)
 {
 	//updateFPS(win, elapsed_sec);
@@ -558,8 +499,75 @@ void run(GLFWwindow* win)
 
 ////////////////////////////////////////////////////////////////////////// MAIN
 
+
+void populateScene() {
+	
+	// Create and initialize objs here
+	Object* obj;
+
+	// Part 1
+	obj = new Object();
+
+	obj->addVertex(-0.605f, -0.48f, 0.0f, 0.3f, 0.0f, 0.0f, 1.0f);
+	obj->addVertex(-0.54f, -0.605f, 0.0f, 0.3f, 0.0f, 0.0f, 1.0f);
+	obj->addVertex(0.01f, 0.58f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f);
+	obj->addVertex(0.01f, 0.34f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f);
+	obj->addVertex(0.56f, -0.37f, 0.0f, 0.3f, 0.0f, 0.0f, 1.0f);
+	obj->addVertex(0.42f, -0.37f, 0.0f, 0.3f, 0.0f, 0.0f, 1.0f);
+
+	obj->addTriangle(0, 1, 2);
+	obj->addTriangle(3, 2, 1);
+	obj->addTriangle(2, 3, 5);
+	obj->addTriangle(5, 4, 2);
+
+	scene.push_back(obj);
+
+	// Part 2
+	obj = new Object();
+
+	obj->addVertex(-0.605f, -0.48f, 0.0f, 0.0f, 0.3f, 0.0f, 1.0f);
+	obj->addVertex(-0.54f, -0.605f, 0.0f, 0.0f, 0.3f, 0.0f, 1.0f);
+	obj->addVertex(0.01f, 0.58f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f);
+	obj->addVertex(0.01f, 0.34f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f);
+	obj->addVertex(0.56f, -0.37f, 0.0f, 0.0f, 0.3f, 0.0f, 1.0f);
+	obj->addVertex(0.42f, -0.37f, 0.0f, 0.0f, 0.3f, 0.0f, 1.0f);
+
+	obj->addTriangle(0, 1, 2);
+	obj->addTriangle(3, 2, 1);
+	obj->addTriangle(2, 3, 5);
+	obj->addTriangle(5, 4, 2);
+
+	obj->rotateAroundAxis(0.0f, 0.0f, 1.0f, 240);
+	obj->translate(0.263, -0.190, 0);
+
+	scene.push_back(obj);
+
+	// Part 3
+	obj = new Object();
+
+	obj->addVertex(-0.605f, -0.48f, 0.0f, 0.0f, 0.0f, 0.3f, 1.0f);
+	obj->addVertex(-0.54f, -0.605f, 0.0f, 0.0f, 0.0f, 0.3f, 1.0f);
+	obj->addVertex(0.01f, 0.58f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+	obj->addVertex(0.01f, 0.34f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+	obj->addVertex(0.56f, -0.37f, 0.0f, 0.0f, 0.0f, 0.3f, 1.0f);
+	obj->addVertex(0.42f, -0.37f, 0.0f, 0.0f, 0.0f, 0.3f, 1.0f);
+
+	obj->addTriangle(0, 1, 2);
+	obj->addTriangle(3, 2, 1);
+	obj->addTriangle(2, 3, 5);
+	obj->addTriangle(5, 4, 2);
+
+	obj->rotateAroundAxis(0.0f, 0.0f, 1.0f, 120);
+	obj->translate(-0.0304, -0.329, 0);
+
+	scene.push_back(obj);
+}
+
+
 int main(int argc, char* argv[])
 {
+	populateScene();
+	
 	int gl_major = 4, gl_minor = 3;
 	int is_fullscreen = 0;
 	int is_vsync = 1;

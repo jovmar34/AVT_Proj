@@ -1,5 +1,4 @@
-#ifndef VECTOR_H
-#define VECTOR_H
+#pragma once
 
 #include <iostream>
 #include <cmath>
@@ -237,6 +236,9 @@ public:
 	Vector2D to2D();
 	Vector3D to3D();
 
+	// DivideByW
+	Vector4D& divideByW();
+
 	// Open GL
 	GLfloat* toOpenGL() {
 		data[0] = (GLfloat)x;
@@ -259,5 +261,3 @@ public:
 		return s;
 	}
 };
-
-#endif

@@ -505,6 +505,7 @@ void populateScene() {
 	// Create and initialize objs here
 	Object* obj;
 
+	// Front face
 	// Part 1
 	obj = new Object();
 
@@ -537,8 +538,8 @@ void populateScene() {
 	obj->addTriangle(2, 3, 5);
 	obj->addTriangle(5, 4, 2);
 
-	obj->rotateAroundAxis(0.0f, 0.0f, 1.0f, 240);
-	obj->translate(0.263, -0.190, 0);
+	obj->rotateAroundAxis(Vector3D(0.0f, 0.0f, 1.0f), 240);
+	obj->translate(Vector3D(0.263f, -0.190f, 0.0f));
 
 	scene.push_back(obj);
 
@@ -557,10 +558,69 @@ void populateScene() {
 	obj->addTriangle(2, 3, 5);
 	obj->addTriangle(5, 4, 2);
 
-	obj->rotateAroundAxis(0.0f, 0.0f, 1.0f, 120);
-	obj->translate(-0.0304, -0.329, 0);
+	obj->rotateAroundAxis(Vector3D(0.0f, 0.0f, 1.0f), 120);
+	obj->translate(Vector3D(-0.0304f, -0.329f, 0.0f));
 
 	scene.push_back(obj);
+
+	// Back face
+	// Part 1
+	obj = new Object();
+
+	obj->addVertex(-0.605f, -0.48f, 0.0f, 0.1f, 0.0f, 0.0f, 1.0f);
+	obj->addVertex(-0.54f, -0.605f, 0.0f, 0.1f, 0.0f, 0.0f, 1.0f);
+	obj->addVertex(0.01f, 0.58f, 0.0f, 0.5f, 0.0f, 0.0f, 1.0f);
+	obj->addVertex(0.01f, 0.34f, 0.0f, 0.5f, 0.0f, 0.0f, 1.0f);
+	obj->addVertex(0.56f, -0.37f, 0.0f, 0.1f, 0.0f, 0.0f, 1.0f);
+	obj->addVertex(0.42f, -0.37f, 0.0f, 0.1f, 0.0f, 0.0f, 1.0f);
+
+	obj->addTriangle(0, 2, 1);
+	obj->addTriangle(3, 1, 2);
+	obj->addTriangle(2, 5, 3);
+	obj->addTriangle(5, 2, 4);
+
+	scene.push_back(obj);
+
+	// Part 2
+	obj = new Object();
+
+	obj->addVertex(-0.605f, -0.48f, 0.0f, 0.0f, 0.1f, 0.0f, 1.0f);
+	obj->addVertex(-0.54f, -0.605f, 0.0f, 0.0f, 0.1f, 0.0f, 1.0f);
+	obj->addVertex(0.01f, 0.58f, 0.0f, 0.0f, 0.5f, 0.0f, 1.0f);
+	obj->addVertex(0.01f, 0.34f, 0.0f, 0.0f, 0.5f, 0.0f, 1.0f);
+	obj->addVertex(0.56f, -0.37f, 0.0f, 0.0f, 0.1f, 0.0f, 1.0f);
+	obj->addVertex(0.42f, -0.37f, 0.0f, 0.0f, 0.1f, 0.0f, 1.0f);
+
+	obj->addTriangle(0, 2, 1);
+	obj->addTriangle(3, 1, 2);
+	obj->addTriangle(2, 5, 3);
+	obj->addTriangle(5, 2, 4);
+
+	obj->rotateAroundAxis(Vector3D(0.0f, 0.0f, 1.0f), 240);
+	obj->translate(Vector3D(0.263f, -0.190f, 0.0f));
+
+	scene.push_back(obj);
+
+	// Part 3
+	obj = new Object();
+
+	obj->addVertex(-0.605f, -0.48f, 0.0f, 0.0f, 0.0f, 0.1f, 1.0f);
+	obj->addVertex(-0.54f, -0.605f, 0.0f, 0.0f, 0.0f, 0.1f, 1.0f);
+	obj->addVertex(0.01f, 0.58f, 0.0f, 0.0f, 0.0f, 0.5f, 1.0f);
+	obj->addVertex(0.01f, 0.34f, 0.0f, 0.0f, 0.0f, 0.5f, 1.0f);
+	obj->addVertex(0.56f, -0.37f, 0.0f, 0.0f, 0.0f, 0.1f, 1.0f);
+	obj->addVertex(0.42f, -0.37f, 0.0f, 0.0f, 0.0f, 0.1f, 1.0f);
+
+	obj->addTriangle(0, 2, 1);
+	obj->addTriangle(3, 1, 2);
+	obj->addTriangle(2, 5, 3);
+	obj->addTriangle(5, 2, 4);
+
+	obj->rotateAroundAxis(Vector3D(0.0f, 0.0f, 1.0f), 120);
+	obj->translate(Vector3D(-0.0304f, -0.329f, 0.0f));
+
+	scene.push_back(obj);
+
 }
 
 

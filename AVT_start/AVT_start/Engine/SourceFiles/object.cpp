@@ -1,19 +1,18 @@
 #include "..\HeaderFiles\object.h"
 
-void Object::rotateAroundAxis(double ax, double ay, double az, double angle)
+void Object::rotateAroundAxis(Vector3D axis, double angle)
 {
-	transformations = MxFactory::rotation4(ax, ay, az, angle) * transformations;
+	transformations = MxFactory::rotation4(axis, angle) * transformations;
 }
 
-void Object::translate(double ax, double ay, double az)
+void Object::translate(Vector3D translateVec)
 {
-	transformations = MxFactory::translation4(ax, ay, az) * transformations;
-	std::cout << transformations << std::endl;
+	transformations = MxFactory::translation4(translateVec) * transformations;
 }
 
-void Object::scale(double ax, double ay, double az)
+void Object::scale(Vector3D scaleVec)
 {
-	transformations = MxFactory::scaling4(ax, ay, az) * transformations;
+	transformations = MxFactory::scaling4(scaleVec) * transformations;
 }
 
 void Object::addVertex(double posx, double posy, double posz, double r, double g, double b, double a)

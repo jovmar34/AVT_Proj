@@ -21,9 +21,9 @@ public:
 		transformations = MxFactory::identity4();
 	}
 
-	void rotateAroundAxis(double ax, double ay, double az, double angle);
-	void translate(double ax, double ay, double az);
-	void scale(double ax, double ay, double az);
+	void rotateAroundAxis(Vector3D axis, double angle);
+	void translate(Vector3D translateVec);
+	void scale(Vector3D scaleVec);
 	void addVertex(double posx, double posy, double posz, double r, double g, double b, double a);
 	void addTriangle(GLushort v1, GLushort v2, GLushort v3);
 	void deleteObject();

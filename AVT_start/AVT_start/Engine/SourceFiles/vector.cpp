@@ -480,3 +480,10 @@ Vector2D Vector4D::to2D() {
 Vector3D Vector4D::to3D() {
 	return Vector3D(x, y, z);
 }
+
+Vector4D& Vector4D::divideByW()
+{
+	*this /= w;
+	w = 1.0f;
+	return *this;
+}

@@ -1,5 +1,4 @@
-#ifndef MATRIX_H
-#define MATRIX_H
+#pragma once
 
 #include <iostream>
 #include <cmath>
@@ -341,6 +340,3 @@ public:
 		return s;
 	}
 };
-
-
-#endif

@@ -34,50 +34,50 @@ Matrix4 MxFactory::identity4()
                    0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-Matrix4 MxFactory::scaling4(double sx, double sy, double sz)
+Matrix4 MxFactory::scaling4(Vector3D scaleVec)
 {
-    return Matrix4( sx  , 0.0f, 0.0f, 0.0f,
-                    0.0f, sy  , 0.0f, 0.0f,
-                    0.0f, 0.0f, sz  , 0.0f,
+    return Matrix4( scaleVec.x  , 0.0f, 0.0f, 0.0f,
+                    0.0f, scaleVec.y, 0.0f, 0.0f,
+                    0.0f, 0.0f, scaleVec.z, 0.0f,
                     0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-Matrix4 MxFactory::translation4(double tx, double ty, double tz)
+Matrix4 MxFactory::translation4(Vector3D translateVec)
 {
-    return Matrix4( 1.0f, 0.0f, 0.0f, tx  ,
-                    0.0f, 1.0f, 0.0f, ty  ,
-                    0.0f, 0.0f, 1.0f, tz  ,
+    return Matrix4( 1.0f, 0.0f, 0.0f, translateVec.x  ,
+                    0.0f, 1.0f, 0.0f, translateVec.y  ,
+                    0.0f, 0.0f, 1.0f, translateVec.z  ,
                     0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-Matrix4 MxFactory::rotation4(double rx, double ry, double rz, double theta)
+Matrix4 MxFactory::rotation4(Vector3D axis, double theta)
 {
-    Vector3D axis = Vector3D(rx, ry, rz); // assume axis may not be normalized
-    axis.normalize();
+    Vector3D axis_c = axis; // assume axis may not be normalized
+    axis_c.normalize();
     double angle = theta * M_PI / 180.0f; // degree to radian
 
     Matrix3 mat3 = identity3();
-    mat3 += dual(axis.x, axis.y, axis.z) * sin(angle);
-    mat3 += squaredual(axis.x, axis.y, axis.z) * (1 - cos(angle));
+    mat3 += dual(axis_c.x, axis_c.y, axis_c.z) * sin(angle);
+    mat3 += squaredual(axis_c.x, axis_c.y, axis_c.z) * (1 - cos(angle));
     return mat3.increase();
 }
 
-Matrix4 MxFactory::invscaling4(double sx, double sy, double sz)
+Matrix4 MxFactory::invscaling4(Vector3D scaleVec)
 {
-    double invx = (sx != 0.0f) ? 1 / sx : 0.0f,
-        invy = (sy != 0.0f) ? 1 / sy : 0.0f,
-        invz = (sz != 0.0f) ? 1 / sz : 0.0f;
+    double invx = (scaleVec.x != 0.0f) ? 1 / scaleVec.x : 0.0f,
+        invy = (scaleVec.y != 0.0f) ? 1 / scaleVec.y : 0.0f,
+        invz = (scaleVec.z != 0.0f) ? 1 / scaleVec.z : 0.0f;
 
-    return scaling4(invx, invy, invz);
+    return scaling4(Vector3D(invx, invy, invz));
 }
 
-Matrix4 MxFactory::invtranslation4(double tx, double ty, double tz)
+Matrix4 MxFactory::invtranslation4(Vector3D tranlateVec)
 {
-    return translation4(-tx, -ty, -tz);
+    return translation4(tranlateVec * (-1));
 }
 
-Matrix4 MxFactory::invrotation4(double rx, double ry, double rz, double theta)
+Matrix4 MxFactory::invrotation4(Vector3D axis, double theta)
 {
-    return rotation4(rx, ry, rz, -theta);
+    return rotation4(axis, -theta);
 }
 

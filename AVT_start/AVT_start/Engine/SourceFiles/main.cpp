@@ -33,6 +33,7 @@
 #include "../HeaderFiles/matrix.h"
 #include "../HeaderFiles/mxfactory.h"
 #include "../HeaderFiles/object.h"
+#include "../HeaderFiles/camera.h"
 
 ////////////////////////////////////////////////// ERROR CALLBACK (OpenGL 4.3+)
 
@@ -150,9 +151,10 @@ struct ShaderSource {
 
 };
 
-GLuint VaoId, VboId[2];
+GLuint VaoId, VboId[2], UboId;
 GLuint VertexShaderId, FragmentShaderId, ProgramId;
 GLint UniformId;
+Camera cam;
 
 static ShaderSource ParseShader(const std::string& filepath) {
 	std::ifstream stream(filepath);
@@ -213,7 +215,7 @@ static GLuint CompileShader(GLuint type, const std::string& source) {
 
 void createShaderProgram()
 {
-	ShaderSource sources = ParseShader("res/shaders/Basic.shader");
+	ShaderSource sources = ParseShader("res/shaders/ThreeD.shader");
 
 	std::string VertexShader = sources.VertexSource, 
 		FragmentShader = sources.FragmentSource;
@@ -231,6 +233,8 @@ void createShaderProgram()
 
 	glLinkProgram(ProgramId);
 	UniformId = glGetUniformLocation(ProgramId, "Matrix");
+	UboId = glGetUniformBlockIndex(ProgramId, "SharedMatrices");
+	glUniformBlockBinding(ProgramId, UboId, UBO_BP);
 
 	glDetachShader(ProgramId, VertexShaderId);
 	glDeleteShader(VertexShaderId);
@@ -258,10 +262,11 @@ std::vector<Object*> scene;
 
 void createBufferObjects()
 {
+	cam.setupCamera(ProgramId);
+
 	for (Object* obj_ptr : scene) {
 		obj_ptr->initObject();
 	}
-
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not create VAOs and VBOs.");
 #endif
@@ -279,9 +284,45 @@ void destroyBufferObjects()
 }
 
 /////////////////////////////////////////////////////////////////////// SCENE
+double speed = 0.1;
 
-void drawScene()
+void walk(GLFWwindow* win) {
+	int r = (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS ), 
+		l = (glfwGetKey(win, GLFW_KEY_A) == GLFW_PRESS),
+		d = (glfwGetKey(win, GLFW_KEY_S) == GLFW_PRESS),
+		u = (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS);
+
+	double xaxis = (double) r - l, 
+		yaxis = (double) d - u;
+
+	if (xaxis != 0 || yaxis != 0) {
+		Vector3D dir = Vector3D(xaxis, 0, yaxis);
+		dir.normalize();
+
+		cam.move(dir, speed);
+	}
+}
+
+void processInput(GLFWwindow* win) {
+	/*
+	else if (action == GLFW_REPEAT or action == GLFW_PRESS) {
+		if (key == GLFW_KEY_W) cam.walk(0.1f);
+		if (key == GLFW_KEY_S) cam.walk(-0.1f);
+		if (key == GLFW_KEY_A) cam.strafe(0.1f);
+		if (key == GLFW_KEY_D) cam.strafe(-0.1f);
+
+		cam.updateView();
+	}
+	*/
+	walk(win);
+}
+
+void drawScene(GLFWwindow* win)
 {
+	processInput(win);
+
+	cam.drawCamera(ProgramId);
+
 	for (Object* obj_ptr : scene) {
 		obj_ptr->drawObject(ProgramId);
 	}
@@ -310,10 +351,16 @@ void window_size_callback(GLFWwindow* win, int winx, int winy)
 void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 {
 	std::cout << "key: " << key << " " << scancode << " " << action << " " << mods << std::endl;
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-	{
-		glfwSetWindowShouldClose(win, GLFW_TRUE);
-		window_close_callback(win);
+	if (action == GLFW_RELEASE) {
+		switch (key) {
+		case GLFW_KEY_P:
+			if (cam.projType == CameraProj::Parallel) {
+				cam.perspectiveProjection(30, 4/3.0f, 1, 10);
+			}
+			else {
+				cam.parallelProjection(-2,2,-2,2,1,10);
+			}
+		}
 	}
 }
 
@@ -361,8 +408,8 @@ GLFWwindow* setupWindow(int winx, int winy, const char* title,
 
 void setupCallbacks(GLFWwindow* win)
 {
-	/*
 	glfwSetKeyCallback(win, key_callback);
+	/*
 	glfwSetCursorPosCallback(win, mouse_callback);
 	glfwSetMouseButtonCallback(win, mouse_button_callback);
 	glfwSetScrollCallback(win, scroll_callback);
@@ -474,7 +521,7 @@ void updateFPS(GLFWwindow* win, double elapsed_sec)
 void display_callback(GLFWwindow* win, double elapsed_sec)
 {
 	//updateFPS(win, elapsed_sec);
-	drawScene();
+	drawScene(win);
 }
 
 void run(GLFWwindow* win)
@@ -499,9 +546,11 @@ void run(GLFWwindow* win)
 
 ////////////////////////////////////////////////////////////////////////// MAIN
 
-
 void populateScene() {
-	
+	// Camera init
+	cam = Camera(Vector3D(0, 0, 3), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
+	cam.parallelProjection(-2,2,-2,2,1,10);
+
 	// Create and initialize objs here
 	Object* obj;
 
@@ -627,7 +676,7 @@ void populateScene() {
 int main(int argc, char* argv[])
 {
 	populateScene();
-	
+
 	int gl_major = 4, gl_minor = 3;
 	int is_fullscreen = 0;
 	int is_vsync = 1;

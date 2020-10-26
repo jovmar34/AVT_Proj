@@ -93,7 +93,7 @@ void Object::drawObject(GLuint ProgramId)
 	glBindVertexArray(VaoId);
 	glUseProgram(ProgramId);
 
-	GLuint UniformId = glGetUniformLocation(ProgramId, "Matrix");
+	GLuint UniformId = glGetUniformLocation(ProgramId, "ModelMatrix");
 
 	glUniformMatrix4fv(UniformId, 1, GL_FALSE, transformations.toOpenGl());
 	glDrawElements(GL_TRIANGLES, (GLsizei) indices.size(), GL_UNSIGNED_SHORT, (GLvoid*) 0);

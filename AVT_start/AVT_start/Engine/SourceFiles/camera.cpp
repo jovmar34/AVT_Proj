@@ -1,24 +1,76 @@
 #include "..\HeaderFiles\camera.h"
 
-const GLuint UBO_BP = 0;
-
-void Camera::setupCamera()
+Camera::Camera(Vector3D _eye, Vector3D _center, Vector3D _up) : eye(_eye), center(_center), up(_up)
 {
-	GLuint i;
-	glGenBuffers(1, &i);
+	v = center - eye;
+	v.normalize();
 
-	glBindBuffer(GL_UNIFORM_BUFFER, i);
+	s = v % up;
+	s.normalize();
+
+	u = s % v;
+
+	view = Matrix4(
+		s.x, s.y, s.z, -(s * eye),
+		u.x, u.y, u.z, -(u * eye),
+		-v.x, -v.y, -v.z, v * eye,
+		0.0f, 0.0f, 0.0f, 1.0f
+	);
+}
+
+void Camera::setupCamera(GLuint ProgramId)
+{
+	glGenBuffers(1, &VboId);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, VboId);
 	{
 		glBufferData(GL_UNIFORM_BUFFER, 2 * 16 * sizeof(GLfloat), 0, GL_STREAM_DRAW);
-		glBindBufferBase(GL_UNIFORM_BUFFER, UBO_BP, i);
+		glBindBufferBase(GL_UNIFORM_BUFFER, UBO_BP, VboId);
 	}
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-	VboId = i;
+	UboId = glGetUniformBlockIndex(ProgramId, "SharedMatrices");
 }
 
-void Camera::updateView() {
-	Vector3D v, u, s;
+void Camera::parallelProjection(double l, double r, double b, double t, double n, double f)
+{
+	projection = Matrix4(
+		2/(r-l), 0, 0, (l+r)/(l-r),
+		0, 2/(t-b), 0, (b+t)/(b-t),
+		0, 0, 2/(n-f), (n+f)/(n-f),
+		0, 0, 0, 1
+	);
+
+	projType = CameraProj::Parallel;
+	change = true;
+}
+
+void Camera::perspectiveProjection(double fovy, double aspect, double near, double far)
+{
+	double theta = fovy * M_PI / 180;
+	double d = 1/tan(theta/2);
+	projection = Matrix4(
+		d / aspect, 0, 0, 0,
+		0, d, 0, 0,
+		0, 0, (near+far)/(near-far), 2*near*far/(near-far), 
+		0, 0, -1, 0
+	);
+
+	projType = CameraProj::Perspective;
+	change = true;
+}
+
+void Camera::move(Vector3D dir, double speed)
+{
+	eye += dir * speed;
+	center += dir * speed;
+
+	updateView();
+}
+
+
+void Camera::updateView()
+{
 	v = center - eye;
 	v.normalize();
 
@@ -37,28 +89,21 @@ void Camera::updateView() {
 	change = true;
 }
 
-void Camera::parallelProjection(double l, double r, double b, double t, double n, double f)
-{
-	projection = Matrix4(
-		2/(r-l), 0, 0, (l+r)/(l-r),
-		0, 2/(t-b), 0, (b+t)/(b-t),
-		0, 0, 2/(n-f), (n+f)/(n-f),
-		0, 0, 0, 1
-	);
-
-	change = true;
-}
 
 void Camera::drawCamera(GLuint ProgramId)
 {
+	if (projType == CameraProj::None) 
+		throw "The camera projections has not been defined!";
+
 	if (!change) return;
 
-	GLuint UboId = glGetUniformBlockIndex(ProgramId, "SharedMatrices");
+	GLfloat* viewMatrix = view.toOpenGl(),
+		*projectionMatrix = projection.toOpenGl();
 
 	glBindBuffer(GL_UNIFORM_BUFFER, VboId);
 	{
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, 16 * sizeof(GLfloat), view.toOpenGl());
-		glBufferSubData(GL_UNIFORM_BUFFER, 16 * sizeof(GLfloat), 16 * sizeof(GLfloat), projection.toOpenGl());
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, 16 * sizeof(GLfloat), viewMatrix);
+		glBufferSubData(GL_UNIFORM_BUFFER, 16 * sizeof(GLfloat), 16 * sizeof(GLfloat), projectionMatrix);
 	}
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 

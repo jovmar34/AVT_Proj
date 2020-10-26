@@ -173,6 +173,8 @@ public:
 		return s;
 	}
 
+	void clear() { x = y = z = 0; }
+
 };
 
 class Vector4D

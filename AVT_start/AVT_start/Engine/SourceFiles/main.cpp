@@ -303,6 +303,26 @@ void walk(GLFWwindow* win) {
 	}
 }
 
+double old_x, old_z;
+
+void look(GLFWwindow* win) {
+	double x, z;
+	glfwGetCursorPos(win, &x, &z);
+
+	int w, h;
+	glfwGetWindowSize(win, &w, &h);
+
+	double move_x = (x - old_x) / w;
+
+	if (move_x != 0) cam.look(-move_x * M_PI_2);
+	else {
+		//x = 0;
+		//glfwSetCursorPos(win, 0, 0);
+	}
+
+	old_x = x;
+}
+
 void processInput(GLFWwindow* win) {
 	/*
 	else if (action == GLFW_REPEAT or action == GLFW_PRESS) {
@@ -315,6 +335,7 @@ void processInput(GLFWwindow* win) {
 	}
 	*/
 	walk(win);
+	look(win);
 }
 
 void drawScene(GLFWwindow* win)
@@ -360,6 +381,9 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 			else {
 				cam.parallelProjection(-2,2,-2,2,1,10);
 			}
+			break;
+		case GLFW_KEY_ESCAPE:
+			glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
 	}
 }
@@ -527,11 +551,16 @@ void display_callback(GLFWwindow* win, double elapsed_sec)
 void run(GLFWwindow* win)
 {
 	double last_time = glfwGetTime();
+	
+	glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPos(win, 0, 0);
+
 	while (!glfwWindowShouldClose(win))
 	{
 		double time = glfwGetTime();
 		double elapsed_time = time - last_time;
 		last_time = time;
+
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		display_callback(win, elapsed_time);
@@ -548,7 +577,7 @@ void run(GLFWwindow* win)
 
 void populateScene() {
 	// Camera init
-	cam = Camera(Vector3D(0, 0, 3), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
+	cam = Camera(Vector3D(0, 0, 1.5), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
 	cam.parallelProjection(-2,2,-2,2,1,10);
 
 	// Create and initialize objs here

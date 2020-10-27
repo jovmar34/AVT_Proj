@@ -62,8 +62,25 @@ void Camera::perspectiveProjection(double fovy, double aspect, double near, doub
 
 void Camera::move(Vector3D dir, double speed)
 {
-	eye += dir * speed;
-	center += dir * speed;
+	Vector3D transform = dir.x * s + -dir.z * v;
+	eye += transform * speed;
+	center += transform * speed;
+
+	updateView();
+}
+
+void Camera::look(double angle_h)
+{
+	Vector3D dir = center - eye;
+	double len = dir.length();
+
+	double sin2 = sin(angle_h), cos2 = cos(angle_h);
+
+	Vector3D rot = -len * sin2 * s + len * cos2 * v;
+
+	center = eye + rot;
+
+	//std::cout << center << std::endl;
 
 	updateView();
 }

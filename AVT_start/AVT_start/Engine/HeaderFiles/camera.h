@@ -26,6 +26,7 @@ public:
 	void parallelProjection(double l, double r, double b,double t, double n, double f);
 	void perspectiveProjection(double fovy, double aspect, double near, double far);
 	void move(Vector3D dir, double speed);
+	void look(double angle_h);
 	void updateView();
 
 	void drawCamera(GLuint ProgramId);

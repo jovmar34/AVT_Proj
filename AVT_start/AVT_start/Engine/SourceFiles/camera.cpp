@@ -62,6 +62,8 @@ void Camera::perspectiveProjection(double fovy, double aspect, double near, doub
 
 void Camera::move(Vector3D dir, double speed)
 {
+	if (state == Working::Off) return;
+
 	Vector3D transform = dir.x * s + -dir.z * v;
 	eye += transform * speed;
 	center += transform * speed;
@@ -69,14 +71,19 @@ void Camera::move(Vector3D dir, double speed)
 	updateView();
 }
 
-void Camera::look(double angle_h)
+void Camera::look(double angle_h, double angle_v)
 {
+	if (state == Working::Off) return;
+
 	Vector3D dir = center - eye;
 	double len = dir.length();
 
-	double sin2 = sin(angle_h), cos2 = cos(angle_h);
+	double sin1 = sin(angle_h), cos1 = cos(angle_h);
+	double sin2 = sin(angle_v), cos2 = cos(angle_v);
 
-	Vector3D rot = -len * sin2 * s + len * cos2 * v;
+	Vector3D rot = len * cos1 * cos2 * v +
+		-len * sin2 * u +
+		len * sin1 * cos2 * s;
 
 	center = eye + rot;
 
@@ -106,13 +113,18 @@ void Camera::updateView()
 	change = true;
 }
 
+void Camera::toggle()
+{
+	state = (state == Working::On) ? Working::Off : Working::On;
+}
+
 
 void Camera::drawCamera(GLuint ProgramId)
 {
 	if (projType == CameraProj::None) 
 		throw "The camera projections has not been defined!";
 
-	if (!change) return;
+	if (!change || state == Working::Off) return;
 
 	GLfloat* viewMatrix = view.toOpenGl(),
 		*projectionMatrix = projection.toOpenGl();

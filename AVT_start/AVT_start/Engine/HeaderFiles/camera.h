@@ -10,6 +10,10 @@ enum class CameraProj {
 	None, Parallel, Perspective
 };
 
+enum class Working {
+	On, Off
+};
+
 class Camera {
 public:
 	Matrix4 view, projection;
@@ -18,6 +22,7 @@ public:
 	bool change = true;
 	GLuint VboId, UboId;
 	CameraProj projType;
+	Working state = Working::On;
 
 	Camera() { };
 	Camera(Vector3D _eye, Vector3D _center, Vector3D _up);
@@ -26,8 +31,9 @@ public:
 	void parallelProjection(double l, double r, double b,double t, double n, double f);
 	void perspectiveProjection(double fovy, double aspect, double near, double far);
 	void move(Vector3D dir, double speed);
-	void look(double angle_h);
+	void look(double angle_h, double angle_v);
 	void updateView();
+	void toggle();
 
 	void drawCamera(GLuint ProgramId);
 };

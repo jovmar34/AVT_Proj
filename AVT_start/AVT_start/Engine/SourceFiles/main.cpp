@@ -303,24 +303,27 @@ void walk(GLFWwindow* win) {
 	}
 }
 
-double old_x, old_z;
+double old_x, old_y;
 
 void look(GLFWwindow* win) {
-	double x, z;
-	glfwGetCursorPos(win, &x, &z);
+	double x, y;
+	glfwGetCursorPos(win, &x, &y);
 
 	int w, h;
 	glfwGetWindowSize(win, &w, &h);
 
 	double move_x = (x - old_x) / w;
+	double move_y = (y - old_y) / w;
 
-	if (move_x != 0) cam.look(-move_x * M_PI_2);
+	if (move_x != 0 || move_y != 0) 
+		cam.look(move_x * M_PI_2, move_y * M_PI);
 	else {
 		//x = 0;
 		//glfwSetCursorPos(win, 0, 0);
 	}
 
 	old_x = x;
+	old_y = y;
 }
 
 void processInput(GLFWwindow* win) {
@@ -383,7 +386,13 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 			}
 			break;
 		case GLFW_KEY_ESCAPE:
-			glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			if (cam.state == Working::On) {
+				glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			}
+			else {
+				glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			}
+			cam.toggle();
 		}
 	}
 }
@@ -577,7 +586,7 @@ void run(GLFWwindow* win)
 
 void populateScene() {
 	// Camera init
-	cam = Camera(Vector3D(0, 0, 1.5), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
+	cam = Camera(Vector3D(0, 0, 3), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
 	cam.parallelProjection(-2,2,-2,2,1,10);
 
 	// Create and initialize objs here

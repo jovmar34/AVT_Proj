@@ -20,8 +20,8 @@ public:
 	Vector3D eye, center, up;
 	Vector3D v, s, u;
 	bool change = true;
-	GLuint VboId, UboId;
-	CameraProj projType;
+	GLuint VboId = 0, UboId = 0;
+	CameraProj projType = CameraProj::None;
 	Working state = Working::On;
 
 	Camera() { };

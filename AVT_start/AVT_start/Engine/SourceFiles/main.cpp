@@ -318,10 +318,6 @@ void look(GLFWwindow* win, double elapsed) {
 
 	if (move_x != 0 || move_y != 0) 
 		cam.look(angle_x * move_x * elapsed, angle_y * move_y * elapsed);
-	else {
-		//x = 0;
-		//glfwSetCursorPos(win, 0, 0);
-	}
 
 	old_x = x;
 	old_y = y;

@@ -284,9 +284,9 @@ void destroyBufferObjects()
 }
 
 /////////////////////////////////////////////////////////////////////// SCENE
-double speed = 0.1;
+double speed = 10;
 
-void walk(GLFWwindow* win) {
+void walk(GLFWwindow* win, double elapsed) {
 	int r = (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS ), 
 		l = (glfwGetKey(win, GLFW_KEY_A) == GLFW_PRESS),
 		d = (glfwGetKey(win, GLFW_KEY_S) == GLFW_PRESS),
@@ -299,13 +299,14 @@ void walk(GLFWwindow* win) {
 		Vector3D dir = Vector3D(xaxis, 0, yaxis);
 		dir.normalize();
 
-		cam.move(dir, speed);
+		cam.move(dir, speed * elapsed);
 	}
 }
 
 double old_x, old_y;
+double angle_x = M_PI_2 * 10, angle_y = M_PI * 10;
 
-void look(GLFWwindow* win) {
+void look(GLFWwindow* win, double elapsed) {
 	double x, y;
 	glfwGetCursorPos(win, &x, &y);
 
@@ -316,7 +317,7 @@ void look(GLFWwindow* win) {
 	double move_y = (y - old_y) / w;
 
 	if (move_x != 0 || move_y != 0) 
-		cam.look(move_x * M_PI_2, move_y * M_PI);
+		cam.look(angle_x * move_x * elapsed, angle_y * move_y * elapsed);
 	else {
 		//x = 0;
 		//glfwSetCursorPos(win, 0, 0);
@@ -326,7 +327,7 @@ void look(GLFWwindow* win) {
 	old_y = y;
 }
 
-void processInput(GLFWwindow* win) {
+void processInput(GLFWwindow* win, double elapsed) {
 	/*
 	else if (action == GLFW_REPEAT or action == GLFW_PRESS) {
 		if (key == GLFW_KEY_W) cam.walk(0.1f);
@@ -337,13 +338,13 @@ void processInput(GLFWwindow* win) {
 		cam.updateView();
 	}
 	*/
-	walk(win);
-	look(win);
+	walk(win, elapsed);
+	look(win, elapsed);
 }
 
-void drawScene(GLFWwindow* win)
+void drawScene(GLFWwindow* win, double elapsed)
 {
-	processInput(win);
+	processInput(win, elapsed);
 
 	cam.drawCamera(ProgramId);
 
@@ -554,7 +555,7 @@ void updateFPS(GLFWwindow* win, double elapsed_sec)
 void display_callback(GLFWwindow* win, double elapsed_sec)
 {
 	//updateFPS(win, elapsed_sec);
-	drawScene(win);
+	drawScene(win, elapsed_sec);
 }
 
 void run(GLFWwindow* win)

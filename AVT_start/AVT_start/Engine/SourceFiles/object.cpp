@@ -44,23 +44,29 @@ void Object::initObject()
 {
 	GLsizeiptr vsize = (GLsizeiptr) 2 * positions.size() * 4 * sizeof(GLfloat);
 
-	GLfloat* Vertices = (GLfloat*) malloc(vsize);
-	GLfloat* curr = Vertices;
+	GLfloat* Vertices = (GLfloat*) calloc(2 * positions.size() * 4, sizeof(GLfloat));
+
+	if (Vertices == NULL) return;
 
 	for (int i = 0; i < positions.size(); i++) {
-		curr[0] = (GLfloat) positions[i].x;
-		curr[1] = (GLfloat) positions[i].y;
-		curr[2] = (GLfloat) positions[i].z;
-		curr[3] = (GLfloat) positions[i].w;
-		curr[4] = (GLfloat) vertexColors[i].x;
-		curr[5] = (GLfloat) vertexColors[i].y;
-		curr[6] = (GLfloat) vertexColors[i].z;
-		curr[7] = (GLfloat) vertexColors[i].w;
-		curr += 8;
+		Vertices[8 * i] = (GLfloat) positions[i].x;
+		Vertices[8 * i + 1] = (GLfloat) positions[i].y;
+		Vertices[8 * i + 2] = (GLfloat) positions[i].z;
+		Vertices[8 * i + 3] = (GLfloat) positions[i].w;
+		Vertices[8 * i + 4] = (GLfloat) vertexColors[i].x;
+		Vertices[8 * i + 5] = (GLfloat) vertexColors[i].y;
+		Vertices[8 * i + 6] = (GLfloat) vertexColors[i].z;
+		Vertices[8 * i + 7] = (GLfloat) vertexColors[i].w;
 	}
 
 	GLint isize = (GLint) indices.size() * sizeof(GLuint);
-	GLushort* Indices = (GLushort*) malloc(isize);
+	GLushort* Indices = (GLushort*) calloc(indices.size(), sizeof(GLuint));
+
+	if (Indices == NULL) {
+		free(Vertices);
+		return;
+	}
+
 	for (int i = 0; i < indices.size(); i++) {
 		Indices[i] = indices[i];
 	}
@@ -86,6 +92,9 @@ void Object::initObject()
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	free(Vertices);
+	free(Indices);
 }
 
 void Object::drawObject(GLuint ProgramId)

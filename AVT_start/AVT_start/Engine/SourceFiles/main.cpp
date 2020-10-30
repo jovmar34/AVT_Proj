@@ -35,6 +35,9 @@
 #include "../HeaderFiles/object.h"
 #include "../HeaderFiles/camera.h"
 
+double sprint_factor = 1;
+double speed = 10;
+
 ////////////////////////////////////////////////// ERROR CALLBACK (OpenGL 4.3+)
 
 static const std::string errorSource(GLenum source)
@@ -284,7 +287,6 @@ void destroyBufferObjects()
 }
 
 /////////////////////////////////////////////////////////////////////// SCENE
-double speed = 10;
 
 void walk(GLFWwindow* win, double elapsed) {
 	int r = (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS ), 
@@ -299,12 +301,12 @@ void walk(GLFWwindow* win, double elapsed) {
 		Vector3D dir = Vector3D(xaxis, 0, yaxis);
 		dir.normalize();
 
-		cam.move(dir, speed * elapsed);
+		cam.move(dir, sprint_factor * speed * elapsed);
 	}
 }
 
 double old_x, old_y;
-double angle_x = M_PI_2 * 10, angle_y = M_PI * 10;
+double angle_x = M_PI_2 / 50, angle_y = M_PI / 50;
 
 void look(GLFWwindow* win, double elapsed) {
 	double x, y;
@@ -313,8 +315,8 @@ void look(GLFWwindow* win, double elapsed) {
 	int w, h;
 	glfwGetWindowSize(win, &w, &h);
 
-	double move_x = (x - old_x) / w;
-	double move_y = (y - old_y) / w;
+	double move_x = (x - old_x);
+	double move_y = (y - old_y);
 
 	if (move_x != 0 || move_y != 0) 
 		cam.look(angle_x * move_x * elapsed, angle_y * move_y * elapsed);
@@ -324,16 +326,6 @@ void look(GLFWwindow* win, double elapsed) {
 }
 
 void processInput(GLFWwindow* win, double elapsed) {
-	/*
-	else if (action == GLFW_REPEAT or action == GLFW_PRESS) {
-		if (key == GLFW_KEY_W) cam.walk(0.1f);
-		if (key == GLFW_KEY_S) cam.walk(-0.1f);
-		if (key == GLFW_KEY_A) cam.strafe(0.1f);
-		if (key == GLFW_KEY_D) cam.strafe(-0.1f);
-
-		cam.updateView();
-	}
-	*/
 	walk(win, elapsed);
 	look(win, elapsed);
 }
@@ -376,10 +368,10 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 		switch (key) {
 		case GLFW_KEY_P:
 			if (cam.projType == CameraProj::Parallel) {
-				cam.perspectiveProjection(30, 4/3.0f, 1, 10);
+				cam.perspectiveProjection(30, 4.0f / 3.0f, 1, 50);
 			}
 			else {
-				cam.parallelProjection(-2,2,-2,2,1,10);
+				cam.parallelProjection(-2,2,-2,2,1,50);
 			}
 			break;
 		case GLFW_KEY_ESCAPE:
@@ -390,6 +382,18 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 				glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 			}
 			cam.toggle();
+			break;
+		case GLFW_KEY_LEFT_SHIFT:
+			sprint_factor = 1;
+			break;
+		}
+	}
+	else if (action == GLFW_PRESS) {
+		switch (key)
+		{
+		case GLFW_KEY_LEFT_SHIFT:
+			sprint_factor = 3;
+			break;
 		}
 	}
 }

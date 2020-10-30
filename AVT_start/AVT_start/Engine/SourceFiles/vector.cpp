@@ -155,8 +155,6 @@ Vector4D Vector2D::to4D() {
 	return Vector4D(x, y, 0, 1);
 }
 
-
-
 // ================================== VECTOR 3D =====================================
 
 Vector3D::Vector3D(double a_x, double a_y, double a_z) : x(a_x), y(a_y), z(a_z) { }

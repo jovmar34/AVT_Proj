@@ -368,7 +368,7 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 		switch (key) {
 		case GLFW_KEY_P:
 			if (cam.projType == CameraProj::Parallel) {
-				cam.perspectiveProjection(30, 4.0f / 3.0f, 1, 50);
+				cam.perspectiveProjection(90, 4.0f / 3.0f, 1, 50);
 			}
 			else {
 				cam.parallelProjection(-2,2,-2,2,1,50);

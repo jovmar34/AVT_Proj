@@ -156,6 +156,7 @@
     <ClCompile Include="Engine\SourceFiles\main.cpp" />
     <ClCompile Include="Engine\SourceFiles\matrix.cpp" />
     <ClCompile Include="Engine\SourceFiles\object.cpp" />
+    <ClCompile Include="Engine\SourceFiles\quaternion.cpp" />
     <ClCompile Include="Engine\SourceFiles\vector.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -97,17 +97,46 @@ Quaternion Quaternion::operator/(const double s)
 
 GLfloat* Quaternion::toOpenGLRot()
 {
-    return nullptr;
+    Quaternion qn = *this;
+    double xx = x * x;
+    double xy = x * y;
+    double xz = x * z;
+    double xt = x * t;
+    double yy = y * y;
+    double yz = y * z;
+    double yt = y * t;
+    double zz = z * z;
+    double zt = z * t;
+
+    Matrix4 res(
+        1.0f - 2.0f * (yy + zz), 2.0f * (xy - zt), 2.0f * (xz + yt), 0.0f,
+        2.0f * (xy + zt), 1.0f - 2.0f * (xx + zz), 2.0f * (yz - xt), 0.0f,
+        2.0f * (xz - yt), 2.0f * (yz + xt), 1.0f - 2.0f * (xx + yy), 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f
+    );
+
+
+    return res.toOpenGl();
 }
 
-Quaternion Quaternion::Lerp(const Quaternion& q1, double k)
+Quaternion Quaternion::Lerp(Quaternion& q1, double k)
 {
-    return Quaternion();
+    double cos_angle = x * q1.x + y * q1.y + z * q1.z + t * q1.t;
+    double k0 = 1.0f - k;
+    double k1 = (cos_angle > 0) ? k : -k;
+    Quaternion res = (*this * k0) + (q1 * k1);
+    res.normalize();
+    return res;
 }
 
-Quaternion Quaternion::Slerp(const Quaternion& q1, float k)
+Quaternion Quaternion::Slerp(Quaternion& q1, float k)
 {
-    return Quaternion();
+    double angle = acos(x * q1.x + y * q1.y + z * q1.z + t * q1.t);
+    double k0 = sin((1 - k) * angle) / sin(angle);
+    double k1 = sin(k * angle) / sin(angle);
+    Quaternion res = (*this * k0) + (q1 * k1);
+    res.normalize();
+    return res;
 }
 
 bool Quaternion::operator==(const Quaternion& q1)
@@ -117,6 +146,7 @@ bool Quaternion::operator==(const Quaternion& q1)
 
 void Quaternion::print()
 {
+    std::cout << "(" << t << ", " << x << ", " << y << ", " << z << ")" << std::endl;
 }
 
 void Quaternion::printAngleAxis()

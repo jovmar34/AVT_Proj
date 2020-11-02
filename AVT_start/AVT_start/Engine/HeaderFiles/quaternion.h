@@ -2,7 +2,7 @@
 
 #define _USE_MATH_DEFINES
 
-#include "vector.h"
+#include "matrix.h"
 
 class Quaternion {
 public:	
@@ -25,8 +25,8 @@ public:
 	Quaternion operator*(const Quaternion& q1);
 	Quaternion operator/(const double s);
 	GLfloat* toOpenGLRot();
-	Quaternion Lerp(const Quaternion& q1, double k);
-	Quaternion Slerp(const Quaternion& q1, float k);
+	Quaternion Lerp(Quaternion& q1, double k);
+	Quaternion Slerp(Quaternion& q1, float k);
 	bool operator==(const Quaternion& q1);
 
 	void print();

@@ -289,6 +289,8 @@ void destroyBufferObjects()
 
 /////////////////////////////////////////////////////////////////////// SCENE
 
+
+
 void walk(GLFWwindow* win, double elapsed) {
 	int r = (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS ), 
 		l = (glfwGetKey(win, GLFW_KEY_A) == GLFW_PRESS),
@@ -326,9 +328,88 @@ void look(GLFWwindow* win, double elapsed) {
 	old_y = y;
 }
 
+enum class AnimationType { EULER, QUATERNION };
+string AnimationTypes[] = { "Euler Animation", "Quaternion Animation" };
+AnimationType animation = AnimationType::EULER;
+bool animating = false;
+
+// Set rotation matrixes to initial position
+void resetAnimation() {
+
+	for (Object* obj_ptr : scene) {
+		// set rot to initial
+	}
+	return;
+}
+
+// Interpolate towards some euler rotation matrix target
+void eulerAnimation(double elapsed) {
+	
+	std::cout << "Playing Euler Animation" << std::endl;
+
+	for (Object* obj_ptr : scene) {
+		// lerp
+	}
+	return;
+}
+
+// Interpolate towards some quaternion target
+void quaternionAnimation(double elapsed) {
+	
+	std::cout << "Playing Quaternion Animation" << std::endl;
+
+	for (Object* obj_ptr : scene) {
+		// lerp
+	}
+	return;
+}
+
+void animate(GLFWwindow* win, double elapsed) {
+
+	//Toggle Animation Type
+	static bool toggle_pressed = false;
+	if (!toggle_pressed && glfwGetKey(win, GLFW_KEY_G) == GLFW_PRESS)
+	{
+		animation = (AnimationType)(((int) animation + 1) % 2);
+		animating = false;
+		resetAnimation();
+
+		std::cout << "Animation Type: " << AnimationTypes[(int) animation] << std::endl;
+		toggle_pressed = true;
+	}
+	else if (glfwGetKey(win, GLFW_KEY_G) == GLFW_RELEASE) toggle_pressed = false;
+	
+
+	// Start Animation
+	static bool start_pressed = false;
+	if (!start_pressed && glfwGetKey(win, GLFW_KEY_N) == GLFW_PRESS)
+	{
+		animating = true;
+
+		std::cout << "Start Animation!" << std::endl;
+		start_pressed = true;
+	}
+	else if (glfwGetKey(win, GLFW_KEY_N) == GLFW_RELEASE) start_pressed = false;
+
+	// Actually Animate
+	if (animating) {
+		switch (animation) {
+
+		case AnimationType::EULER:
+			eulerAnimation(elapsed);
+			break;
+
+		case AnimationType::QUATERNION:
+			quaternionAnimation(elapsed);
+			break;
+		}
+	}
+}
+
 void processInput(GLFWwindow* win, double elapsed) {
 	walk(win, elapsed);
 	look(win, elapsed);
+	animate(win, elapsed);
 }
 
 void drawScene(GLFWwindow* win, double elapsed)
@@ -873,7 +954,7 @@ void test6() {
 
 int main(int argc, char* argv[])
 {
-	/*
+	
 	populateScene();
 
 	Vector4D ref(0.8f, -0.5536f, 0.0f, 1);
@@ -892,7 +973,7 @@ int main(int argc, char* argv[])
 		640, 480, "Hello Modern 2D World", is_fullscreen, is_vsync);
 
 	run(win);
-	*/
+	
 
 	std::cout << boolalpha << setprecision(4);
 

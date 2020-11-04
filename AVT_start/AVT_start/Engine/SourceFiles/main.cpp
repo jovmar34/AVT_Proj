@@ -34,6 +34,7 @@
 #include "../HeaderFiles/mxfactory.h"
 #include "../HeaderFiles/object.h"
 #include "../HeaderFiles/camera.h"
+#include "../HeaderFiles/quaternion.h"
 
 double sprint_factor = 1;
 double speed = 10;
@@ -713,8 +714,166 @@ void populateScene() {
 }
 
 
+void test1() {
+	std::cout << "\nTest 1: quaternion rot" << std::endl;
+
+	Vector4D axis(0, 1, 0, 1);
+	Quaternion q(90.0f, axis);
+	std::cout << "q: " << q << std::endl;
+
+	Quaternion qi(0.0f, 7.0f, 0.0f, 0.0f);
+	std::cout << "qi: " << qi << std::endl;
+
+	Quaternion qe(0.0f, 0.0f, 0.0f, -7.0f);
+	std::cout << "qe: " << qe << std::endl;
+
+	Quaternion qinv = q.inverse();
+	std::cout << "qinv: " << qinv << std::endl;
+
+	Quaternion qf1 = (q * qi) * qinv;
+	std::cout << "qf1: " << qf1 << std::endl;
+
+	std::cout << "qf1 == qe? " << (qf1 == qe) << std::endl;
+
+	Quaternion qconj = q.conjugate();
+	std::cout << "qconj: " << qconj << std::endl;
+
+	Quaternion qf2 = (q * qi) * qconj;
+	std::cout << "qf2: " << qf2 << std::endl;
+
+	std::cout << "qf2 == qe? " << (qf1 == qe) << std::endl;
+}
+
+void test2() {
+	std::cout << "\nTest 2: matrix" << std::endl;
+
+	Vector4D axis(0, 1, 0, 1);
+	Quaternion q(90.0f, axis);
+	std::cout << "q: " << q << std::endl;
+
+	Vector4D vi(7.0f, 0.0f, 0.0f, 1.0f);
+	std::cout << "vi: " << vi << std::endl;
+
+	Vector4D ve(0.0f, 0.0f, -7.0f, 1.0f);
+	std::cout << "ve: " << ve << std::endl;
+
+	Matrix4 m = q.rotMat();
+	std::cout << "M: \n" << m << std::endl;
+
+	Vector4D vf = m * vi;
+	std::cout << "vf: " << vf << std::endl;
+
+	std::cout << "vf == ve? " << (vf == ve) << std::endl;
+}
+
+void test3() {
+	std::cout << "\nTest 3: yaw 900 = roll 180 + pitch 180" << std::endl;
+
+	Vector4D axis_x(1.0f, 0.0f, 0.0f, 1.0f);
+	Vector4D axis_y(0.0f, 1.0f, 0.0f, 1.0f);
+	Vector4D axis_z(0.0f, 0.0f, 1.0f, 1.0f);
+
+	Quaternion qyaw900(900.0f, axis_y);
+	std::cout << "qyaw900: " << qyaw900 << std::endl;
+	Quaternion qroll180(180.0f, axis_x);
+	std::cout << "qroll180: " << qroll180 << std::endl;
+	Quaternion qpitch180(180.0f, axis_z);
+	std::cout << "qpitch180: " << qpitch180 << std::endl;
+
+	Quaternion qrp = qpitch180 * qroll180;
+	std::cout << "qrp: " << qrp << std::endl;
+	Quaternion qpr = qroll180 * qpitch180;
+	std::cout << "qpr: " << qpr << std::endl;
+
+	Quaternion qi(0.0f,1.0f,0.0f,0.0f);
+	std::cout << "qi: " << qi << std::endl;
+	Quaternion qe(0.0f, -1.0f, 0.0f, 0.0f);
+	std::cout << "qe: " << qe << std::endl;
+
+	Quaternion qfy = (qyaw900 * qi) * qyaw900.inverse();
+	std::cout << "qfy: " << qfy << std::endl;
+	std::cout << "qfy == qe? " << (qfy == qe) << std::endl;
+
+	Quaternion qfrp = (qrp * qi) * qrp.inverse();
+	std::cout << "qfrp: " << qfrp << std::endl;
+	std::cout << "qfrp == qe? " << (qfrp == qe) << std::endl;
+
+	Quaternion qfpr = (qpr * qi) * qpr.inverse();
+	std::cout << "qfpr: " << qfpr << std::endl;
+	std::cout << "qfpr == qe? " << (qfpr == qe) << std::endl;
+}
+
+void test4() {
+	std::cout << "\nTest 4: Q <-> (angle, axis)" << std::endl;
+
+	double theta1 = 45.0f;
+	Vector4D axis_i(0, 1, 0, 1);
+	Quaternion q(theta1, axis_i);
+	std::cout << "theta1: " << theta1 << std::endl;
+	std::cout << "axis_i: " << axis_i << std::endl;
+
+	double thetaf;
+	Vector4D axis_f = q.toAngleAxis(thetaf);
+	std::cout << "thetaf: " << thetaf << std::endl;
+	std::cout << "axis_f: " << axis_f << std::endl;
+
+	std::cout << "the angles are equal? " << (abs(thetaf - theta1) < EQERR) << std::endl;
+	std::cout << "axis_i == axis_f? " << (axis_i == axis_f) << std::endl;
+
+}
+
+void test5() {
+	std::cout << "\nTest 5: LERP" << std::endl;
+
+	Vector4D axis(0, 1, 0, 1);
+	Quaternion q0(0.0f, axis);
+	std::cout << "q0: " << q0 << std::endl;
+	Quaternion q1(90.0f, axis);
+	std::cout << "q1: " << q1 << std::endl;
+	Quaternion qe(30.0f, axis);
+	std::cout << "qe: " << qe << std::endl;
+
+	Quaternion qLerp0 = q0.Lerp(q1, 0.0f);
+	std::cout << "lerp(0): " << qLerp0 << std::endl;
+	std::cout << "q0 == qLerp0? " << (q0 == qLerp0) << std::endl;
+
+	Quaternion qLerp1 = q0.Lerp(q1, 1.0f);
+	std::cout << "lerp(1): " << qLerp1 << std::endl;
+	std::cout << "q1 == qLerp1? " << (q1 == qLerp1) << std::endl;
+
+	Quaternion qLerp = q0.Lerp(q1, 1/3.0f);
+	std::cout << "lerp(1/3): " << qLerp << std::endl;
+	std::cout << "qe == qLerp? " << (qe == qLerp) << std::endl;
+}
+
+void test6() {
+	std::cout << "\nTest 5: SLERP" << std::endl;
+
+	Vector4D axis(0, 1, 0, 1);
+	Quaternion q0(0.0f, axis);
+	std::cout << "q0: " << q0 << std::endl;
+	Quaternion q1(90.0f, axis);
+	std::cout << "q1: " << q1 << std::endl;
+	Quaternion qe(30.0f, axis);
+	std::cout << "qe: " << qe << std::endl;
+
+	Quaternion qSlerp0 = q0.Slerp(q1, 0.0f);
+	std::cout << "slerp(0): " << qSlerp0 << std::endl;
+	std::cout << "q0 == qSlerp0? " << (q0 == qSlerp0) << std::endl;
+
+	Quaternion qSlerp1 = q0.Slerp(q1, 1.0f);
+	std::cout << "slerp(1): " << qSlerp1 << std::endl;
+	std::cout << "q1 == qSlerp1? " << (q1 == qSlerp1) << std::endl;
+
+	Quaternion qSlerp = q0.Slerp(q1, 1 / 3.0f);
+	std::cout << "slerp(1/3): " << qSlerp << std::endl;
+	std::cout << "qe == qSlerp? " << (qe == qSlerp) << std::endl;
+}
+
+
 int main(int argc, char* argv[])
 {
+	/*
 	populateScene();
 
 	Vector4D ref(0.8f, -0.5536f, 0.0f, 1);
@@ -733,7 +892,17 @@ int main(int argc, char* argv[])
 		640, 480, "Hello Modern 2D World", is_fullscreen, is_vsync);
 
 	run(win);
-	
+	*/
+
+	std::cout << boolalpha << setprecision(4);
+
+	test1();
+	test2();
+	test3();
+	test4();
+	test5();
+	test6();
+
 	exit(EXIT_SUCCESS);
 }
 

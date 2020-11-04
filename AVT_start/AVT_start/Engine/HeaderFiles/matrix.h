@@ -110,7 +110,6 @@ class Matrix2 {
 
 	friend inline ostream& operator << (ostream& s, Matrix2& m)
 	{
-		s << setprecision(4);
 		s << "[" << m.mat[0] << " " << m.mat[2] << "]\n[" << m.mat[1] << " " << m.mat[3] << "]\n";
 		return s;
 	}
@@ -218,7 +217,6 @@ public:
 
 	friend inline ostream& operator << (ostream& s, Matrix3& m)
 	{
-		s << setprecision(4);
 		s << "[" << m.mat[0] << " " << m.mat[3] << " " << m.mat[6] << "]\n[" 
 				 << m.mat[1] << " " << m.mat[4] << " " << m.mat[7] << "]\n["
 				 << m.mat[2] << " " << m.mat[5] << " " << m.mat[8] << "]\n";
@@ -332,7 +330,6 @@ public:
 
 	friend inline ostream& operator << (ostream& s, Matrix4& m)
 	{
-		s << setprecision(4);
 		s << "[" << m.mat[0] << " " << m.mat[4] << " " << m.mat[8] << " " << m.mat[12] << "]\n["
 				 << m.mat[1] << " " << m.mat[5] << " " << m.mat[9] << " " << m.mat[13] << "]\n["
 				 << m.mat[2] << " " << m.mat[6] << " " << m.mat[10] << " " << m.mat[14] << "]\n["

@@ -14,19 +14,24 @@ Quaternion::Quaternion(double theta, Vector4D axis)
     Vector4D axisn = axis;
     axisn.normalize();
 
-    Quaternion q;
     double a = theta * M_PI / 180.0f;
-    q.t = cos(a / 2.0f);
+    t = cos(a / 2.0f);
     double s = sin(a / 2.0f);
-    q.x = axisn.x * s;
-    q.y = axisn.y * s;
-    q.z = axisn.z * s;
+    x = axisn.x * s;
+    y = axisn.y * s;
+    z = axisn.z * s;
 }
 
-Vector4D Quaternion::toAngleAxis(float& theta)
+Vector4D Quaternion::toAngleAxis(double& theta)
 {
+    Quaternion qn = *this;
+    qn.normalize();
+    theta = 2.0f * acos(qn.t) * 180 / M_PI;
+    double s = sqrt(1.0f - qn.t * qn.t);
+    if (s == 0) throw "s is zero";
 
-    return Vector4D();
+    float sinv = 1 / s;
+    return Vector4D(qn.x * sinv, qn.y * sinv, qn.z * sinv, 1.0f);
 }
 
 double Quaternion::quadrance()
@@ -97,6 +102,12 @@ Quaternion Quaternion::operator/(const double s)
 
 GLfloat* Quaternion::toOpenGLRot()
 {
+    Matrix4 rot = rotMat();
+    return rot.toOpenGl();
+}
+
+Matrix4 Quaternion::rotMat()
+{
     Quaternion qn = *this;
     double xx = x * x;
     double xy = x * y;
@@ -116,7 +127,7 @@ GLfloat* Quaternion::toOpenGLRot()
     );
 
 
-    return res.toOpenGl();
+    return res;
 }
 
 Quaternion Quaternion::Lerp(Quaternion& q1, double k)
@@ -129,7 +140,7 @@ Quaternion Quaternion::Lerp(Quaternion& q1, double k)
     return res;
 }
 
-Quaternion Quaternion::Slerp(Quaternion& q1, float k)
+Quaternion Quaternion::Slerp(Quaternion& q1, double k)
 {
     double angle = acos(x * q1.x + y * q1.y + z * q1.z + t * q1.t);
     double k0 = sin((1 - k) * angle) / sin(angle);
@@ -141,14 +152,9 @@ Quaternion Quaternion::Slerp(Quaternion& q1, float k)
 
 bool Quaternion::operator==(const Quaternion& q1)
 {
-    return false;
-}
-
-void Quaternion::print()
-{
-    std::cout << "(" << t << ", " << x << ", " << y << ", " << z << ")" << std::endl;
-}
-
-void Quaternion::printAngleAxis()
-{
+    if (this == &q1) return true;
+    return (abs(t - q1.t) < EQERR && 
+        abs(x - q1.x) < EQERR &&
+        abs(y - q1.y) < EQERR &&
+        abs(z - q1.z) < EQERR );
 }

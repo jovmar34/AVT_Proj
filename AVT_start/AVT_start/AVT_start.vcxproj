@@ -164,6 +164,7 @@
     <ClInclude Include="Engine\HeaderFiles\object.h" />
     <ClInclude Include="Engine\HeaderFiles\mxfactory.h" />
     <ClInclude Include="Engine\HeaderFiles\matrix.h" />
+    <ClInclude Include="Engine\HeaderFiles\quaternion.h" />
     <ClInclude Include="Engine\HeaderFIles\vector.h" />
   </ItemGroup>
   <ItemGroup>

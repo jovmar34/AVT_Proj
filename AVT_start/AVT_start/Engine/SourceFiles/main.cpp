@@ -350,14 +350,14 @@ void resetAnimation() {
 
 // Interpolate towards some euler rotation matrix target
 void eulerAnimation() {
-	
-	std::cout << "Playing Euler Animation" << std::endl;
-
 	Matrix4 currentTransf;
 	double percent = t / animationTime;
 	Vector3D currentRot = Vector3D(0, 180, -90) * percent;
 
-	if (t > animationTime) return;
+	if (t > animationTime) {
+		animating = false;
+		return;
+	}
 
 	for (Object* obj_ptr : scene) {
 
@@ -372,9 +372,6 @@ void eulerAnimation() {
 
 // Interpolate towards some quaternion target
 void quaternionAnimation() {
-	
-	std::cout << "Playing Quaternion Animation" << std::endl;
-	
 	Quaternion startRot =
 		Quaternion(0, Vector4D(0, 0, 1, 1)) *
 		Quaternion(0, Vector4D(1, 0, 0, 1)) *
@@ -387,7 +384,10 @@ void quaternionAnimation() {
 
 	double percent = t / animationTime;
 
-	if (t > animationTime) return;
+	if (t > animationTime) {
+		animating = false;
+		return;
+	}
 
 	for (Object* obj_ptr : scene) {
 
@@ -703,7 +703,7 @@ void run(GLFWwindow* win)
 
 void populateScene() {
 	// Camera init
-	cam = Camera(Vector3D(0, 1, 3), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
+	cam = Camera(Vector3D(0, 0, 3), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
 	cam.parallelProjection(-2,2,-2,2,1,10);
 
 	// Create and initialize objs here

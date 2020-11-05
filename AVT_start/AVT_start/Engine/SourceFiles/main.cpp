@@ -355,7 +355,7 @@ void eulerAnimation() {
 
 	Matrix4 currentTransf;
 	double percent = t / animationTime;
-	Vector3D currentRot = Vector3D(90, 90, 90) * percent;
+	Vector3D currentRot = Vector3D(0, 180, -90) * percent;
 
 	if (t > animationTime) return;
 
@@ -374,9 +374,27 @@ void eulerAnimation() {
 void quaternionAnimation() {
 	
 	std::cout << "Playing Quaternion Animation" << std::endl;
+	
+	Quaternion startRot =
+		Quaternion(0, Vector4D(0, 0, 1, 1)) *
+		Quaternion(0, Vector4D(1, 0, 0, 1)) *
+		Quaternion(0, Vector4D(0, 1, 0, 1));
+
+	Quaternion targetRot =	
+		Quaternion(-90, Vector4D(0, 0, 1, 1)) * 
+		Quaternion(0,	Vector4D(1, 0, 0, 1)) * 
+		Quaternion(180, Vector4D(0, 1, 0, 1));
+
+	double percent = t / animationTime;
+
+	if (t > animationTime) return;
 
 	for (Object* obj_ptr : scene) {
 
+		Quaternion currentRot = startRot.Slerp(targetRot, percent);
+		Matrix4 currentTransf = currentRot.rotMat();
+		
+		obj_ptr->setTransform(currentTransf * obj_ptr->initTransformations);
 	}
 	return;
 }

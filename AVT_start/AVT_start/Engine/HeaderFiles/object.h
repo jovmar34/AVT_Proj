@@ -15,10 +15,12 @@ public:
 	vector<Vector4D> positions;
 	vector<Vector4D> vertexColors;
 	Matrix4 transformations;
+	Matrix4 initTransformations;
 	vector<GLushort> indices;
 
 	Object() {
 		transformations = MxFactory::identity4();
+		initTransformations = transformations;
 	}
 
 	void rotateAroundAxis(Vector3D axis, double angle);
@@ -31,4 +33,8 @@ public:
 
 	void initObject();
 	void drawObject(GLuint ProgramId);
+
+	void saveInitTransform();
+	void resetTransform();
+	void setTransform(Matrix4 transform);
 };

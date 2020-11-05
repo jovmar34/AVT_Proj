@@ -109,3 +109,19 @@ void Object::drawObject(GLuint ProgramId)
 	glUseProgram(0);
 	glBindVertexArray(0);
 }
+
+// save initial transform
+void Object::saveInitTransform() {
+
+	initTransformations = transformations;
+}
+
+void Object::resetTransform() {
+
+	transformations = initTransformations;
+}
+
+void Object::setTransform(Matrix4 transform) {
+
+	transformations = transform;
+}

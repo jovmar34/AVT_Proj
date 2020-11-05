@@ -332,34 +332,51 @@ enum class AnimationType { EULER, QUATERNION };
 string AnimationTypes[] = { "Euler Animation", "Quaternion Animation" };
 AnimationType animation = AnimationType::EULER;
 bool animating = false;
+double animationTime = 2.0f;
+double t = 0.0f;
 
 // Set rotation matrixes to initial position
 void resetAnimation() {
 
+	t = 0;
+	Matrix4 resetRotation = MxFactory::rotation4(Vector3D(0, 0, 1), 240);
+
 	for (Object* obj_ptr : scene) {
-		// set rot to initial
+				
+		obj_ptr->resetTransform();
 	}
 	return;
 }
 
 // Interpolate towards some euler rotation matrix target
-void eulerAnimation(double elapsed) {
+void eulerAnimation() {
 	
 	std::cout << "Playing Euler Animation" << std::endl;
 
+	Matrix4 currentTransf;
+	double percent = t / animationTime;
+	Vector3D currentRot = Vector3D(90, 90, 90) * percent;
+
+	if (t > animationTime) return;
+
 	for (Object* obj_ptr : scene) {
-		// lerp
+
+		currentTransf = MxFactory::rotation4(Vector3D(0, 0, 1), currentRot.z) * 
+						MxFactory::rotation4(Vector3D(1, 0, 0), currentRot.x) * 
+						MxFactory::rotation4(Vector3D(0, 1, 0), currentRot.y);
+
+		obj_ptr->setTransform(currentTransf * obj_ptr->initTransformations);
 	}
 	return;
 }
 
 // Interpolate towards some quaternion target
-void quaternionAnimation(double elapsed) {
+void quaternionAnimation() {
 	
 	std::cout << "Playing Quaternion Animation" << std::endl;
 
 	for (Object* obj_ptr : scene) {
-		// lerp
+
 	}
 	return;
 }
@@ -385,6 +402,7 @@ void animate(GLFWwindow* win, double elapsed) {
 	if (!start_pressed && glfwGetKey(win, GLFW_KEY_N) == GLFW_PRESS)
 	{
 		animating = true;
+		resetAnimation();
 
 		std::cout << "Start Animation!" << std::endl;
 		start_pressed = true;
@@ -393,14 +411,15 @@ void animate(GLFWwindow* win, double elapsed) {
 
 	// Actually Animate
 	if (animating) {
+		t += elapsed;
 		switch (animation) {
 
 		case AnimationType::EULER:
-			eulerAnimation(elapsed);
+			eulerAnimation();
 			break;
 
 		case AnimationType::QUATERNION:
-			quaternionAnimation(elapsed);
+			quaternionAnimation();
 			break;
 		}
 	}
@@ -644,9 +663,6 @@ void run(GLFWwindow* win)
 {
 	double last_time = glfwGetTime();
 	
-	glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	glfwSetCursorPos(win, 0, 0);
-
 	while (!glfwWindowShouldClose(win))
 	{
 		double time = glfwGetTime();
@@ -669,7 +685,7 @@ void run(GLFWwindow* win)
 
 void populateScene() {
 	// Camera init
-	cam = Camera(Vector3D(0, 0, 3), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
+	cam = Camera(Vector3D(0, 1, 3), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
 	cam.parallelProjection(-2,2,-2,2,1,10);
 
 	// Create and initialize objs here
@@ -710,6 +726,7 @@ void populateScene() {
 
 	obj->rotateAroundAxis(Vector3D(0.0f, 0.0f, 1.0f), 240);
 	obj->translate(Vector3D(0.3795f, -0.3108f, 0));
+	obj->saveInitTransform();
 
 	scene.push_back(obj);
 
@@ -730,11 +747,11 @@ void populateScene() {
 
 	obj->rotateAroundAxis(Vector3D(0.0f, 0.0f, 1.0f), 120);
 	obj->translate(Vector3D(-0.08016f, -0.4844f, 0.0f));
+	obj->saveInitTransform();
 
 	scene.push_back(obj);
 
 	// Back face
-	// Part 1
 	// Part 1
 	obj = new Object();
 
@@ -769,6 +786,7 @@ void populateScene() {
 
 	obj->rotateAroundAxis(Vector3D(0.0f, 0.0f, 1.0f), 240);
 	obj->translate(Vector3D(0.3795f, -0.3108f, 0));
+	obj->saveInitTransform();
 
 	scene.push_back(obj);
 
@@ -789,6 +807,7 @@ void populateScene() {
 
 	obj->rotateAroundAxis(Vector3D(0.0f, 0.0f, 1.0f), 120);
 	obj->translate(Vector3D(-0.08016f, -0.4844f, 0.0f));
+	obj->saveInitTransform();
 
 	scene.push_back(obj);
 

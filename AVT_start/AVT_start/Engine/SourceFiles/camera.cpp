@@ -124,7 +124,8 @@ void Camera::drawCamera(GLuint ProgramId)
 	if (projType == CameraProj::None) 
 		throw "The camera projections has not been defined!";
 
-	if (!change || state == Working::Off) return;
+	//dont re-render if there's no change
+	if (!change) return;
 
 	GLfloat* viewMatrix = view.toOpenGl(),
 		*projectionMatrix = projection.toOpenGl();

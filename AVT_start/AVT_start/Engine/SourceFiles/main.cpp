@@ -35,6 +35,7 @@
 #include "../HeaderFiles/object.h"
 #include "../HeaderFiles/camera.h"
 #include "../HeaderFiles/quaternion.h"
+#include "../HeaderFiles/objLoader.h"
 
 double sprint_factor = 1;
 double speed = 10;
@@ -352,12 +353,15 @@ void resetAnimation() {
 void eulerAnimation() {
 	Matrix4 currentTransf;
 	double percent = t / animationTime;
-	Vector3D currentRot = Vector3D(0, 180, -90) * percent;
+	Vector3D currentRot = Vector3D(0, 180, -90);
 
 	if (t > animationTime) {
+		if (!animating) return;
 		animating = false;
-		return;
+		percent = 1.0f;
 	}
+
+	currentRot = currentRot * percent;
 
 	for (Object* obj_ptr : scene) {
 
@@ -385,8 +389,9 @@ void quaternionAnimation() {
 	double percent = t / animationTime;
 
 	if (t > animationTime) {
+		if (!animating) return;
 		animating = false;
-		return;
+		percent = 1.0f;
 	}
 
 	for (Object* obj_ptr : scene) {
@@ -991,7 +996,7 @@ void test6() {
 
 int main(int argc, char* argv[])
 {
-	
+	/** /
 	populateScene();
 
 	Vector4D ref(0.8f, -0.5536f, 0.0f, 1);
@@ -1010,17 +1015,11 @@ int main(int argc, char* argv[])
 		640, 480, "Hello Modern 2D World", is_fullscreen, is_vsync);
 
 	run(win);
+	/**/
+	std::string filepath = "res/meshes/cube.obj";
+	ObjLoader loader;
+	LoaderInfo obj = loader.readFromFile(filepath);
 	
-
-	std::cout << boolalpha << setprecision(4);
-
-	test1();
-	test2();
-	test3();
-	test4();
-	test5();
-	test6();
-
 	exit(EXIT_SUCCESS);
 }
 

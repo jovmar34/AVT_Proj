@@ -95,6 +95,8 @@ void Object::initObject()
 
 	free(Vertices);
 	free(Indices);
+	positions.clear();
+	vertexColors.clear();
 }
 
 void Object::drawObject(GLuint ProgramId)

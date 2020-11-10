@@ -23,6 +23,8 @@ public:
 		initTransformations = transformations;
 	}
 
+	~Object() { }
+
 	void rotateAroundAxis(Vector3D axis, double angle);
 	void translate(Vector3D translateVec);
 	void scale(Vector3D scaleVec);

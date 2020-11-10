@@ -36,6 +36,9 @@
     <ClCompile Include="Engine\SourceFiles\quaternion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\SourceFiles\objLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\HeaderFIles\vector.h">
@@ -54,6 +57,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Engine\HeaderFiles\quaternion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\HeaderFiles\objLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

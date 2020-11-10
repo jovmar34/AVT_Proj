@@ -260,7 +260,7 @@ Vector3D operator*(const double f, const Vector3D& v)
 
 Vector3D& Vector3D::operator*=(const double v)
 {
-	x *= v; y *= v; z *= z; return *this;
+	x *= v; y *= v; z *= v; return *this;
 }
 
 // Scalar division
@@ -419,7 +419,7 @@ Vector4D operator*(const double f, const Vector4D& v)
 
 Vector4D& Vector4D::operator*=(const double v)
 {
-	x *= v; y *= v; z *= z; return *this;
+	x *= v; y *= v; z *= v; return *this;
 }
 
 // Scalar division

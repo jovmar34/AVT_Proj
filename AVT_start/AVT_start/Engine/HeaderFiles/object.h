@@ -5,6 +5,8 @@
 #include "mxfactory.h"
 #include <vector>
 #include <GL/glew.h>
+#include "vertexBuffer.h"
+#include "indexBuffer.h"
 
 #define POSITIONS 0
 #define COLORS 1
@@ -17,6 +19,8 @@ public:
 	Matrix4 transformations;
 	Matrix4 initTransformations;
 	vector<GLushort> indices;
+	VertexBuffer* posbuf, *colbuf;
+	IndexBuffer* indbuf;
 
 	Object() {
 		transformations = MxFactory::identity4();

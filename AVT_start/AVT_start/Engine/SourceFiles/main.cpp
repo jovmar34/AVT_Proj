@@ -996,7 +996,7 @@ void test6() {
 
 int main(int argc, char* argv[])
 {
-	/** /
+	/**/
 	populateScene();
 
 	Vector4D ref(0.8f, -0.5536f, 0.0f, 1);

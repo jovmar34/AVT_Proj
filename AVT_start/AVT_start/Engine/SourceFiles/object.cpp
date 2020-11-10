@@ -42,59 +42,37 @@ void Object::deleteObject()
 
 void Object::initObject()
 {
-	GLsizeiptr vsize = (GLsizeiptr) 2 * positions.size() * 4 * sizeof(GLfloat);
+	vector<GLfloat> pos;
 
-	GLfloat* Vertices = (GLfloat*) calloc(2 * positions.size() * 4, sizeof(GLfloat));
-
-	if (Vertices == NULL) return;
-
-	for (int i = 0; i < positions.size(); i++) {
-		Vertices[8 * i] = (GLfloat) positions[i].x;
-		Vertices[8 * i + 1] = (GLfloat) positions[i].y;
-		Vertices[8 * i + 2] = (GLfloat) positions[i].z;
-		Vertices[8 * i + 3] = (GLfloat) positions[i].w;
-		Vertices[8 * i + 4] = (GLfloat) vertexColors[i].x;
-		Vertices[8 * i + 5] = (GLfloat) vertexColors[i].y;
-		Vertices[8 * i + 6] = (GLfloat) vertexColors[i].z;
-		Vertices[8 * i + 7] = (GLfloat) vertexColors[i].w;
+	for (Vector4D vec : positions) {
+		GLfloat* newpos = vec.toOpenGL();
+		pos.insert(std::end(pos), newpos, newpos + 4);
 	}
 
-	GLint isize = (GLint) indices.size() * sizeof(GLuint);
-	GLushort* Indices = (GLushort*) calloc(indices.size(), sizeof(GLuint));
+	vector<GLfloat> cols;
 
-	if (Indices == NULL) {
-		free(Vertices);
-		return;
-	}
-
-	for (int i = 0; i < indices.size(); i++) {
-		Indices[i] = indices[i];
+	for (Vector4D col : vertexColors) {
+		GLfloat* newcol = col.toOpenGL();
+		cols.insert(std::end(cols), newcol, newcol + 4);
 	}
 
 	glGenVertexArrays(1, &VaoId);
 	glBindVertexArray(VaoId);
 	{
-		glGenBuffers(2, VboId);
+		posbuf = new VertexBuffer(&pos[0], pos.size() * sizeof(GLfloat));
+		glEnableVertexAttribArray(POSITIONS);
+		glVertexAttribPointer(POSITIONS, 4, GL_FLOAT, GL_FALSE, 4*sizeof(GLfloat), 0);
 
-		glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
-		{
-			glBufferData(GL_ARRAY_BUFFER, vsize, Vertices, GL_STATIC_DRAW);
-			glEnableVertexAttribArray(POSITIONS);
-			glVertexAttribPointer(POSITIONS, 4, GL_FLOAT, GL_FALSE, 2 * 4 * sizeof(GLfloat), 0);
-			glEnableVertexAttribArray(COLORS);
-			glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, 2 * 4 * sizeof(GLfloat), (GLvoid*) (4 * sizeof(GLfloat)));
-		}
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
-		{
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, isize, Indices, GL_STATIC_DRAW);
-		}
+		colbuf = new VertexBuffer(&cols[0], cols.size() * sizeof(GLfloat));
+		glEnableVertexAttribArray(COLORS);
+		glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+		colbuf->unbind();
+
+		indbuf = new IndexBuffer(&indices[0], indices.size());
+		indbuf->unbind();
 	}
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	free(Vertices);
-	free(Indices);
+	glBindVertexArray(0);
 	positions.clear();
 	vertexColors.clear();
 }

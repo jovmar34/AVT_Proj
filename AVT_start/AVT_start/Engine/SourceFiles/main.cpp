@@ -233,9 +233,6 @@ void createShaderProgram()
 	glAttachShader(ProgramId, VertexShaderId);
 	glAttachShader(ProgramId, FragmentShaderId);
 
-	glBindAttribLocation(ProgramId, POSITIONS, "in_Position");
-	glBindAttribLocation(ProgramId, COLORS, "in_Color");
-
 	glLinkProgram(ProgramId);
 	UniformId = glGetUniformLocation(ProgramId, "Matrix");
 	UboId = glGetUniformBlockIndex(ProgramId, "SharedMatrices");

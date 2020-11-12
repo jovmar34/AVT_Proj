@@ -220,7 +220,7 @@ static GLuint CompileShader(GLuint type, const std::string& source) {
 
 void createShaderProgram()
 {
-	ShaderSource sources = ParseShader("res/shaders/ThreeD.shader");
+	ShaderSource sources = ParseShader("res/shaders/cube.shader");
 
 	std::string VertexShader = sources.VertexSource, 
 		FragmentShader = sources.FragmentSource;
@@ -234,7 +234,6 @@ void createShaderProgram()
 	glAttachShader(ProgramId, FragmentShaderId);
 
 	glLinkProgram(ProgramId);
-	UniformId = glGetUniformLocation(ProgramId, "Matrix");
 	UboId = glGetUniformBlockIndex(ProgramId, "SharedMatrices");
 	glUniformBlockBinding(ProgramId, UboId, UBO_BP);
 
@@ -265,11 +264,10 @@ std::vector<Object*> scene;
 void createBufferObjects()
 {
 	cam.setupCamera(ProgramId);
-	/** /
 	for (Object* obj_ptr : scene) {
 		obj_ptr->initObject();
 	}
-	/**/
+
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not create VAOs and VBOs.");
 #endif
@@ -277,9 +275,9 @@ void createBufferObjects()
 
 void destroyBufferObjects()
 {
-	/** /
+	/**/
 	for (Object* obj_ptr : scene) {
-		obj_ptr->deleteObject();
+		delete obj_ptr;
 	}
 	/**/
 #ifndef ERROR_CALLBACK
@@ -707,32 +705,21 @@ void run(GLFWwindow* win)
 
 void populateScene() {
 	// Camera init
-	cam = Camera(Vector3D(0, 0, 3), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
+	cam = Camera(Vector3D(3, 3, 4), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
 	cam.parallelProjection(-2,2,-2,2,1,10);
 
-
-}
-
-int main(int argc, char* argv[])
-{
 	std::string filepath = "res/meshes/cube.obj";
 	ObjLoader loader;
 	LoaderInfo vertices = loader.readFromFile(filepath);
 	Mesh cube_meh(vertices);
-	Object cube_ob(cube_meh);
+	Object *cube_ob = new Object(cube_meh);
+	scene.push_back(cube_ob);
+}
 
-
-	/** /
+int main(int argc, char* argv[])
+{
+	/**/
 	populateScene();
-
-	Vector4D ref(0.8f, -0.5536f, 0.0f, 1);
-	Vector4D v1(0.0f, 0.4856f, 0.0f, 1), v2;
-
-	v2 = MxFactory::rotation4(Vector3D(0,0,1), 240) * v1;
-
-	v2 = ref - v2;
-
-	cout << v2 << endl;
 
 	int gl_major = 4, gl_minor = 3;
 	int is_fullscreen = 0;

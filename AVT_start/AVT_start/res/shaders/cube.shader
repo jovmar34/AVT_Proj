@@ -1,17 +1,20 @@
 #shader vertex
 #version 330 core
 
-in vec3 inPosition;
-in vec2 inTexcoord;
-in vec3 inNormal;
+layout(location = 0) in vec3 inPosition;
+layout(location = 1) in vec2 inTexcoord;
+layout(location = 2) in vec3 inNormal;
 
 out vec3 exPosition;
 out vec2 exTexcoord;
 out vec3 exNormal;
 
 uniform mat4 ModelMatrix;
-uniform mat4 ViewMatrix;
-uniform mat4 ProjectionMatrix;
+uniform SharedMatrices
+{
+	mat4 ViewMatrix;
+	mat4 ProjectionMatrix;
+};
 
 void main(void)
 {
@@ -36,9 +39,9 @@ void main(void)
 {
 /**/
 //	vec3 color = vec3(1.0);
-//	vec3 color = (exPosition + vec3(1.0)) * 0.5;
+	vec3 color = (exPosition + vec3(1.0)) * 0.5;
 //	vec3 color = vec3(exTexcoord, 0.0);
-	vec3 color = (exNormal + vec3(1.0)) * 0.5;
+//	vec3 color = (exNormal + vec3(1.0)) * 0.5;
 	FragmentColor = vec4(color,1.0);
 /** /
 	vec3 N = normalize(exNormal);

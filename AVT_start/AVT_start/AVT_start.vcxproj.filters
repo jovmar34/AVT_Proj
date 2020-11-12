@@ -90,5 +90,6 @@
   <ItemGroup>
     <None Include="res\shaders\Basic.shader" />
     <None Include="res\shaders\ThreeD.shader" />
+    <None Include="res\shaders\cube.shader" />
   </ItemGroup>
 </Project>

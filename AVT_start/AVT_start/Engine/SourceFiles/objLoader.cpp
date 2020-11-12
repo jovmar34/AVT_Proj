@@ -15,21 +15,34 @@ void ObjLoader::loadMeshData(std::string& filename)
 
 void ObjLoader::processMeshData()
 {
+	GLuint idx_ctr = 0;
 	for (unsigned int i = 0; i < posInd.size(); i++) {
-		unsigned int vi = posInd[i];
-		Vector3D v = posData[vi - 1];
-		ret.positions.push_back(v);
-		if (ret.hasTextures)
-		{
-			unsigned int ti = textInd[i];
-			Vector2D t = textData[ti - 1];
-			ret.textureCoords.push_back(t);
-		}
-		if (ret.hasNormals)
-		{
-			unsigned int ni = normInd[i];
-			Vector3D n = normData[ni - 1];
-			ret.normals.push_back(n);
+		unsigned int vi = posInd[i], ti = 0, ni = 0;
+		if (ret.hasTextures) ti = textInd[i];
+		if (ret.hasNormals) ni = normInd[i];
+
+		stringstream keystream;
+		keystream << vi << "." << ti << "." << ni;
+		std::string key = keystream.str();
+		if (verticeIdx.find(key) != verticeIdx.end()) {
+			ret.indices.push_back(verticeIdx[key]);
+		} else {
+			Vector3D v = posData[vi - 1];
+			ret.positions.push_back(v);
+			if (ret.hasTextures)
+			{
+				Vector2D t = textData[ti - 1];
+				ret.textureCoords.push_back(t);
+			}
+			if (ret.hasNormals)
+			{
+				Vector3D n = normData[ni - 1];
+				ret.normals.push_back(n);
+			}
+
+			verticeIdx[key] = idx_ctr;
+			ret.indices.push_back(idx_ctr);
+			idx_ctr++;
 		}
 	}
 

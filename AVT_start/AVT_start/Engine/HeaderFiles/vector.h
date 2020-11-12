@@ -90,6 +90,9 @@ public:
 		return s;
 	}
 
+	static GLuint byteSize() {
+		return 2 * sizeof(GLfloat);
+	}
 };
 
 class Vector3D
@@ -175,6 +178,9 @@ public:
 
 	void clear() { x = y = z = 0; }
 
+	static GLuint byteSize() {
+		return 3 * sizeof(GLfloat);
+	}
 };
 
 class Vector4D
@@ -261,5 +267,9 @@ public:
 	{
 		s << "(" << v.x << "," << v.y << "," << v.z << "," << v.w << ")";
 		return s;
+	}
+
+	static GLuint byteSize() {
+		return 4 * sizeof(GLfloat);
 	}
 };

@@ -7,40 +7,30 @@
 #include <GL/glew.h>
 #include "vertexBuffer.h"
 #include "indexBuffer.h"
-
-#define POSITIONS 0
-#define COLORS 1
+#include "mesh.h"
 
 class Object {
 public:
-	GLuint VaoId, VboId[2];
-	vector<Vector4D> positions;
-	vector<Vector4D> vertexColors;
-	Matrix4 transformations;
-	Matrix4 initTransformations;
-	vector<GLushort> indices;
-	VertexBuffer* posbuf, *colbuf;
-	IndexBuffer* indbuf;
+	Mesh mesh;
+	GLuint VaoId;
+	Matrix4 transform;
+	Matrix4 initTransform;
 
-	Object() {
-		transformations = MxFactory::identity4();
-		initTransformations = transformations;
+	Object(Mesh _mesh): mesh(_mesh) {
+		transform = MxFactory::identity4();
+		initTransform = transform;
 	}
 
-	~Object() { }
+	~Object();
 
 	void rotateAroundAxis(Vector3D axis, double angle);
 	void translate(Vector3D translateVec);
 	void scale(Vector3D scaleVec);
-	void addVertex(double posx, double posy, double posz, double r, double g, double b, double a);
-	void addTriangle(GLushort v1, GLushort v2, GLushort v3);
-	void deleteObject();
-	//GLfloat* getVertexInfo();
 
 	void initObject();
 	void drawObject(GLuint ProgramId);
 
 	void saveInitTransform();
 	void resetTransform();
-	void setTransform(Matrix4 transform);
+	void setTransform(Matrix4 _transform);
 };

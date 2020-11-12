@@ -708,7 +708,7 @@ void populateScene() {
 	cam = Camera(Vector3D(3, 3, 4), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
 	cam.parallelProjection(-2,2,-2,2,1,10);
 
-	std::string filepath = "res/meshes/cube.obj";
+	std::string filepath = "res/meshes/arnaldo.obj";
 	ObjLoader loader;
 	LoaderInfo vertices = loader.readFromFile(filepath);
 	Mesh cube_meh(vertices);

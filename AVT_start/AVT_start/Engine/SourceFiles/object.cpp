@@ -2,11 +2,7 @@
 
 Object::~Object()
 {
-	glBindVertexArray(VaoId);
-	glDeleteVertexArrays(1, &VaoId);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	
 }
 
 void Object::rotateAroundAxis(Vector3D axis, double angle)
@@ -24,29 +20,21 @@ void Object::scale(Vector3D scaleVec)
 	transform = MxFactory::scaling4(scaleVec) * transform;
 }
 
-void Object::initObject()
+void Object::initObject(GLuint ProgramId)
 {
-	glGenVertexArrays(1, &VaoId);
-	glBindVertexArray(VaoId);
+	
+	UniformId = glGetUniformLocation(ProgramId, "ModelMatrix");
 
 	mesh.init();
 	
 	glBindVertexArray(0);
 }
 
-void Object::drawObject(GLuint ProgramId)
+void Object::drawObject()
 {
-	glBindVertexArray(VaoId);
-	glUseProgram(ProgramId);
-
-	GLuint UniformId = glGetUniformLocation(ProgramId, "ModelMatrix");
-
 	glUniformMatrix4fv(UniformId, 1, GL_FALSE, transform.toOpenGl());
 
 	mesh.draw();
-
-	glUseProgram(0);
-	glBindVertexArray(0);
 }
 
 // save initial transform

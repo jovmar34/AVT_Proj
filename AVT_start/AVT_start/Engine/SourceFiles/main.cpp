@@ -36,6 +36,7 @@
 #include "../HeaderFiles/camera.h"
 #include "../HeaderFiles/quaternion.h"
 #include "../HeaderFiles/objLoader.h"
+#include "../HeaderFiles/scene.h"
 
 double sprint_factor = 1;
 double speed = 10;
@@ -259,14 +260,11 @@ void destroyShaderProgram()
 
 /////////////////////////////////////////////////////////////////////// VAOs & VBOs
 
-std::vector<Object*> scene;
+Scene *scene;
 
 void createBufferObjects()
 {
-	cam.setupCamera(ProgramId);
-	for (Object* obj_ptr : scene) {
-		obj_ptr->initObject();
-	}
+	scene->init(ProgramId);
 
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not create VAOs and VBOs.");
@@ -275,7 +273,7 @@ void createBufferObjects()
 
 void destroyBufferObjects()
 {
-	/**/
+	/** /
 	for (Object* obj_ptr : scene) {
 		delete obj_ptr;
 	}
@@ -338,12 +336,13 @@ void resetAnimation() {
 
 	t = 0;
 	Matrix4 resetRotation = MxFactory::rotation4(Vector3D(0, 0, 1), 240);
-
+	/** /
 	for (Object* obj_ptr : scene) {
 				
 		obj_ptr->resetTransform();
 	}
 	return;
+	/**/
 }
 
 // Interpolate towards some euler rotation matrix target
@@ -359,7 +358,7 @@ void eulerAnimation() {
 	}
 
 	currentRot = currentRot * percent;
-
+	/** /
 	for (Object* obj_ptr : scene) {
 
 		currentTransf = MxFactory::rotation4(Vector3D(0, 0, 1), currentRot.z) * 
@@ -369,6 +368,7 @@ void eulerAnimation() {
 		obj_ptr->setTransform(currentTransf * obj_ptr->initTransform);
 	}
 	return;
+	/**/
 }
 
 // Interpolate towards some quaternion target
@@ -390,7 +390,7 @@ void quaternionAnimation() {
 		animating = false;
 		percent = 1.0f;
 	}
-
+	/** /
 	for (Object* obj_ptr : scene) {
 
 		Quaternion currentRot = startRot.Slerp(targetRot, percent);
@@ -398,6 +398,7 @@ void quaternionAnimation() {
 		
 		obj_ptr->setTransform(currentTransf * obj_ptr->initTransform);
 	}
+	/**/
 	return;
 }
 
@@ -454,12 +455,10 @@ void processInput(GLFWwindow* win, double elapsed) {
 void drawScene(GLFWwindow* win, double elapsed)
 {
 	processInput(win, elapsed);
+	glUseProgram(ProgramId);
 
-	cam.drawCamera(ProgramId);
-
-	for (Object* obj_ptr : scene) {
-		obj_ptr->drawObject(ProgramId);
-	}
+	scene->draw();
+	glUseProgram(0);
 
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not draw scene.");
@@ -708,12 +707,14 @@ void populateScene() {
 	cam = Camera(Vector3D(3, 3, 4), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
 	cam.parallelProjection(-2,2,-2,2,1,10);
 
+	scene = new Scene(&cam);
+
 	std::string filepath = "res/meshes/teapot_n.obj";
 	ObjLoader loader;
 	LoaderInfo vertices = loader.readFromFile(filepath);
 	Mesh cube_meh(vertices);
-	Object *cube_ob = new Object(cube_meh);
-	scene.push_back(cube_ob);
+	Object cube_ob = Object(cube_meh);
+	scene->addObject(cube_ob);
 }
 
 int main(int argc, char* argv[])

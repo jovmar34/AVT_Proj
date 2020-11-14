@@ -35,5 +35,5 @@ public:
 	void updateView();
 	void toggle();
 
-	void drawCamera();
+	void drawCamera(GLuint ProgramId);
 };

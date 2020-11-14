@@ -1,13 +1,18 @@
 #pragma once
 
-#include "engine.h"
+#include "vector.h"
+#include "matrix.h"
+#include "mxfactory.h"
 #include <vector>
-
+#include <GL/glew.h>
+#include "vertexBuffer.h"
+#include "indexBuffer.h"
+#include "mesh.h"
 
 class Object {
 public:
 	Mesh mesh;
-	GLuint UniformId = 0;
+	GLuint VaoId;
 	Matrix4 transform;
 	Matrix4 initTransform;
 
@@ -22,8 +27,8 @@ public:
 	void translate(Vector3D translateVec);
 	void scale(Vector3D scaleVec);
 
-	void initObject(GLuint ProgramId);
-	void drawObject();
+	void initObject();
+	void drawObject(GLuint ProgramId);
 
 	void saveInitTransform();
 	void resetTransform();

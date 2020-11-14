@@ -51,9 +51,6 @@
     <ClCompile Include="Engine\SourceFiles\mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\SourceFiles\scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\HeaderFIles\vector.h">
@@ -87,12 +84,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Engine\HeaderFiles\mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\HeaderFiles\engine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\HeaderFiles\scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

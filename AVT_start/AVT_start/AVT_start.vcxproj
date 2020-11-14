@@ -160,14 +160,12 @@
     <ClCompile Include="Engine\SourceFiles\matrix.cpp" />
     <ClCompile Include="Engine\SourceFiles\object.cpp" />
     <ClCompile Include="Engine\SourceFiles\quaternion.cpp" />
-    <ClCompile Include="Engine\SourceFiles\scene.cpp" />
     <ClCompile Include="Engine\SourceFiles\shader.cpp" />
     <ClCompile Include="Engine\SourceFiles\vector.cpp" />
     <ClCompile Include="Engine\SourceFiles\vertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\HeaderFiles\camera.h" />
-    <ClInclude Include="Engine\HeaderFiles\engine.h" />
     <ClInclude Include="Engine\HeaderFiles\indexBuffer.h" />
     <ClInclude Include="Engine\HeaderFiles\mesh.h" />
     <ClInclude Include="Engine\HeaderFiles\object.h" />
@@ -175,7 +173,6 @@
     <ClInclude Include="Engine\HeaderFiles\matrix.h" />
     <ClInclude Include="Engine\HeaderFiles\objLoader.h" />
     <ClInclude Include="Engine\HeaderFiles\quaternion.h" />
-    <ClInclude Include="Engine\HeaderFiles\scene.h" />
     <ClInclude Include="Engine\HeaderFiles\shader.h" />
     <ClInclude Include="Engine\HeaderFIles\vector.h" />
     <ClInclude Include="Engine\HeaderFiles\VertexBuffer.h" />

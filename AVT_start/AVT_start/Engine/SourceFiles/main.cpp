@@ -714,6 +714,16 @@ void populateScene() {
 	Mesh cube_meh(vertices);
 	Object *cube_ob = new Object(cube_meh);
 	scene.push_back(cube_ob);
+
+	filepath = "res/meshes/bunny.obj";
+
+	ObjLoader l;
+	LoaderInfo v = l.readFromFile(filepath);
+	Mesh c_m(v);
+	cube_ob = new Object(c_m);
+	cube_ob->translate(Vector3D(0,0,4));
+	cube_ob->saveInitTransform();
+	scene.push_back(cube_ob);
 }
 
 int main(int argc, char* argv[])

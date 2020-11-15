@@ -723,46 +723,55 @@ void populateScene() {
 	Object *obj = new Object(cube_meh);
 	obj->setTransform(init);
 	obj->translate(Vector3D(2, -1, 0 * scale));
+	obj->saveInitTransform();
 	scene.push_back(obj);
 
 	obj = new Object(cube_meh);
 	obj->setTransform(init);
 	obj->translate(Vector3D(0.6666, -1, 1 * scale));
+	obj->saveInitTransform();
 	scene.push_back(obj);
 
 	obj = new Object(cube_meh);
 	obj->setTransform(init);
 	obj->translate(Vector3D(-0.6666, -1, 2 * scale));
+	obj->saveInitTransform();
 	scene.push_back(obj);
 
 	obj = new Object(cube_meh);
 	obj->setTransform(init);
 	obj->translate(Vector3D(-2, -1, 3 * scale));
+	obj->saveInitTransform();
 	scene.push_back(obj);
 
 	obj = new Object(cube_meh);
 	obj->setTransform(init);
 	obj->translate(Vector3D(-1.3333, 0.1547, 4* scale));
+	obj->saveInitTransform();
 	scene.push_back(obj);
 
 	obj = new Object(cube_meh);
 	obj->setTransform(init);
 	obj->translate(Vector3D(-0.6666, 1.3094, 5 * scale));
+	obj->saveInitTransform();
 	scene.push_back(obj);
 
 	obj = new Object(cube_meh);
 	obj->setTransform(init);
 	obj->translate(Vector3D(0.0, 2.4641, 6 * scale));
+	obj->saveInitTransform();
 	scene.push_back(obj);
 
 	obj = new Object(cube_meh);
 	obj->setTransform(init);
 	obj->translate(Vector3D(0.6666, 1.3094, 7 * scale));
+	obj->saveInitTransform();
 	scene.push_back(obj);
 
 	obj = new Object(cube_meh);
 	obj->setTransform(init);
 	obj->translate(Vector3D(1.3333, 0.1547, 8 * scale));
+	obj->saveInitTransform();
 	scene.push_back(obj);
 
 	filepath = "res/meshes/frame.obj";
@@ -771,6 +780,7 @@ void populateScene() {
 	obj = new Object(frame_mesh);
 	obj->scale(Vector3D(5,7,4));
 	obj->rotateAroundAxis(Vector3D(0, 1, 0), -90);
+	obj->saveInitTransform();
 	scene.push_back(obj);
 
 	filepath = "res/meshes/backpiece.obj";
@@ -780,6 +790,7 @@ void populateScene() {
 	obj->scale(Vector3D(5, 7, 4));
 	obj->rotateAroundAxis(Vector3D(0, 1, 0), -90);
 	obj->translate(Vector3D(0, 0, -2));
+	obj->saveInitTransform();
 	scene.push_back(obj);
 }
 

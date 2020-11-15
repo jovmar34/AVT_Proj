@@ -39,9 +39,9 @@ void Object::drawObject(GLuint ProgramId)
 	glBindVertexArray(VaoId);
 	glUseProgram(ProgramId);
 
-	GLuint UniformId = glGetUniformLocation(ProgramId, "ModelMatrix");
+	GLuint MatrixId = glGetUniformLocation(ProgramId, "ModelMatrix");
 
-	glUniformMatrix4fv(UniformId, 1, GL_FALSE, transform.toOpenGl());
+	glUniformMatrix4fv(MatrixId, 1, GL_FALSE, transform.toOpenGl());
 
 	mesh.draw();
 

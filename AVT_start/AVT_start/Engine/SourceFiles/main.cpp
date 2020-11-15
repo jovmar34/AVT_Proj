@@ -457,6 +457,7 @@ void drawScene(GLFWwindow* win, double elapsed)
 
 	cam.drawCamera(ProgramId);
 
+	int i = 0;
 	for (Object* obj_ptr : scene) {
 		obj_ptr->drawObject(ProgramId);
 	}
@@ -719,61 +720,30 @@ void populateScene() {
 	Mesh cube_meh(vertices);
 
 	double scale = 1;
+	double coords[] = { 
+		2		, -1	, 0, 
+		0.6666	, -1	, 1,
+		-0.6666	, -1	, 2,
+		-2		, -1	, 3, 
+		-1.3333	, 0.1547, 4,
+		-0.6666	, 1.3094, 5,
+		0.0		, 2.4641, 6,
+		0.6666	, 1.3094, 7,
+		1.3333	, 0.1547, 8,
+	};
 
-	Object *obj = new Object(cube_meh);
-	obj->setTransform(init);
-	obj->translate(Vector3D(2, -1, 0 * scale));
-	obj->saveInitTransform();
-	scene.push_back(obj);
 
-	obj = new Object(cube_meh);
-	obj->setTransform(init);
-	obj->translate(Vector3D(0.6666, -1, 1 * scale));
-	obj->saveInitTransform();
-	scene.push_back(obj);
+	Object* obj;
 
-	obj = new Object(cube_meh);
-	obj->setTransform(init);
-	obj->translate(Vector3D(-0.6666, -1, 2 * scale));
-	obj->saveInitTransform();
-	scene.push_back(obj);
-
-	obj = new Object(cube_meh);
-	obj->setTransform(init);
-	obj->translate(Vector3D(-2, -1, 3 * scale));
-	obj->saveInitTransform();
-	scene.push_back(obj);
-
-	obj = new Object(cube_meh);
-	obj->setTransform(init);
-	obj->translate(Vector3D(-1.3333, 0.1547, 4* scale));
-	obj->saveInitTransform();
-	scene.push_back(obj);
-
-	obj = new Object(cube_meh);
-	obj->setTransform(init);
-	obj->translate(Vector3D(-0.6666, 1.3094, 5 * scale));
-	obj->saveInitTransform();
-	scene.push_back(obj);
-
-	obj = new Object(cube_meh);
-	obj->setTransform(init);
-	obj->translate(Vector3D(0.0, 2.4641, 6 * scale));
-	obj->saveInitTransform();
-	scene.push_back(obj);
-
-	obj = new Object(cube_meh);
-	obj->setTransform(init);
-	obj->translate(Vector3D(0.6666, 1.3094, 7 * scale));
-	obj->saveInitTransform();
-	scene.push_back(obj);
-
-	obj = new Object(cube_meh);
-	obj->setTransform(init);
-	obj->translate(Vector3D(1.3333, 0.1547, 8 * scale));
-	obj->saveInitTransform();
-	scene.push_back(obj);
-
+	for (int i = 0; i < 9; i++) {
+		obj = new Object(cube_meh);
+		obj->setTransform(init);
+		obj->translate(Vector3D(coords[3*i], coords[3 * i + 1], coords[3 * i + 2] * scale));
+		obj->saveInitTransform();
+		scene.push_back(obj);
+	}
+	
+	/**/
 	filepath = "res/meshes/frame.obj";
 	LoaderInfo frame_info = c_loader.readFromFile(filepath);
 	Mesh frame_mesh(frame_info);
@@ -792,6 +762,7 @@ void populateScene() {
 	obj->translate(Vector3D(0, 0, -2));
 	obj->saveInitTransform();
 	scene.push_back(obj);
+	/**/
 }
 
 int main(int argc, char* argv[])

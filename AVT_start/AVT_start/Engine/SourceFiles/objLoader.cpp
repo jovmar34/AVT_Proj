@@ -9,8 +9,8 @@ void ObjLoader::loadMeshData(std::string& filename)
 		std::stringstream sline(line);
 		parseLine(sline);
 	}
-	ret.hasTextures = (textInd.size() > 0);
-	ret.hasNormals = (normInd.size() > 0);
+	ret->hasTextures = (textInd.size() > 0);
+	ret->hasNormals = (normInd.size() > 0);
 }
 
 void ObjLoader::processMeshData()
@@ -18,30 +18,30 @@ void ObjLoader::processMeshData()
 	GLuint idx_ctr = 0;
 	for (unsigned int i = 0; i < posInd.size(); i++) {
 		unsigned int vi = posInd[i], ti = 0, ni = 0;
-		if (ret.hasTextures) ti = textInd[i];
-		if (ret.hasNormals) ni = normInd[i];
+		if (ret->hasTextures) ti = textInd[i];
+		if (ret->hasNormals) ni = normInd[i];
 
 		stringstream keystream;
 		keystream << vi << "." << ti << "." << ni;
 		std::string key = keystream.str();
 		if (verticeIdx.find(key) != verticeIdx.end()) {
-			ret.indices.push_back(verticeIdx[key]);
+			ret->indices.push_back(verticeIdx[key]);
 		} else {
 			Vector3D v = posData[vi - 1];
-			ret.positions.push_back(v);
-			if (ret.hasTextures)
+			ret->positions.push_back(v);
+			if (ret->hasTextures)
 			{
 				Vector2D t = textData[ti - 1];
-				ret.textureCoords.push_back(t);
+				ret->textureCoords.push_back(t);
 			}
-			if (ret.hasNormals)
+			if (ret->hasNormals)
 			{
 				Vector3D n = normData[ni - 1];
-				ret.normals.push_back(n);
+				ret->normals.push_back(n);
 			}
 
 			verticeIdx[key] = idx_ctr;
-			ret.indices.push_back(idx_ctr);
+			ret->indices.push_back(idx_ctr);
 			idx_ctr++;
 		}
 	}
@@ -56,6 +56,7 @@ void ObjLoader::freeMeshData()
 	posInd.clear();
 	textInd.clear();
 	normInd.clear();
+	verticeIdx.clear();
 }
 
 void ObjLoader::parseLine(std::stringstream& sin)
@@ -117,8 +118,10 @@ void ObjLoader::parseFace(std::stringstream& sin)
 
 LoaderInfo ObjLoader::readFromFile(std::string& filename)
 {
+	ret = new LoaderInfo();
+
 	loadMeshData(filename);
 	processMeshData();
 	freeMeshData();
-	return ret;
+	return *ret;
 }

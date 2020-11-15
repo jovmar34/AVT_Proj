@@ -12,7 +12,7 @@ struct LoaderInfo {
 	vector<Vector2D> textureCoords;
 	vector<Vector3D> normals;
 	vector<GLuint> indices;
-	bool hasTextures, hasNormals;
+	bool hasTextures = false, hasNormals = false;
 };
 
 class ObjLoader {
@@ -30,6 +30,6 @@ class ObjLoader {
 	void parseNormal(std::stringstream& sin);
 	void parseFace(std::stringstream& sin);
 public:
-	LoaderInfo ret;
+	LoaderInfo* ret;
 	LoaderInfo readFromFile(std::string& filename);
 };

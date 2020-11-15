@@ -333,7 +333,7 @@ bool animating = false;
 double animationTime = 2.0f;
 double t = 0.0f;
 
-// Set rotation matrixes to initial position
+// Set init matrixes to initial position
 void resetAnimation() {
 
 	t = 0;
@@ -346,7 +346,7 @@ void resetAnimation() {
 	return;
 }
 
-// Interpolate towards some euler rotation matrix target
+// Interpolate towards some euler init matrix target
 void eulerAnimation() {
 	Matrix4 currentTransf;
 	double percent = t / animationTime;
@@ -492,7 +492,7 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 				cam.perspectiveProjection(60, 4.0f / 3.0f, 1, 50);
 			}
 			else {
-				cam.parallelProjection(-2,2,-2,2,1,50);
+				cam.parallelProjection(-10, 10, -10, 10, 1, 50);
 			}
 			break;
 		case GLFW_KEY_ESCAPE:
@@ -705,25 +705,82 @@ void run(GLFWwindow* win)
 
 void populateScene() {
 	// Camera init
-	cam = Camera(Vector3D(3, 3, 4), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
-	cam.parallelProjection(-2,2,-2,2,1,10);
+	cam = Camera(Vector3D(0, 0, 20), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
+	cam.parallelProjection(-10,10,-10,10,1,50);
 
-	std::string filepath = "res/meshes/teapot_n.obj";
-	ObjLoader loader;
-	LoaderInfo vertices = loader.readFromFile(filepath);
+	Matrix4 init = MxFactory::rotation4(Vector3D(0, 1, 0), 45) *
+		MxFactory::rotation4(Vector3D(1, 0, 0), 45) *
+		MxFactory::rotation4(Vector3D(0, 0, 1), 90) * 
+		MxFactory::scaling4(Vector3D(0.5,0.5,0.5));
+
+	std::string filepath = "res/meshes/cube.obj";
+	ObjLoader c_loader;
+	LoaderInfo vertices = c_loader.readFromFile(filepath);
 	Mesh cube_meh(vertices);
-	Object *cube_ob = new Object(cube_meh);
-	scene.push_back(cube_ob);
 
-	filepath = "res/meshes/bunny.obj";
+	double scale = 1;
 
-	ObjLoader l;
-	LoaderInfo v = l.readFromFile(filepath);
-	Mesh c_m(v);
-	cube_ob = new Object(c_m);
-	cube_ob->translate(Vector3D(0,0,4));
-	cube_ob->saveInitTransform();
-	scene.push_back(cube_ob);
+	Object *obj = new Object(cube_meh);
+	obj->setTransform(init);
+	obj->translate(Vector3D(2, -1, 0 * scale));
+	scene.push_back(obj);
+
+	obj = new Object(cube_meh);
+	obj->setTransform(init);
+	obj->translate(Vector3D(0.6666, -1, 1 * scale));
+	scene.push_back(obj);
+
+	obj = new Object(cube_meh);
+	obj->setTransform(init);
+	obj->translate(Vector3D(-0.6666, -1, 2 * scale));
+	scene.push_back(obj);
+
+	obj = new Object(cube_meh);
+	obj->setTransform(init);
+	obj->translate(Vector3D(-2, -1, 3 * scale));
+	scene.push_back(obj);
+
+	obj = new Object(cube_meh);
+	obj->setTransform(init);
+	obj->translate(Vector3D(-1.3333, 0.1547, 4* scale));
+	scene.push_back(obj);
+
+	obj = new Object(cube_meh);
+	obj->setTransform(init);
+	obj->translate(Vector3D(-0.6666, 1.3094, 5 * scale));
+	scene.push_back(obj);
+
+	obj = new Object(cube_meh);
+	obj->setTransform(init);
+	obj->translate(Vector3D(0.0, 2.4641, 6 * scale));
+	scene.push_back(obj);
+
+	obj = new Object(cube_meh);
+	obj->setTransform(init);
+	obj->translate(Vector3D(0.6666, 1.3094, 7 * scale));
+	scene.push_back(obj);
+
+	obj = new Object(cube_meh);
+	obj->setTransform(init);
+	obj->translate(Vector3D(1.3333, 0.1547, 8 * scale));
+	scene.push_back(obj);
+
+	filepath = "res/meshes/frame.obj";
+	LoaderInfo frame_info = c_loader.readFromFile(filepath);
+	Mesh frame_mesh(frame_info);
+	obj = new Object(frame_mesh);
+	obj->scale(Vector3D(5,7,4));
+	obj->rotateAroundAxis(Vector3D(0, 1, 0), -90);
+	scene.push_back(obj);
+
+	filepath = "res/meshes/backpiece.obj";
+	LoaderInfo back_info = c_loader.readFromFile(filepath);
+	Mesh back_mesh(back_info);
+	obj = new Object(back_mesh);
+	obj->scale(Vector3D(5, 7, 4));
+	obj->rotateAroundAxis(Vector3D(0, 1, 0), -90);
+	obj->translate(Vector3D(0, 0, -2));
+	scene.push_back(obj);
 }
 
 int main(int argc, char* argv[])

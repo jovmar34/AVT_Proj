@@ -264,8 +264,26 @@ std::vector<Object*> scene;
 void createBufferObjects()
 {
 	cam.setupCamera(ProgramId);
+
+	int i = 0;
+	float zbuf;
+	bool fake;
 	for (Object* obj_ptr : scene) {
-		obj_ptr->initObject();
+		if (i == 0) {
+			zbuf = 1;
+		}
+		else if (i == 10) {
+			zbuf = 0;
+		}
+		else {
+			zbuf = -1;
+		}
+		
+		if (i == 9) fake = true;
+		else fake = false;
+
+		obj_ptr->initObject(zbuf, fake);
+		i++;
 	}
 
 #ifndef ERROR_CALLBACK
@@ -457,8 +475,10 @@ void drawScene(GLFWwindow* win, double elapsed)
 
 	cam.drawCamera(ProgramId);
 
-	int i = 0;
-	for (Object* obj_ptr : scene) {
+	float zbuf = 1;
+	for (int i = 0; i < scene.size(); i++) {
+		Object* obj_ptr = scene[i];
+
 		obj_ptr->drawObject(ProgramId);
 	}
 
@@ -709,20 +729,33 @@ void populateScene() {
 	cam = Camera(Vector3D(0, 0, 20), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
 	cam.parallelProjection(-10,10,-10,10,1,50);
 
+	// Painting
+	Object* obj;
+	std::string filepath;
+	ObjLoader c_loader;
+
 	Matrix4 init = MxFactory::rotation4(Vector3D(0, 1, 0), 45) *
 		MxFactory::rotation4(Vector3D(1, 0, 0), 45) *
 		MxFactory::rotation4(Vector3D(0, 0, 1), 90) * 
 		MxFactory::scaling4(Vector3D(0.5,0.5,0.5));
 
-	std::string filepath = "res/meshes/cube.obj";
-	ObjLoader c_loader;
+	filepath = "res/meshes/backpiece.obj";
+	LoaderInfo back_info = c_loader.readFromFile(filepath);
+	Mesh back_mesh(back_info);
+	obj = new Object(back_mesh);
+	obj->scale(Vector3D(5, 7, 4));
+	obj->rotateAroundAxis(Vector3D(0, 1, 0), -90);
+	obj->translate(Vector3D(0, 0, -0.5f));
+	obj->saveInitTransform();
+	scene.push_back(obj);
+
+	filepath = "res/meshes/cube.obj";
+	
 	LoaderInfo vertices = c_loader.readFromFile(filepath);
 	Mesh cube_meh(vertices);
 
 	double scale = 1;
 	double coords[] = { 
-		2		, -1	, 0, 
-		0.6666	, -1	, 1,
 		-0.6666	, -1	, 2,
 		-2		, -1	, 3, 
 		-1.3333	, 0.1547, 4,
@@ -730,10 +763,10 @@ void populateScene() {
 		0.0		, 2.4641, 6,
 		0.6666	, 1.3094, 7,
 		1.3333	, 0.1547, 8,
+		2		, -1	, 0, 
+		0.6666	, -1	, 1,
 	};
 
-
-	Object* obj;
 
 	for (int i = 0; i < 9; i++) {
 		obj = new Object(cube_meh);
@@ -750,16 +783,6 @@ void populateScene() {
 	obj = new Object(frame_mesh);
 	obj->scale(Vector3D(5,7,4));
 	obj->rotateAroundAxis(Vector3D(0, 1, 0), -90);
-	obj->saveInitTransform();
-	scene.push_back(obj);
-
-	filepath = "res/meshes/backpiece.obj";
-	LoaderInfo back_info = c_loader.readFromFile(filepath);
-	Mesh back_mesh(back_info);
-	obj = new Object(back_mesh);
-	obj->scale(Vector3D(5, 7, 4));
-	obj->rotateAroundAxis(Vector3D(0, 1, 0), -90);
-	obj->translate(Vector3D(0, 0, -2));
 	obj->saveInitTransform();
 	scene.push_back(obj);
 	/**/

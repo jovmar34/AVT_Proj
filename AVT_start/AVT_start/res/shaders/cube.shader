@@ -8,6 +8,7 @@ layout(location = 2) in vec3 inNormal;
 out vec3 exPosition;
 out vec2 exTexcoord;
 out vec3 exNormal;
+out float exzbuf;
 
 uniform mat4 ModelMatrix;
 uniform SharedMatrices
@@ -16,11 +17,18 @@ uniform SharedMatrices
 	mat4 ProjectionMatrix;
 };
 
+uniform float zbuf;
+uniform int fake;
+
 void main(void)
 {
 	exPosition = inPosition;
 	exTexcoord = inTexcoord;
 	exNormal = inNormal;
+
+	if (fake == 1 && inPosition == vec3(1, -1, -1)) exzbuf = 0.02;
+	else if (fake == 1 && inPosition == vec3(-1, 1, -1)) exzbuf = 0.98;
+	else exzbuf = zbuf;
 
 	vec4 MCPosition = vec4(inPosition, 1.0);
 	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * MCPosition;
@@ -32,22 +40,14 @@ void main(void)
 in vec3 exPosition;
 in vec2 exTexcoord;
 in vec3 exNormal;
+in float exzbuf;
 
 out vec4 FragmentColor;
 
 void main(void)
 {
-/** /
-//	vec3 color = vec3(1.0);
-//	vec3 color = (normalize(exPosition) + vec3(1.0)) * 0.5;
-//	vec3 color = vec3(exTexcoord, 0.0);
-	vec3 color = (exNormal + vec3(1.0)) * 0.5;
-	FragmentColor = vec4(color,1.0);
-/** /
-	vec3 N = normalize(exNormal);
-	vec3 direction = vec3(1.0, 0.5, 0.25);
-	float intensity = max(dot(direction, N), 0.0);
-	FragmentColor = vec4(vec3(intensity), 1.0);
-/**/
 	FragmentColor = vec4(exNormal, 1.0);
+	if (exzbuf >= 0) {
+		gl_FragDepth = exzbuf * gl_FragCoord.z;
+	}
 }

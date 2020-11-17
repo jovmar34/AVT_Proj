@@ -24,8 +24,10 @@ void Object::scale(Vector3D scaleVec)
 	transform = MxFactory::scaling4(scaleVec) * transform;
 }
 
-void Object::initObject()
+void Object::initObject(float zbuf, bool fake)
 {
+	m_zbuf = zbuf;
+	m_fake = fake;
 	glGenVertexArrays(1, &VaoId);
 	glBindVertexArray(VaoId);
 
@@ -40,8 +42,12 @@ void Object::drawObject(GLuint ProgramId)
 	glUseProgram(ProgramId);
 
 	GLuint MatrixId = glGetUniformLocation(ProgramId, "ModelMatrix");
+	GLuint zbufid = glGetUniformLocation(ProgramId, "zbuf");
+	GLuint fakeid = glGetUniformLocation(ProgramId, "fake");
 
 	glUniformMatrix4fv(MatrixId, 1, GL_FALSE, transform.toOpenGl());
+	glUniform1f(zbufid, m_zbuf);
+	glUniform1i(fakeid, (m_fake) ? 1 : 0);
 
 	mesh.draw();
 

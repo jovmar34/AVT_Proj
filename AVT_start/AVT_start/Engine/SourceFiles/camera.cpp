@@ -119,7 +119,7 @@ void Camera::toggle()
 }
 
 
-void Camera::drawCamera(GLuint ProgramId)
+void Camera::drawCamera()
 {
 	if (projType == CameraProj::None) 
 		throw "The camera projections has not been defined!";

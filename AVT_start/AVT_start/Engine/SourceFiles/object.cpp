@@ -1,5 +1,11 @@
 #include "..\HeaderFiles\object.h"
 
+Object::Object(Mesh _mesh, float zbuf, int fake) : mesh(_mesh), m_zbuf(zbuf) {
+	m_fake = (fake == 1) ? true : false;
+	transform = MxFactory::identity4();
+	initTransform = transform;
+}
+
 Object::~Object()
 {
 	glBindVertexArray(VaoId);
@@ -24,10 +30,9 @@ void Object::scale(Vector3D scaleVec)
 	transform = MxFactory::scaling4(scaleVec) * transform;
 }
 
-void Object::initObject(float zbuf, bool fake)
+void Object::initObject(GLuint ProgId)
 {
-	m_zbuf = zbuf;
-	m_fake = fake;
+	ProgramId = ProgId;
 	glGenVertexArrays(1, &VaoId);
 	glBindVertexArray(VaoId);
 
@@ -36,7 +41,7 @@ void Object::initObject(float zbuf, bool fake)
 	glBindVertexArray(0);
 }
 
-void Object::drawObject(GLuint ProgramId)
+void Object::drawObject()
 {
 	glBindVertexArray(VaoId);
 	glUseProgram(ProgramId);

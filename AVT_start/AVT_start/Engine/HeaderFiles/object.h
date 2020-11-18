@@ -12,16 +12,13 @@
 class Object {
 public:
 	Mesh mesh;
-	GLuint VaoId;
+	GLuint VaoId, ProgramId;
 	Matrix4 transform;
 	Matrix4 initTransform;
-	float m_zbuf = 0.0f;
-	bool m_fake = false;
+	float m_zbuf;
+	bool m_fake;
 
-	Object(Mesh _mesh): mesh(_mesh) {
-		transform = MxFactory::identity4();
-		initTransform = transform;
-	}
+	Object(Mesh _mesh, float zbuf, int fake);
 
 	~Object();
 
@@ -29,8 +26,8 @@ public:
 	void translate(Vector3D translateVec);
 	void scale(Vector3D scaleVec);
 
-	void initObject(float zbuf, bool fake);
-	void drawObject(GLuint ProgramId);
+	void initObject(GLuint ProgId);
+	void drawObject();
 
 	void saveInitTransform();
 	void resetTransform();

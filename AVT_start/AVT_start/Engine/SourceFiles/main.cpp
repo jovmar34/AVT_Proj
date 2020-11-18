@@ -36,6 +36,7 @@
 #include "../HeaderFiles/camera.h"
 #include "../HeaderFiles/quaternion.h"
 #include "../HeaderFiles/objLoader.h"
+#include "../HeaderFiles/sceneGraph.h"
 
 double sprint_factor = 1;
 double speed = 10;
@@ -260,32 +261,12 @@ void destroyShaderProgram()
 /////////////////////////////////////////////////////////////////////// VAOs & VBOs
 
 std::vector<Object*> scene;
+SceneGraph graph;
 
 void createBufferObjects()
 {
-	cam.setupCamera(ProgramId);
-
-	int i = 0;
-	float zbuf;
-	bool fake;
-	for (Object* obj_ptr : scene) {
-		if (i == 0) {
-			zbuf = 1;
-		}
-		else if (i == 10) {
-			zbuf = 0;
-		}
-		else {
-			zbuf = -1;
-		}
-		
-		if (i == 9) fake = true;
-		else fake = false;
-
-		obj_ptr->initObject(zbuf, fake);
-		i++;
-	}
-
+	graph.init(ProgramId);
+	
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not create VAOs and VBOs.");
 #endif
@@ -473,14 +454,7 @@ void drawScene(GLFWwindow* win, double elapsed)
 {
 	processInput(win, elapsed);
 
-	cam.drawCamera(ProgramId);
-
-	float zbuf = 1;
-	for (int i = 0; i < scene.size(); i++) {
-		Object* obj_ptr = scene[i];
-
-		obj_ptr->drawObject(ProgramId);
-	}
+	graph.draw();
 
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not draw scene.");
@@ -729,25 +703,26 @@ void populateScene() {
 	cam = Camera(Vector3D(0, 0, 20), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
 	cam.parallelProjection(-10,10,-10,10,1,50);
 
+	graph.setCamera(&cam);
+
 	// Painting
 	Object* obj;
 	std::string filepath;
 	ObjLoader c_loader;
-
-	Matrix4 init = MxFactory::rotation4(Vector3D(0, 1, 0), 45) *
-		MxFactory::rotation4(Vector3D(1, 0, 0), 45) *
-		MxFactory::rotation4(Vector3D(0, 0, 1), 90) * 
-		MxFactory::scaling4(Vector3D(0.5,0.5,0.5));
-
+	/**/
 	filepath = "res/meshes/backpiece.obj";
 	LoaderInfo back_info = c_loader.readFromFile(filepath);
 	Mesh back_mesh(back_info);
-	obj = new Object(back_mesh);
-	obj->scale(Vector3D(5, 7, 4));
-	obj->rotateAroundAxis(Vector3D(0, 1, 0), -90);
-	obj->translate(Vector3D(0, 0, -0.5f));
-	obj->saveInitTransform();
+
+	obj = new Object(back_mesh, 1, 0);
+	Matrix4 backInit = MxFactory::translation4(Vector3D(0, 0, -0.5f)) *
+		MxFactory::rotation4(Vector3D(0, 1, 0), -90) *
+		MxFactory::scaling4(Vector3D(5, 7, 4));
+
+	graph.addChild(obj, "backpiece", backInit);
+
 	scene.push_back(obj);
+	/**/
 
 	filepath = "res/meshes/cube.obj";
 	
@@ -755,37 +730,57 @@ void populateScene() {
 	Mesh cube_meh(vertices);
 
 	double scale = 1;
+
 	double coords[] = { 
-		-0.6666	, -1	, 2,
-		-2		, -1	, 3, 
-		-1.3333	, 0.1547, 4,
-		-0.6666	, 1.3094, 5,
-		0.0		, 2.4641, 6,
-		0.6666	, 1.3094, 7,
-		1.3333	, 0.1547, 8,
-		2		, -1	, 0, 
-		0.6666	, -1	, 1,
+		-0.6666	, -1	, 2, -1, 0,
+		-2		, -1	, 3, -1, 0,
+		-1.3333	, 0.1547, 4, -1, 0,
+		-0.6666	, 1.3094, 5, -1, 0,
+		0.0		, 2.4641, 6, -1, 0,
+		0.6666	, 1.3094, 7, -1, 0,
+		1.3333	, 0.1547, 8, -1, 0,
+		2		, -1	, 0, -1, 0,
+		0.6666	, -1	, 1, -1, 1,
 	};
 
+	Matrix4 init = 
+		MxFactory::scaling4(Vector3D(0.5, 0.5, 0.5)) *
+		MxFactory::rotation4(Vector3D(0, 1, 0), 45) *
+		MxFactory::rotation4(Vector3D(1, 0, 0), 45) *
+		MxFactory::rotation4(Vector3D(0, 0, 1), 90);
+
+	graph.addChild(nullptr, "cube_container", init);
+	graph.setCurr();
 
 	for (int i = 0; i < 9; i++) {
-		obj = new Object(cube_meh);
-		obj->setTransform(init);
-		obj->translate(Vector3D(coords[3*i], coords[3 * i + 1], coords[3 * i + 2] * scale));
-		obj->saveInitTransform();
+		stringstream ss;
+		int start = 5 * i;
+		obj = new Object(cube_meh, coords[start + 3], coords[start + 4]);
+
+		ss << "cube" << i;
+		graph.addChild(obj, ss.str(), MxFactory::translation4(Vector3D(coords[start], coords[start + 1], coords[start + 2] * scale)));
+
 		scene.push_back(obj);
 	}
 	
 	/**/
+	graph.setCurrToRoot();
+
+	Matrix4 frameInit = MxFactory::rotation4(Vector3D(0, 1, 0), -90) *
+		MxFactory::scaling4(Vector3D(5, 7, 4));
+
 	filepath = "res/meshes/frame.obj";
 	LoaderInfo frame_info = c_loader.readFromFile(filepath);
 	Mesh frame_mesh(frame_info);
-	obj = new Object(frame_mesh);
-	obj->scale(Vector3D(5,7,4));
-	obj->rotateAroundAxis(Vector3D(0, 1, 0), -90);
+	obj = new Object(frame_mesh, 0, 0);
+	
+	graph.addChild(obj, "frame", frameInit);
+
 	obj->saveInitTransform();
 	scene.push_back(obj);
 	/**/
+
+	graph.describe();
 }
 
 int main(int argc, char* argv[])
@@ -793,6 +788,7 @@ int main(int argc, char* argv[])
 	/**/
 	populateScene();
 
+	/**/
 	int gl_major = 4, gl_minor = 3;
 	int is_fullscreen = 0;
 	int is_vsync = 1;
@@ -800,9 +796,19 @@ int main(int argc, char* argv[])
 		640, 480, "Hello Modern 2D World", is_fullscreen, is_vsync);
 
 	run(win);
+	/** /
+	
+	SceneGraph graph;
+	graph.setTransform(MxFactory::translation4(Vector3D(0, 0, -1)));
+	graph.addChild("frame");
+	graph.addChild("backpiece");
+	graph.addChild("cube_container");
+	graph.setCurr();
+	graph.addChild("cube1", MxFactory::translation4(Vector3D(0, 0, 1)));
+	graph.addChild("cube2", MxFactory::translation4(Vector3D(0, 0, 2)));
+
+	graph.describe();
 	/**/
-	
-	
 	exit(EXIT_SUCCESS);
 }
 

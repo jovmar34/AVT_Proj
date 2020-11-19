@@ -42,9 +42,11 @@ double sprint_factor = 1;
 double speed = 10;
 bool animate_frame = false;
 bool animate_cubes = false;
+bool stop_cubes = true;
 double ani_time_cubes = 2.0f;
 double ani_time_frame = 5.0f;
 double t_frame = 0.0f, t_cubes = 0.0f;
+bool reset_cam = false;
 
 Vector3D coords[] = {
 		Vector3D(-0.6666, -1, 2),
@@ -338,12 +340,6 @@ void look(GLFWwindow* win, double elapsed) {
 	old_y = y;
 }
 
-
-// Set init matrixes to initial position
-void resetAnimation() {
-
-}
-
 void animate(GLFWwindow* win, double elapsed) {
 	if (animate_frame) {
 		double time;
@@ -361,6 +357,9 @@ void animate(GLFWwindow* win, double elapsed) {
 		graph.animateFrame(time);
 	}
 
+	if (stop_cubes == false)
+		animate_cubes = true;
+
 	if (animate_cubes) {
 		double angle;
 		t_cubes += elapsed;
@@ -368,6 +367,8 @@ void animate(GLFWwindow* win, double elapsed) {
 		if (t_cubes >= ani_time_cubes) {
 			angle = 2 * M_PI;
 			t_cubes = 0;
+
+			if (stop_cubes) animate_cubes = false;
 		}
 		else {
 			angle = 2 * M_PI * t_cubes / ani_time_cubes;
@@ -378,8 +379,19 @@ void animate(GLFWwindow* win, double elapsed) {
 }
 
 void processInput(GLFWwindow* win, double elapsed) {
-	walk(win, elapsed);
-	look(win, elapsed);
+	if (reset_cam) {
+		cam.eye = Vector3D(0, 0, 20);
+		cam.center = Vector3D(0, 0, 0);
+		cam.up = Vector3D(0, 1, 0);
+
+		cam.updateView();
+		reset_cam = false;
+	}
+	else {
+		walk(win, elapsed);
+		look(win, elapsed);
+	}
+
 	animate(win, elapsed);
 }
 
@@ -439,7 +451,10 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 			animate_frame = true;
 			break;
 		case GLFW_KEY_C:
-			animate_cubes = true;
+			stop_cubes = !stop_cubes;
+			break;
+		case GLFW_KEY_R:
+			reset_cam = true;
 			break;
 		}
 	}

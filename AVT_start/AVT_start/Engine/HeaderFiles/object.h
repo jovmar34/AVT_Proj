@@ -27,9 +27,11 @@ public:
 	void scale(Vector3D scaleVec);
 
 	void initObject(GLuint ProgId);
-	void drawObject();
+	void drawObject(Matrix4& transf);
 
 	void saveInitTransform();
 	void resetTransform();
 	void setTransform(Matrix4 _transform);
+	Vector3D getPosition();
+	Vector3D getBasePosition();
 };

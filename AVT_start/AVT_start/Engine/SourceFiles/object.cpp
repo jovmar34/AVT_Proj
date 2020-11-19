@@ -41,7 +41,7 @@ void Object::initObject(GLuint ProgId)
 	glBindVertexArray(0);
 }
 
-void Object::drawObject()
+void Object::drawObject(Matrix4& transf)
 {
 	glBindVertexArray(VaoId);
 	glUseProgram(ProgramId);
@@ -50,7 +50,8 @@ void Object::drawObject()
 	GLuint zbufid = glGetUniformLocation(ProgramId, "zbuf");
 	GLuint fakeid = glGetUniformLocation(ProgramId, "fake");
 
-	glUniformMatrix4fv(MatrixId, 1, GL_FALSE, transform.toOpenGl());
+
+	glUniformMatrix4fv(MatrixId, 1, GL_FALSE, transf.toOpenGl());
 	glUniform1f(zbufid, m_zbuf);
 	glUniform1i(fakeid, (m_fake) ? 1 : 0);
 
@@ -74,4 +75,14 @@ void Object::resetTransform() {
 void Object::setTransform(Matrix4 _transform) {
 
 	transform = _transform;
+}
+
+Vector3D Object::getPosition()
+{
+	return Vector3D(transform(3, 0), transform(3, 1), transform(3, 2));
+}
+
+Vector3D Object::getBasePosition()
+{
+	return Vector3D(initTransform(0, 3), initTransform(1, 3), initTransform(2, 3));
 }

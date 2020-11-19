@@ -30,6 +30,6 @@ class ObjLoader {
 	void parseNormal(std::stringstream& sin);
 	void parseFace(std::stringstream& sin);
 public:
-	LoaderInfo* ret;
+	LoaderInfo* ret = nullptr;
 	LoaderInfo readFromFile(std::string& filename);
 };

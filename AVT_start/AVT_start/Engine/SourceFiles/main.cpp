@@ -40,6 +40,23 @@
 
 double sprint_factor = 1;
 double speed = 10;
+bool animate_frame = false;
+bool animate_cubes = false;
+double ani_time_cubes = 2.0f;
+double ani_time_frame = 5.0f;
+double t_frame = 0.0f, t_cubes = 0.0f;
+
+Vector3D coords[] = {
+		Vector3D(-0.6666, -1, 2),
+		Vector3D(-2, -1	, 3),
+		Vector3D(-1.3333, 0.1547, 4),
+		Vector3D(-0.6666, 1.3094, 5),
+		Vector3D(0.0, 2.4641, 6),
+		Vector3D(0.6666, 1.3094, 7),
+		Vector3D(1.3333, 0.1547, 8),
+		Vector3D(2, -1	, 0),
+		Vector3D(0.6666, -1, 1),
+};
 
 ////////////////////////////////////////////////// ERROR CALLBACK (OpenGL 4.3+)
 
@@ -260,6 +277,8 @@ void destroyShaderProgram()
 
 /////////////////////////////////////////////////////////////////////// VAOs & VBOs
 
+int fakes[] = {	0,	0,	0, 0, 0, 0, 0, 0, 1 };
+
 std::vector<Object*> scene;
 SceneGraph graph;
 
@@ -274,19 +293,13 @@ void createBufferObjects()
 
 void destroyBufferObjects()
 {
-	/**/
-	for (Object* obj_ptr : scene) {
-		delete obj_ptr;
-	}
-	/**/
+	
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not destroy VAOs and VBOs.");
 #endif
 }
 
 /////////////////////////////////////////////////////////////////////// SCENE
-
-
 
 void walk(GLFWwindow* win, double elapsed) {
 	int r = (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS ), 
@@ -325,122 +338,42 @@ void look(GLFWwindow* win, double elapsed) {
 	old_y = y;
 }
 
-enum class AnimationType { EULER, QUATERNION };
-string AnimationTypes[] = { "Euler Animation", "Quaternion Animation" };
-AnimationType animation = AnimationType::EULER;
-bool animating = false;
-double animationTime = 2.0f;
-double t = 0.0f;
 
 // Set init matrixes to initial position
 void resetAnimation() {
 
-	t = 0;
-	Matrix4 resetRotation = MxFactory::rotation4(Vector3D(0, 0, 1), 240);
-
-	for (Object* obj_ptr : scene) {
-				
-		obj_ptr->resetTransform();
-	}
-	return;
-}
-
-// Interpolate towards some euler init matrix target
-void eulerAnimation() {
-	Matrix4 currentTransf;
-	double percent = t / animationTime;
-	Vector3D currentRot = Vector3D(0, 180, -90);
-
-	if (t > animationTime) {
-		if (!animating) return;
-		animating = false;
-		percent = 1.0f;
-	}
-
-	currentRot = currentRot * percent;
-
-	for (Object* obj_ptr : scene) {
-
-		currentTransf = MxFactory::rotation4(Vector3D(0, 0, 1), currentRot.z) * 
-						MxFactory::rotation4(Vector3D(1, 0, 0), currentRot.x) * 
-						MxFactory::rotation4(Vector3D(0, 1, 0), currentRot.y);
-
-		obj_ptr->setTransform(currentTransf * obj_ptr->initTransform);
-	}
-	return;
-}
-
-// Interpolate towards some quaternion target
-void quaternionAnimation() {
-	Quaternion startRot =
-		Quaternion(0, Vector4D(0, 0, 1, 1)) *
-		Quaternion(0, Vector4D(1, 0, 0, 1)) *
-		Quaternion(0, Vector4D(0, 1, 0, 1));
-
-	Quaternion targetRot =	
-		Quaternion(-90, Vector4D(0, 0, 1, 1)) * 
-		Quaternion(0,	Vector4D(1, 0, 0, 1)) * 
-		Quaternion(180, Vector4D(0, 1, 0, 1));
-
-	double percent = t / animationTime;
-
-	if (t > animationTime) {
-		if (!animating) return;
-		animating = false;
-		percent = 1.0f;
-	}
-
-	for (Object* obj_ptr : scene) {
-
-		Quaternion currentRot = startRot.Slerp(targetRot, percent);
-		Matrix4 currentTransf = currentRot.rotMat();
-		
-		obj_ptr->setTransform(currentTransf * obj_ptr->initTransform);
-	}
-	return;
 }
 
 void animate(GLFWwindow* win, double elapsed) {
+	if (animate_frame) {
+		double time;
+		t_frame += elapsed;
 
-	//Toggle Animation Type
-	static bool toggle_pressed = false;
-	if (!toggle_pressed && glfwGetKey(win, GLFW_KEY_G) == GLFW_PRESS)
-	{
-		animation = (AnimationType)(((int) animation + 1) % 2);
-		animating = false;
-		resetAnimation();
-
-		std::cout << "Animation Type: " << AnimationTypes[(int) animation] << std::endl;
-		toggle_pressed = true;
-	}
-	else if (glfwGetKey(win, GLFW_KEY_G) == GLFW_RELEASE) toggle_pressed = false;
-	
-
-	// Start Animation
-	static bool start_pressed = false;
-	if (!start_pressed && glfwGetKey(win, GLFW_KEY_N) == GLFW_PRESS)
-	{
-		animating = true;
-		resetAnimation();
-
-		std::cout << "Start Animation!" << std::endl;
-		start_pressed = true;
-	}
-	else if (glfwGetKey(win, GLFW_KEY_N) == GLFW_RELEASE) start_pressed = false;
-
-	// Actually Animate
-	if (animating) {
-		t += elapsed;
-		switch (animation) {
-
-		case AnimationType::EULER:
-			eulerAnimation();
-			break;
-
-		case AnimationType::QUATERNION:
-			quaternionAnimation();
-			break;
+		if (t_frame >= ani_time_frame) {
+			time = 1;
+			animate_frame = false;
+			t_frame = 0;
 		}
+		else {
+			time = t_frame / ani_time_frame;
+		}
+
+		graph.animateFrame(time);
+	}
+
+	if (animate_cubes) {
+		double angle;
+		t_cubes += elapsed;
+
+		if (t_cubes >= ani_time_cubes) {
+			angle = 2 * M_PI;
+			t_cubes = 0;
+		}
+		else {
+			angle = 2 * M_PI * t_cubes / ani_time_cubes;
+		}
+
+		graph.animateCubes(angle);
 	}
 }
 
@@ -501,6 +434,12 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 			break;
 		case GLFW_KEY_LEFT_SHIFT:
 			sprint_factor = 1;
+			break;
+		case GLFW_KEY_F:
+			animate_frame = true;
+			break;
+		case GLFW_KEY_C:
+			animate_cubes = true;
 			break;
 		}
 	}
@@ -709,6 +648,7 @@ void populateScene() {
 	Object* obj;
 	std::string filepath;
 	ObjLoader c_loader;
+
 	/**/
 	filepath = "res/meshes/backpiece.obj";
 	LoaderInfo back_info = c_loader.readFromFile(filepath);
@@ -721,46 +661,26 @@ void populateScene() {
 
 	graph.addChild(obj, "backpiece", backInit);
 
-	scene.push_back(obj);
 	/**/
-
 	filepath = "res/meshes/cube.obj";
 	
 	LoaderInfo vertices = c_loader.readFromFile(filepath);
 	Mesh cube_meh(vertices);
 
-	double scale = 1;
-
-	double coords[] = { 
-		-0.6666	, -1	, 2, -1, 0,
-		-2		, -1	, 3, -1, 0,
-		-1.3333	, 0.1547, 4, -1, 0,
-		-0.6666	, 1.3094, 5, -1, 0,
-		0.0		, 2.4641, 6, -1, 0,
-		0.6666	, 1.3094, 7, -1, 0,
-		1.3333	, 0.1547, 8, -1, 0,
-		2		, -1	, 0, -1, 0,
-		0.6666	, -1	, 1, -1, 1,
-	};
-
-	Matrix4 init = 
-		MxFactory::scaling4(Vector3D(0.5, 0.5, 0.5)) *
+	Matrix4 init =  MxFactory::scaling4(Vector3D(0.5, 0.5, 0.5)) *
 		MxFactory::rotation4(Vector3D(0, 1, 0), 45) *
 		MxFactory::rotation4(Vector3D(1, 0, 0), 45) *
 		MxFactory::rotation4(Vector3D(0, 0, 1), 90);
-
-	graph.addChild(nullptr, "cube_container", init);
+		
+	graph.addChild(nullptr, "cube_container", MxFactory::translation4(Vector3D(0, -0.1547f, 0)));
 	graph.setCurr();
 
 	for (int i = 0; i < 9; i++) {
 		stringstream ss;
-		int start = 5 * i;
-		obj = new Object(cube_meh, coords[start + 3], coords[start + 4]);
+		obj = new Object(cube_meh, -1, fakes[i]); 
 
 		ss << "cube" << i;
-		graph.addChild(obj, ss.str(), MxFactory::translation4(Vector3D(coords[start], coords[start + 1], coords[start + 2] * scale)));
-
-		scene.push_back(obj);
+		graph.addChild(obj, ss.str(), MxFactory::translation4(Vector3D(coords[i])) * init);
 	}
 	
 	/**/
@@ -777,7 +697,6 @@ void populateScene() {
 	graph.addChild(obj, "frame", frameInit);
 
 	obj->saveInitTransform();
-	scene.push_back(obj);
 	/**/
 
 	graph.describe();

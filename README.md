@@ -14,4 +14,14 @@
 
 - Change rotation type: G
 - Animate: N
-- Camera controls acrivated by pressing ESC; controls similar to last assignment
+- Camera controls activated by pressing ESC; controls similar to last assignment
+
+## Assignemnt 6
+
+- Camera Controls same as assignment 5.
+- Toggle Cubes Animation: C
+- Animate Frame: F
+
+- Extras:
+1. Reset camera position and direction: R
+2. Frame and Backpiece are different from the assignment

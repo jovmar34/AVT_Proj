@@ -30,7 +30,7 @@ Vector4D Quaternion::toAngleAxis(double& theta)
     double s = sqrt(1.0f - qn.t * qn.t);
     if (s == 0) throw "s is zero";
 
-    float sinv = 1 / s;
+    double sinv = 1 / s;
     return Vector4D(qn.x * sinv, qn.y * sinv, qn.z * sinv, 1.0f);
 }
 

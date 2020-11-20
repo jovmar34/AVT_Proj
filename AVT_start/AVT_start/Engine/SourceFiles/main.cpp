@@ -654,7 +654,7 @@ void run(GLFWwindow* win)
 
 void populateScene() {
 	// Camera init
-	cam = Camera(Vector3D(0, 0, 20), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
+	cam = Camera(Vector3D(0, 0, 25), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
 	cam.parallelProjection(-10,10,-10,10,1,50);
 
 	graph.setCamera(&cam);
@@ -665,6 +665,22 @@ void populateScene() {
 	ObjLoader c_loader;
 
 	/**/
+	graph.setCurrToRoot();
+
+	Matrix4 frameInit = MxFactory::rotation4(Vector3D(0, 1, 0), -90) *
+		MxFactory::scaling4(Vector3D(5, 7, 4));
+
+	filepath = "res/meshes/frame.obj";
+	LoaderInfo frame_info = c_loader.readFromFile(filepath);
+	Mesh frame_mesh(frame_info);
+	obj = new Object(frame_mesh, 0, 0);
+
+	graph.addChild(obj, "frame", frameInit);
+	graph.setCurr();
+
+	/**/
+	Matrix4 frameCounter = MxFactory::invscaling4(Vector3D(5, 7, 4)) *
+		MxFactory::invrotation4(Vector3D(0, 1, 0), -90);
 	filepath = "res/meshes/backpiece.obj";
 	LoaderInfo back_info = c_loader.readFromFile(filepath);
 	Mesh back_mesh(back_info);
@@ -674,7 +690,7 @@ void populateScene() {
 		MxFactory::rotation4(Vector3D(0, 1, 0), -90) *
 		MxFactory::scaling4(Vector3D(5, 7, 4));
 
-	graph.addChild(obj, "backpiece", backInit);
+	graph.addChild(obj, "backpiece", frameCounter * backInit);
 
 	/**/
 	filepath = "res/meshes/cube.obj";
@@ -687,7 +703,7 @@ void populateScene() {
 		MxFactory::rotation4(Vector3D(1, 0, 0), 45) *
 		MxFactory::rotation4(Vector3D(0, 0, 1), 90);
 		
-	graph.addChild(nullptr, "cube_container", MxFactory::translation4(Vector3D(0, -0.1547f, 0)));
+	graph.addChild(nullptr, "cube_container", frameCounter * MxFactory::translation4(Vector3D(0, -0.1547f, 0)));
 	graph.setCurr();
 
 	for (int i = 0; i < 9; i++) {
@@ -697,21 +713,7 @@ void populateScene() {
 		ss << "cube" << i;
 		graph.addChild(obj, ss.str(), MxFactory::translation4(Vector3D(coords[i])) * init);
 	}
-	
-	/**/
-	graph.setCurrToRoot();
 
-	Matrix4 frameInit = MxFactory::rotation4(Vector3D(0, 1, 0), -90) *
-		MxFactory::scaling4(Vector3D(5, 7, 4));
-
-	filepath = "res/meshes/frame.obj";
-	LoaderInfo frame_info = c_loader.readFromFile(filepath);
-	Mesh frame_mesh(frame_info);
-	obj = new Object(frame_mesh, 0, 0);
-	
-	graph.addChild(obj, "frame", frameInit);
-
-	obj->saveInitTransform();
 	/**/
 
 	graph.describe();

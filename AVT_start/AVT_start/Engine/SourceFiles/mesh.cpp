@@ -33,7 +33,7 @@ void Mesh::init()
 		pos.insert(std::end(pos), newpos, newpos + 3);
 	}
 
-	posbuf = new VertexBuffer(&pos[0], pos.size() * sizeof(GLfloat));
+	posbuf = new VertexBuffer(&pos[0], (unsigned int) pos.size() * sizeof(GLfloat));
 	glEnableVertexAttribArray(POSITIONS);
 	glVertexAttribPointer(POSITIONS, 3, GL_FLOAT, GL_FALSE, Vector3D::byteSize(), 0);
 
@@ -44,7 +44,7 @@ void Mesh::init()
 			uvs.insert(std::end(uvs), newuv, newuv + 3);
 		}
 
-		uvbuf = new VertexBuffer(&uvs[0], uvs.size() * sizeof(GLfloat));
+		uvbuf = new VertexBuffer(&uvs[0], (unsigned int) uvs.size() * sizeof(GLfloat));
 		glEnableVertexAttribArray(UVCOORDS);
 		glVertexAttribPointer(UVCOORDS, 2, GL_FLOAT, GL_FALSE, Vector2D::byteSize(), 0);
 	}
@@ -56,17 +56,17 @@ void Mesh::init()
 			norms.insert(std::end(norms), newnorm, newnorm + 3);
 		}
 
-		normbuf = new VertexBuffer(&norms[0], norms.size() * sizeof(GLfloat));
+		normbuf = new VertexBuffer(&norms[0], (unsigned int) norms.size() * sizeof(GLfloat));
 		glEnableVertexAttribArray(NORMALS);
 		glVertexAttribPointer(NORMALS, 3, GL_FLOAT, GL_FALSE, Vector3D::byteSize(), 0);
 	}
 
-	indbuf = new IndexBuffer(vertices.indices.data(), vertices.indices.size());
+	indbuf = new IndexBuffer(vertices.indices.data(), (unsigned int) vertices.indices.size());
 	indbuf->unbind();
 	normbuf->unbind();
 }
 
 void Mesh::draw()
 {
-	glDrawElements(GL_TRIANGLES, vertices.indices.size(), GL_UNSIGNED_INT, (GLvoid*) 0);
+	glDrawElements(GL_TRIANGLES, (GLsizei) vertices.indices.size(), GL_UNSIGNED_INT, (GLvoid*) 0);
 }

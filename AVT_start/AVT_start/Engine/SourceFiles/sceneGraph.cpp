@@ -161,21 +161,35 @@ void SceneGraph::animateFrame(double time)
 	master->transform = transform;
 }
 
+double remap(double val, double low1, double high1 , double low2, double high2) {
+	return low2 + (val - low1) * (high2 - low2) / (high1 - low1);
+}
+
 // time in range [0,1]
 void SceneGraph::animateCubes(double angle)
 {
 	vector<SceneNode*> cubes = nameMap["cube_container"]->children;
 
 	double offset_factor = 0.5; 
+	double amplitude = 2.0;
+
+	angle = remap(angle, 0, 2 * M_PI, -M_PI / 2, 5 * M_PI_2);
+
 	for (int i = 0; i < cubes.size(); i++) {
+		
 		SceneNode* cubei = cubes[i];
 		Matrix4 init = cubei->obj->initTransform;
-		Vector3D dir = cubei->obj->getBasePosition(); // T * S * R
+		Vector3D dir = cubei->obj->getBasePosition();
 		dir.z = 0;
 		dir.normalize();
-		double val = offset_factor * (1 + sin(angle - M_PI_2));
-		Vector3D translate_vec = dir * val;
 
+		double cube_angle = atan2(dir.y, dir.x) - atan2(1, 0);
+		if (cube_angle < 0) cube_angle += 2 * M_PI;
+
+		double alpha = angle - cube_angle;
+		double val = exp(-pow(amplitude * alpha, 2));
+
+		Vector3D translate_vec = dir * val;
 		Matrix4 new_transform = MxFactory::translation4(translate_vec) * init;
 
 		cubei->obj->setTransform(new_transform);

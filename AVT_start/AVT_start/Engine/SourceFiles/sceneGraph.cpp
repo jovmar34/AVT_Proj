@@ -153,12 +153,12 @@ void SceneGraph::setTransform(Matrix4 transform)
 // time in range [0,1]
 void SceneGraph::animateFrame(double time) 
 {
-	SceneNode* master = root;
+	SceneNode* master = nameMap["frame"];
 	double angle = time * 360; // in degrees
 
 	Matrix4 transform = MxFactory::rotation4(Vector3D(0,1,0), angle);
 
-	master->transform = transform;
+	master->obj->transform = transform * master->obj->initTransform;
 }
 
 double remap(double val, double low1, double high1 , double low2, double high2) {

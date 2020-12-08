@@ -38,14 +38,9 @@
 #include "../HeaderFiles/objLoader.h"
 #include "../HeaderFiles/sceneGraph.h"
 
-double sprint_factor = 1;
-double speed = 10;
-bool animate_frame = false;
-bool animate_cubes = false;
-bool stop_cubes = true;
-double ani_time_cubes = 2.0f;
-double ani_time_frame = 5.0f;
-double t_frame = 0.0f, t_cubes = 0.0f;
+double sprint_factor = 2;
+double speed = 20;
+
 bool reset_cam = false;
 
 Vector3D coords[] = {
@@ -342,43 +337,6 @@ void look(GLFWwindow* win, double elapsed) {
 	old_y = y;
 }
 
-void animate(GLFWwindow* win, double elapsed) {
-	if (animate_frame) {
-		double time;
-		t_frame += elapsed;
-
-		if (t_frame >= ani_time_frame) {
-			time = 1;
-			animate_frame = false;
-			t_frame = 0;
-		}
-		else {
-			time = t_frame / ani_time_frame;
-		}
-
-		graph.animateFrame(time);
-	}
-
-	if (stop_cubes == false)
-		animate_cubes = true;
-
-	if (animate_cubes) {
-		double angle;
-		t_cubes += elapsed;
-
-		if (t_cubes >= ani_time_cubes) {
-			angle = 2 * M_PI;
-			t_cubes = 0;
-
-			if (stop_cubes) animate_cubes = false;
-		}
-		else {
-			angle = 2 * M_PI * t_cubes / ani_time_cubes;
-		}
-
-		graph.animateCubes(angle);
-	}
-}
 
 void processInput(GLFWwindow* win, double elapsed) {
 	if (reset_cam) {
@@ -393,8 +351,6 @@ void processInput(GLFWwindow* win, double elapsed) {
 		walk(win, elapsed);
 		look(win, elapsed);
 	}
-
-	animate(win, elapsed);
 }
 
 void drawScene(GLFWwindow* win, double elapsed)
@@ -429,14 +385,6 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 	std::cout << "key: " << key << " " << scancode << " " << action << " " << mods << std::endl;
 	if (action == GLFW_RELEASE) {
 		switch (key) {
-		case GLFW_KEY_P:
-			if (cam.projType == CameraProj::Parallel) {
-				cam.perspectiveProjection(60, 4.0f / 3.0f, 1, 50);
-			}
-			else {
-				cam.parallelProjection(-10, 10, -10, 10, 1, 50);
-			}
-			break;
 		case GLFW_KEY_ESCAPE:
 			if (cam.state == Working::On) {
 				glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -448,12 +396,6 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 			break;
 		case GLFW_KEY_LEFT_SHIFT:
 			sprint_factor = 1;
-			break;
-		case GLFW_KEY_F:
-			animate_frame = true;
-			break;
-		case GLFW_KEY_C:
-			stop_cubes = !stop_cubes;
 			break;
 		case GLFW_KEY_R:
 			reset_cam = true;
@@ -657,7 +599,7 @@ void run(GLFWwindow* win)
 void populateScene() {
 	// Camera init
 	cam = Camera(Vector3D(0, 0, 25), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
-	cam.parallelProjection(-10,10,-10,10,1,50);
+	cam.perspectiveProjection(60, 4.0f / 3.0f, 1, 50);
 
 	graph.setCamera(&cam);
 
@@ -731,7 +673,7 @@ int main(int argc, char* argv[])
 	int is_fullscreen = 0;
 	int is_vsync = 1;
 	GLFWwindow* win = setup(gl_major, gl_minor,
-		640, 480, "Hello Modern 2D World", is_fullscreen, is_vsync);
+		1080, 720, "Hello Modern 2D World", is_fullscreen, is_vsync);
 
 	run(win);
 	/** /

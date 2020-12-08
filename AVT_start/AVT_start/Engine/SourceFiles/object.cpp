@@ -1,7 +1,7 @@
 #include "..\HeaderFiles\object.h"
 
-Object::Object(Mesh _mesh, float zbuf, int fake) : mesh(_mesh), m_zbuf(zbuf) {
-	m_fake = (fake == 1) ? true : false;
+Object::Object(Mesh _mesh) : mesh(_mesh) {
+
 	transform = MxFactory::identity4();
 	initTransform = transform;
 }
@@ -47,13 +47,7 @@ void Object::drawObject(Matrix4& transf)
 	glUseProgram(ProgramId);
 
 	GLuint MatrixId = glGetUniformLocation(ProgramId, "ModelMatrix");
-	GLuint zbufid = glGetUniformLocation(ProgramId, "zbuf");
-	GLuint fakeid = glGetUniformLocation(ProgramId, "fake");
-
-
 	glUniformMatrix4fv(MatrixId, 1, GL_FALSE, transf.toOpenGl());
-	glUniform1f(zbufid, m_zbuf);
-	glUniform1i(fakeid, (m_fake) ? 1 : 0);
 
 	mesh.draw();
 

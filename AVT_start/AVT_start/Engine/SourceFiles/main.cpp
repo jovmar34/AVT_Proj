@@ -105,10 +105,12 @@ static const std::string errorSeverity(GLenum severity)
 static void error(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
 	const GLchar* message, const void* userParam)
 {
+
 	std::cerr << "GL ERROR:" << std::endl;
 	std::cerr << "  source:     " << errorSource(source) << std::endl;
 	std::cerr << "  type:       " << errorType(type) << std::endl;
 	std::cerr << "  severity:   " << errorSeverity(severity) << std::endl;
+	std::cerr << "  id:         " << id << std::endl;
 	std::cerr << "  debug call: " << std::endl << message << std::endl << std::endl;
 	std::cerr << "Press <return>.";
 	std::cin.ignore();
@@ -240,7 +242,7 @@ static GLuint CompileShader(GLuint type, const std::string& source) {
 
 void createShaderProgram()
 {
-	ShaderSource sources = ParseShader("res/shaders/cube.shader");
+	ShaderSource sources = ParseShader("res/shaders/base.shader");
 
 	std::string VertexShader = sources.VertexSource, 
 		FragmentShader = sources.FragmentSource;
@@ -673,7 +675,7 @@ void populateScene() {
 	filepath = "res/meshes/frame.obj";
 	LoaderInfo frame_info = c_loader.readFromFile(filepath);
 	Mesh frame_mesh(frame_info);
-	obj = new Object(frame_mesh, 0, 0);
+	obj = new Object(frame_mesh);
 
 	graph.addChild(obj, "frame", frameInit);
 	graph.setCurr();
@@ -685,7 +687,7 @@ void populateScene() {
 	LoaderInfo back_info = c_loader.readFromFile(filepath);
 	Mesh back_mesh(back_info);
 
-	obj = new Object(back_mesh, 1, 0);
+	obj = new Object(back_mesh);
 	Matrix4 backInit = MxFactory::translation4(Vector3D(0, 0, -0.5f)) *
 		MxFactory::rotation4(Vector3D(0, 1, 0), -90) *
 		MxFactory::scaling4(Vector3D(5, 7, 4));
@@ -708,7 +710,7 @@ void populateScene() {
 
 	for (int i = 0; i < 9; i++) {
 		stringstream ss;
-		obj = new Object(cube_meh, -1, fakes[i]); 
+		obj = new Object(cube_meh); 
 
 		ss << "cube" << i;
 		graph.addChild(obj, ss.str(), MxFactory::translation4(Vector3D(coords[i])) * init);

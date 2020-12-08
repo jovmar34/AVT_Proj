@@ -18,7 +18,7 @@ public:
 	float m_zbuf;
 	bool m_fake;
 
-	Object(Mesh _mesh, float zbuf, int fake);
+	Object(Mesh _mesh);
 
 	~Object();
 

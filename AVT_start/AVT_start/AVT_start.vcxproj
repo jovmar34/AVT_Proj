@@ -181,6 +181,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\ass6.shader" />
+    <None Include="res\shaders\base.shader" />
     <None Include="res\shaders\Basic.shader" />
     <None Include="res\shaders\cube.shader" />
     <None Include="res\shaders\ThreeD.shader" />

@@ -347,10 +347,10 @@ void processInput(GLFWwindow* win, double elapsed) {
 		cam.updateView();
 		reset_cam = false;
 	}
-	else {
-		walk(win, elapsed);
-		look(win, elapsed);
-	}
+	
+	walk(win, elapsed);
+	look(win, elapsed);
+	
 }
 
 void drawScene(GLFWwindow* win, double elapsed)
@@ -603,72 +603,33 @@ void populateScene() {
 
 	graph.setCamera(&cam);
 
-	// Painting
-	Object* obj;
-	std::string filepath;
-	ObjLoader c_loader;
-
-	/**/
+	
+	// Plane
 	graph.setCurrToRoot();
 
-	Matrix4 frameInit = MxFactory::rotation4(Vector3D(0, 1, 0), -90) *
-		MxFactory::scaling4(Vector3D(5, 7, 4));
+	Matrix4 plane_transf = MxFactory::rotation4(Vector3D(1, 0, 0), 90) *
+		MxFactory::scaling4(Vector3D(10, 1, 10));
 
-	filepath = "res/meshes/frame.obj";
-	LoaderInfo frame_info = c_loader.readFromFile(filepath);
-	Mesh frame_mesh(frame_info);
-	obj = new Object(frame_mesh);
+	// mesh
+	ObjLoader c_loader;
+	std::string file_name = "res/meshes/plane.obj";
+	LoaderInfo plane_info = c_loader.readFromFile(file_name);
+	Mesh plane_mesh(plane_info);
 
-	graph.addChild(obj, "frame", frameInit);
+	// object
+	Object* plane_obj = new Object(plane_mesh);
+
+	graph.addChild(plane_obj, "plane", plane_transf);
 	graph.setCurr();
-
-	/**/
-	Matrix4 frameCounter = MxFactory::invscaling4(Vector3D(5, 7, 4)) *
-		MxFactory::invrotation4(Vector3D(0, 1, 0), -90);
-	filepath = "res/meshes/backpiece.obj";
-	LoaderInfo back_info = c_loader.readFromFile(filepath);
-	Mesh back_mesh(back_info);
-
-	obj = new Object(back_mesh);
-	Matrix4 backInit = MxFactory::translation4(Vector3D(0, 0, -0.5f)) *
-		MxFactory::rotation4(Vector3D(0, 1, 0), -90) *
-		MxFactory::scaling4(Vector3D(5, 7, 4));
-
-	graph.addChild(obj, "backpiece", frameCounter * backInit);
-
-	/**/
-	filepath = "res/meshes/cube.obj";
-	
-	LoaderInfo vertices = c_loader.readFromFile(filepath);
-	Mesh cube_meh(vertices);
-
-	Matrix4 init =  MxFactory::scaling4(Vector3D(0.5, 0.5, 0.5)) *
-		MxFactory::rotation4(Vector3D(0, 1, 0), 45) *
-		MxFactory::rotation4(Vector3D(1, 0, 0), 45) *
-		MxFactory::rotation4(Vector3D(0, 0, 1), 90);
-		
-	graph.addChild(nullptr, "cube_container", frameCounter * MxFactory::translation4(Vector3D(0, -0.1547f, 0)));
-	graph.setCurr();
-
-	for (int i = 0; i < 9; i++) {
-		stringstream ss;
-		obj = new Object(cube_meh); 
-
-		ss << "cube" << i;
-		graph.addChild(obj, ss.str(), MxFactory::translation4(Vector3D(coords[i])) * init);
-	}
-
-	/**/
 
 	graph.describe();
 }
 
 int main(int argc, char* argv[])
 {
-	/**/
+	
 	populateScene();
 
-	/**/
 	int gl_major = 4, gl_minor = 3;
 	int is_fullscreen = 0;
 	int is_vsync = 1;
@@ -676,19 +637,7 @@ int main(int argc, char* argv[])
 		1080, 720, "Hello Modern 2D World", is_fullscreen, is_vsync);
 
 	run(win);
-	/** /
-	
-	SceneGraph graph;
-	graph.setTransform(MxFactory::translation4(Vector3D(0, 0, -1)));
-	graph.addChild("frame");
-	graph.addChild("backpiece");
-	graph.addChild("cube_container");
-	graph.setCurr();
-	graph.addChild("cube1", MxFactory::translation4(Vector3D(0, 0, 1)));
-	graph.addChild("cube2", MxFactory::translation4(Vector3D(0, 0, 2)));
-
-	graph.describe();
-	/**/
+ 
 	exit(EXIT_SUCCESS);
 }
 

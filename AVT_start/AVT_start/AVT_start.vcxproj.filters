@@ -98,5 +98,6 @@
     <None Include="res\shaders\ThreeD.shader" />
     <None Include="res\shaders\cube.shader" />
     <None Include="res\shaders\ass6.shader" />
+    <None Include="res\shaders\base.shader" />
   </ItemGroup>
 </Project>

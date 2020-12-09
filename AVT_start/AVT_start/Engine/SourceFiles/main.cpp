@@ -237,7 +237,7 @@ static GLuint CompileShader(GLuint type, const std::string& source) {
 
 void createShaderProgram()
 {
-	ShaderSource sources = ParseShader("res/shaders/base.shader");
+	ShaderSource sources = ParseShader("res/shaders/texture.shader");
 
 	std::string VertexShader = sources.VertexSource, 
 		FragmentShader = sources.FragmentSource;

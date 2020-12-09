@@ -9,6 +9,8 @@
 #include "indexBuffer.h"
 #include "mesh.h"
 
+#include "../HeaderFiles/texture.h"
+
 class Object {
 public:
 	Mesh mesh;
@@ -17,6 +19,8 @@ public:
 	Matrix4 initTransform;
 	float m_zbuf;
 	bool m_fake;
+
+	Texture* texture = nullptr;
 
 	Object(Mesh _mesh);
 
@@ -27,6 +31,7 @@ public:
 	void scale(Vector3D scaleVec);
 
 	void initObject(GLuint ProgId);
+
 	void drawObject(Matrix4& transf);
 
 	void saveInitTransform();

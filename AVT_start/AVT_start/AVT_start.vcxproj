@@ -151,6 +151,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\SourceFiles\texture.cpp" />
+    <ClCompile Include="Engine\Vendor\stb_image\stb_image.cpp" />
     <ClCompile Include="Engine\SourceFiles\indexBuffer.cpp" />
     <ClCompile Include="Engine\SourceFiles\mesh.cpp" />
     <ClCompile Include="Engine\SourceFiles\objLoader.cpp" />
@@ -176,15 +178,17 @@
     <ClInclude Include="Engine\HeaderFiles\quaternion.h" />
     <ClInclude Include="Engine\HeaderFiles\SceneGraph.h" />
     <ClInclude Include="Engine\HeaderFiles\shader.h" />
+    <ClInclude Include="Engine\HeaderFiles\texture.h" />
+    <ClInclude Include="Engine\Vendor\stb_image\stb_image.h" />
     <ClInclude Include="Engine\HeaderFIles\vector.h" />
     <ClInclude Include="Engine\HeaderFiles\VertexBuffer.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\ass6.shader" />
     <None Include="res\shaders\base.shader" />
-    <None Include="res\shaders\Basic.shader" />
-    <None Include="res\shaders\cube.shader" />
-    <None Include="res\shaders\ThreeD.shader" />
+    <None Include="res\shaders\texture.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\textures\test_texture.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

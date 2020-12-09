@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\AVT_start",
+    "\\AVT_start\\AVT_start",
+    "\\AVT_start\\AVT_start\\Engine",
+    "\\AVT_start\\AVT_start\\Engine\\HeaderFiles",
+    "\\AVT_start\\AVT_start\\Engine\\SourceFiles",
+    "\\AVT_start\\AVT_start\\res",
+    "\\AVT_start\\AVT_start\\res\\shaders"
+  ],
+  "SelectedNode": "\\AVT_start\\AVT_start\\Engine\\SourceFiles\\main.cpp",
+  "PreviewInSolutionExplorer": false
+}

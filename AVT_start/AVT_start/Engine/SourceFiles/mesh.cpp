@@ -41,7 +41,7 @@ void Mesh::init()
 		vector<GLfloat> uvs;
 		for (Vector2D uvcoord : vertices.textureCoords) {
 			GLfloat* newuv = uvcoord.toOpenGL();
-			uvs.insert(std::end(uvs), newuv, newuv + 3);
+			uvs.insert(std::end(uvs), newuv, newuv + 2);
 		}
 
 		uvbuf = new VertexBuffer(&uvs[0], (unsigned int) uvs.size() * sizeof(GLfloat));

@@ -36,6 +36,9 @@ void Object::initObject(GLuint ProgId)
 	glGenVertexArrays(1, &VaoId);
 	glBindVertexArray(VaoId);
 
+	//Init Texture 
+	texture = new Texture("res/textures/test_texture.png");
+
 	mesh.init();
 	
 	glBindVertexArray(0);
@@ -48,6 +51,11 @@ void Object::drawObject(Matrix4& transf)
 
 	GLuint MatrixId = glGetUniformLocation(ProgramId, "ModelMatrix");
 	glUniformMatrix4fv(MatrixId, 1, GL_FALSE, transf.toOpenGl());
+
+	//Pass Texture
+	texture->Bind();
+	GLuint TextureId = glGetUniformLocation(ProgramId, "u_Texture");
+	glUniform1i(TextureId, 0);
 
 	mesh.draw();
 

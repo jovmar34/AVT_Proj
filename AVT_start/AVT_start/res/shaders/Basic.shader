@@ -1,25 +1,35 @@
 #shader vertex
 #version 330 core
 
-in vec4 in_Position;
-in vec4 in_Color;
-out vec4 ex_Color;
+layout(location = 0) in vec3 inPosition;
 
-uniform mat4 Matrix;
+out vec4 excol;
+
+uniform mat4 ModelMatrix;
+uniform SharedMatrices
+{
+	mat4 ViewMatrix;
+	mat4 ProjectionMatrix;
+};
+
+uniform float zbuf;
+uniform int fake;
 
 void main(void)
 {
-	gl_Position = Matrix * in_Position;
-	ex_Color = in_Color;
+	vec4 MCPosition = vec4(inPosition, 1.0);
+	excol = MCPosition;
+	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * MCPosition;
 }
 
 #shader fragment
 #version 330 core
 
-in vec4 ex_Color;
-out vec4 out_Color;
+in vec4 excol;
+
+out vec4 FragmentColor;
 
 void main(void)
 {
-	out_Color = ex_Color;
+	FragmentColor = excol;
 }

@@ -46,7 +46,8 @@ out vec4 FragmentColor;
 
 void main(void)
 {
-	FragmentColor = vec4(exNormal, 1.0);
+	vec3 norm = normalize(exNormal);
+	FragmentColor = vec4(norm, 1.0);
 	if (exzbuf >= 0) {
 		gl_FragDepth = exzbuf * gl_FragCoord.z;
 	}

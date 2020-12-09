@@ -13,20 +13,8 @@
 #include "camera.h"
 #include "mxfactory.h"
 #include "object.h"
-
-
-struct SceneNode {
-	SceneNode* parent;
-	std::vector<SceneNode*> children;
-	Object* obj = nullptr;
-	Matrix4 transform = MxFactory::identity4();
-
-	//Debug thingies
-	std::string name;
-
-	std::string getName();
-	Matrix4 getTransform();
-};
+#include "shader.h"
+#include "sceneNode.h"
 
 class SceneGraph {
 	SceneNode* root = nullptr;
@@ -38,9 +26,9 @@ public:
 	SceneGraph();
 	~SceneGraph();
 
-	void addChild(Object* obj, std::string name);
-	void addChild(Object* obj, std::string name, Matrix4 transform);
-	void setCurr();
+	void addChild(Shader* shader, Mesh* mesh, std::string name);
+	void addChild(Shader* shader, Mesh* mesh, std::string name, Matrix4 transform);
+	void setCurr(std::string name);
 	void upLevels(int x);
 	void setCurrToRoot();
 	void setCamera(Camera* cam);
@@ -49,11 +37,8 @@ public:
 	void init(GLuint ProgramId);
 	void draw();
 
-	void setTransform(Matrix4 transform);
-
-	// Animation thingies
-	void animateFrame(double time);
-	void animateCubes(double time);
+	void setTransform(std::string node, Matrix4 transform);
+	void applyTransform(std::string node, Matrix4 transform);
 	
 	// Debug
 	void describe();

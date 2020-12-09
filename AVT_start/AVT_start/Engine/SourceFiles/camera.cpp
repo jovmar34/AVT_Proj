@@ -18,20 +18,6 @@ Camera::Camera(Vector3D _eye, Vector3D _center, Vector3D _up) : eye(_eye), cente
 	);
 }
 
-void Camera::setupCamera(GLuint ProgramId)
-{
-	glGenBuffers(1, &VboId);
-
-	glBindBuffer(GL_UNIFORM_BUFFER, VboId);
-	{
-		glBufferData(GL_UNIFORM_BUFFER, 2 * 16 * sizeof(GLfloat), 0, GL_STREAM_DRAW);
-		glBindBufferBase(GL_UNIFORM_BUFFER, UBO_BP, VboId);
-	}
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-	UboId = glGetUniformBlockIndex(ProgramId, "SharedMatrices");
-}
-
 void Camera::parallelProjection(double l, double r, double b, double t, double n, double f)
 {
 	projection = Matrix4(
@@ -86,8 +72,6 @@ void Camera::look(double angle_h, double angle_v)
 		len * sin1 * cos2 * s;
 
 	center = eye + rot;
-
-	//std::cout << center << std::endl;
 
 	updateView();
 }

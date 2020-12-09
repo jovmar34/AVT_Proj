@@ -1,31 +1,32 @@
 #pragma once
-#include <GL\glew.h>
+#include <unordered_map>
 #include <string>
-#include <fstream>
 #include <sstream>
+#include <fstream>
+#include "vector.h"
 #include "matrix.h"
-#include <vector>
-
-struct ShaderSource {
-	std::string VertexSource;
-	std::string FragmentSource;
-};
 
 
 class Shader {
 private:
-	GLuint m_shaderId;
-	std::string m_shaderPath;
+	GLuint programId;
+	unordered_map<std::string, GLuint> uniforms;
+
+	static std::string parseShader(const std::string filename);
+	static GLuint compileShader(GLuint type, const std::string& source);
+	GLuint getUniformLocation(std::string name);
 public:
-	Shader(const std::string& filepath);
+	Shader(const std::string vertexFile, const std::string fragmentFile);
 	~Shader();
 
-	void Bind();
-	void Unbind();
-	void setUniformMatrix(const std::string& name, Matrix4 mat);
+	void bind();
+	void unbind();
 
-private:
-	GLuint getUniformLocation(const std::string& name);
-	ShaderSource parseShader(const std::string& filepath);
-	GLuint CompileShader(GLuint type, const std::string& source);
+	// Uniforms
+	void setUniformVec4(std::string uniformName, Vector4D vec);
+	void setUniformVec3(std::string uniformName, Vector3D vec);
+	void setUniformVec2(std::string uniformName, Vector3D vec);
+	void setUniformMat4(std::string uniformName, Matrix4 mat);
+	void setUniform1int(std::string uniformName, int val);
+	void setUniform1float(std::string uniformName, float val);
 };

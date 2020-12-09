@@ -1,14 +1,13 @@
 #include "..\HeaderFiles\Mesh.h"
 
 Mesh::Mesh(LoaderInfo _vertices) 
-	: vertices(_vertices), posbuf(NULL), uvbuf(NULL), normbuf(NULL), indbuf(NULL)
+	: vertices(_vertices), posbuf(nullptr), uvbuf(nullptr), normbuf(nullptr), indbuf(nullptr), va(nullptr)
 {
 }
 
 Mesh::~Mesh()
 {
-	if (!posbuf) return;
-
+	va->bind();
 	glDisableVertexAttribArray(POSITIONS);
 	delete posbuf;
 
@@ -21,11 +20,12 @@ Mesh::~Mesh()
 		delete normbuf;
 	}
 
-	delete indbuf;
+	va->unbind();
 }
 
 void Mesh::init()
 {
+	va = new VertexArray();
 	vector<GLfloat> pos;
 
 	for (Vector3D vec : vertices.positions) {
@@ -34,19 +34,24 @@ void Mesh::init()
 	}
 
 	posbuf = new VertexBuffer(&pos[0], (unsigned int) pos.size() * sizeof(GLfloat));
-	glEnableVertexAttribArray(POSITIONS);
-	glVertexAttribPointer(POSITIONS, 3, GL_FLOAT, GL_FALSE, Vector3D::byteSize(), 0);
 
+	VertexBufferElement poselement = VertexBufferLayout::getElement<float>(3);
+	va->addAttribute(POSITIONS, poselement);
+
+	posbuf->unbind();
+	/**/
 	if (vertices.hasTextures) {
 		vector<GLfloat> uvs;
 		for (Vector2D uvcoord : vertices.textureCoords) {
 			GLfloat* newuv = uvcoord.toOpenGL();
-			uvs.insert(std::end(uvs), newuv, newuv + 3);
+			uvs.insert(std::end(uvs), newuv, newuv + 2);
 		}
 
 		uvbuf = new VertexBuffer(&uvs[0], (unsigned int) uvs.size() * sizeof(GLfloat));
-		glEnableVertexAttribArray(UVCOORDS);
-		glVertexAttribPointer(UVCOORDS, 2, GL_FLOAT, GL_FALSE, Vector2D::byteSize(), 0);
+		VertexBufferElement uvelement = VertexBufferLayout::getElement<float>(2);
+		va->addAttribute(UVCOORDS, uvelement);
+
+		uvbuf->unbind();
 	}
 
 	if (vertices.hasNormals) {
@@ -57,16 +62,22 @@ void Mesh::init()
 		}
 
 		normbuf = new VertexBuffer(&norms[0], (unsigned int) norms.size() * sizeof(GLfloat));
-		glEnableVertexAttribArray(NORMALS);
-		glVertexAttribPointer(NORMALS, 3, GL_FLOAT, GL_FALSE, Vector3D::byteSize(), 0);
+		VertexBufferElement normelement = VertexBufferLayout::getElement<float>(3);
+		va->addAttribute(NORMALS, normelement);
+
+		normbuf->unbind();
 	}
+	/**/
 
 	indbuf = new IndexBuffer(vertices.indices.data(), (unsigned int) vertices.indices.size());
 	indbuf->unbind();
-	normbuf->unbind();
+	
+	va->unbind();
 }
 
 void Mesh::draw()
 {
+	va->bind();
 	glDrawElements(GL_TRIANGLES, (GLsizei) vertices.indices.size(), GL_UNSIGNED_INT, (GLvoid*) 0);
+	va->unbind();
 }

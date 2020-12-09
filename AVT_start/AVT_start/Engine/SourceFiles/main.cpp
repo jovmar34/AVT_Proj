@@ -29,14 +29,9 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include "../HeaderFiles/vector.h"
-#include "../HeaderFiles/matrix.h"
-#include "../HeaderFiles/mxfactory.h"
-#include "../HeaderFiles/object.h"
-#include "../HeaderFiles/camera.h"
-#include "../HeaderFiles/quaternion.h"
-#include "../HeaderFiles/objLoader.h"
-#include "../HeaderFiles/sceneGraph.h"
+#include "FreeImage.h"
+#include "../HeaderFiles/engine.h"
+#include "../HeaderFiles/manager.h"
 
 double sprint_factor = 1;
 double speed = 10;
@@ -47,6 +42,7 @@ double ani_time_cubes = 2.0f;
 double ani_time_frame = 5.0f;
 double t_frame = 0.0f, t_cubes = 0.0f;
 bool reset_cam = false;
+bool save_img = false;
 
 Vector3D coords[] = {
 		Vector3D(-0.6666, -1, 2),
@@ -180,87 +176,45 @@ GLuint VaoId, VboId[2], UboId;
 GLuint VertexShaderId, FragmentShaderId, ProgramId;
 GLint UniformId;
 Camera cam;
+SceneGraph graph;
 
-static ShaderSource ParseShader(const std::string& filepath) {
-	std::ifstream stream(filepath);
+void populateScene() {
+	// Camera init
+	cam = Camera(Vector3D(4, 4, 4), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
+	cam.perspectiveProjection(60, 4.0f / 3.0f, 1, 50);
 
-	enum class ShaderType {
-		NONE = -1, VERTEX = 0, FRAGMENT = 1
-	};
+	graph.setCamera(&cam);
 
-	std::string line;
-	std::stringstream ss[2];
-	ShaderType type = ShaderType::NONE;
+	std::string filepath;
+	ObjLoader c_loader;
 
-	while (getline(stream, line))
-	{
-		if (line.find("#shader") != std::string::npos) 
-		{
-			if (line.find("vertex") != std::string::npos)
-				type = ShaderType::VERTEX;
-			else if (line.find("fragment") != std::string::npos)
-				type = ShaderType::FRAGMENT;
-		}
-		else {
-			ss[(int) type] << line << '\n';
-		}
-	}
+	filepath = "res/meshes/cube.obj";
 
-	return { ss[0].str(), ss[1].str() };
+	LoaderInfo vertices = c_loader.readFromFile(filepath);
+
+	Manager* h = Manager::getInstance();
+	h->addMesh("cube_mesh", new Mesh(vertices));
+
+	h->addShader("basic_shader", new Shader("res/shaders/vertex.glsl", "res/shaders/frag.glsl"));
+
+	Mesh* cube_mesh = h->getMesh("cube_mesh");
+	Shader* shader = h->getShader("basic_shader");
+
+	graph.addChild(shader, cube_mesh, "cube");
+
+	graph.addChild(nullptr, nullptr, "orbit", MxFactory::translation4(Vector3D(0, 3, 0)));
+
+	graph.setCurr("orbit");
+
+	graph.addChild(shader, cube_mesh, "cube2");
+
+	graph.describe();
 }
 
-static GLuint CompileShader(GLuint type, const std::string& source) {
-	GLuint id = glCreateShader(type);
-	const char* src = source.c_str();
-	glShaderSource(id, 1, &src, nullptr);
-	glCompileShader(id);
-
-	GLint isCompiled = 0;
-	glGetShaderiv(id, GL_COMPILE_STATUS, &isCompiled);
-	if (isCompiled == GL_FALSE)
-	{
-		GLint maxLength = 0;
-		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &maxLength);
-
-		// The maxLength includes the NULL character
-		std::vector<GLchar> errorLog(maxLength);
-		glGetShaderInfoLog(id, maxLength, &maxLength, &errorLog[0]);
-
-		// Provide the infolog in whatever manor you deem best.
-		std::cerr << errorLog.data() << std::endl;
-
-		// Exit with failure.
-		glDeleteShader(id); // Don't leak the shader.
-		return -1;
-	}
-
-
-	return id;
-}
 
 void createShaderProgram()
 {
-	ShaderSource sources = ParseShader("res/shaders/cube.shader");
-
-	std::string VertexShader = sources.VertexSource, 
-		FragmentShader = sources.FragmentSource;
-
-	VertexShaderId = CompileShader(GL_VERTEX_SHADER, VertexShader);
-
-	FragmentShaderId = CompileShader(GL_FRAGMENT_SHADER, FragmentShader);
-
-	ProgramId = glCreateProgram();
-	glAttachShader(ProgramId, VertexShaderId);
-	glAttachShader(ProgramId, FragmentShaderId);
-
-	glLinkProgram(ProgramId);
-	UboId = glGetUniformBlockIndex(ProgramId, "SharedMatrices");
-	glUniformBlockBinding(ProgramId, UboId, UBO_BP);
-
-	glDetachShader(ProgramId, VertexShaderId);
-	glDeleteShader(VertexShaderId);
-	glDetachShader(ProgramId, FragmentShaderId);
-	glDeleteShader(FragmentShaderId);
+	populateScene();
 
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not create shaders.");
@@ -269,9 +223,7 @@ void createShaderProgram()
 
 void destroyShaderProgram()
 {
-	glUseProgram(0);
-	glDeleteProgram(ProgramId);
-
+	Manager::destroy();
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not destroy shaders.");
 #endif
@@ -280,9 +232,6 @@ void destroyShaderProgram()
 /////////////////////////////////////////////////////////////////////// VAOs & VBOs
 
 int fakes[] = {	0,	0,	0, 0, 0, 0, 0, 0, 1 };
-
-std::vector<Object*> scene;
-SceneGraph graph;
 
 void createBufferObjects()
 {
@@ -341,41 +290,7 @@ void look(GLFWwindow* win, double elapsed) {
 }
 
 void animate(GLFWwindow* win, double elapsed) {
-	if (animate_frame) {
-		double time;
-		t_frame += elapsed;
-
-		if (t_frame >= ani_time_frame) {
-			time = 1;
-			animate_frame = false;
-			t_frame = 0;
-		}
-		else {
-			time = t_frame / ani_time_frame;
-		}
-
-		graph.animateFrame(time);
-	}
-
-	if (stop_cubes == false)
-		animate_cubes = true;
-
-	if (animate_cubes) {
-		double angle;
-		t_cubes += elapsed;
-
-		if (t_cubes >= ani_time_cubes) {
-			angle = 2 * M_PI;
-			t_cubes = 0;
-
-			if (stop_cubes) animate_cubes = false;
-		}
-		else {
-			angle = 2 * M_PI * t_cubes / ani_time_cubes;
-		}
-
-		graph.animateCubes(angle);
-	}
+	graph.applyTransform("orbit", MxFactory::rotation4(Vector3D(0,0,1), 360 * elapsed));
 }
 
 void processInput(GLFWwindow* win, double elapsed) {
@@ -455,6 +370,9 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 			break;
 		case GLFW_KEY_R:
 			reset_cam = true;
+			break;
+		case GLFW_KEY_S:
+			save_img = true;
 			break;
 		}
 	}
@@ -622,10 +540,33 @@ void updateFPS(GLFWwindow* win, double elapsed_sec)
 	}
 }
 
+void save(GLFWwindow* win) {
+	int w, h;
+	glfwGetWindowSize(win, &w, &h);
+
+	GLubyte* pixels = new GLubyte[3 * w * h];
+
+	glReadPixels(0, 0, w, h, GL_BGR, GL_UNSIGNED_BYTE, pixels);
+
+	// Convert to FreeImage format & save to file
+	FIBITMAP* image = FreeImage_ConvertFromRawBits(pixels, w, h, 3 * w, 24, 0x0000FF, 0xFF0000, 0x00FF00, false);
+	FreeImage_Save(FIF_BMP, image, "test.bmp", 0);
+
+	// Free resources
+	FreeImage_Unload(image);
+	delete[] pixels;
+
+	//std::cout << "width: " << w << "; height: " << h << std::endl;
+}
+
 void display_callback(GLFWwindow* win, double elapsed_sec)
 {
 	//updateFPS(win, elapsed_sec);
 	drawScene(win, elapsed_sec);
+	if (save_img) {
+		save(win);
+		save_img = false;
+	}
 }
 
 void run(GLFWwindow* win)
@@ -652,78 +593,9 @@ void run(GLFWwindow* win)
 
 ////////////////////////////////////////////////////////////////////////// MAIN
 
-void populateScene() {
-	// Camera init
-	cam = Camera(Vector3D(0, 0, 25), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
-	cam.parallelProjection(-10,10,-10,10,1,50);
-
-	graph.setCamera(&cam);
-
-	// Painting
-	Object* obj;
-	std::string filepath;
-	ObjLoader c_loader;
-
-	/**/
-	graph.setCurrToRoot();
-
-	Matrix4 frameInit = MxFactory::rotation4(Vector3D(0, 1, 0), -90) *
-		MxFactory::scaling4(Vector3D(5, 7, 4));
-
-	filepath = "res/meshes/frame.obj";
-	LoaderInfo frame_info = c_loader.readFromFile(filepath);
-	Mesh frame_mesh(frame_info);
-	obj = new Object(frame_mesh, 0, 0);
-
-	graph.addChild(obj, "frame", frameInit);
-	graph.setCurr();
-
-	/**/
-	Matrix4 frameCounter = MxFactory::invscaling4(Vector3D(5, 7, 4)) *
-		MxFactory::invrotation4(Vector3D(0, 1, 0), -90);
-	filepath = "res/meshes/backpiece.obj";
-	LoaderInfo back_info = c_loader.readFromFile(filepath);
-	Mesh back_mesh(back_info);
-
-	obj = new Object(back_mesh, 1, 0);
-	Matrix4 backInit = MxFactory::translation4(Vector3D(0, 0, -0.5f)) *
-		MxFactory::rotation4(Vector3D(0, 1, 0), -90) *
-		MxFactory::scaling4(Vector3D(5, 7, 4));
-
-	graph.addChild(obj, "backpiece", frameCounter * backInit);
-
-	/**/
-	filepath = "res/meshes/cube.obj";
-	
-	LoaderInfo vertices = c_loader.readFromFile(filepath);
-	Mesh cube_meh(vertices);
-
-	Matrix4 init =  MxFactory::scaling4(Vector3D(0.5, 0.5, 0.5)) *
-		MxFactory::rotation4(Vector3D(0, 1, 0), 45) *
-		MxFactory::rotation4(Vector3D(1, 0, 0), 45) *
-		MxFactory::rotation4(Vector3D(0, 0, 1), 90);
-		
-	graph.addChild(nullptr, "cube_container", frameCounter * MxFactory::translation4(Vector3D(0, -0.1547f, 0)));
-	graph.setCurr();
-
-	for (int i = 0; i < 9; i++) {
-		stringstream ss;
-		obj = new Object(cube_meh, -1, fakes[i]); 
-
-		ss << "cube" << i;
-		graph.addChild(obj, ss.str(), MxFactory::translation4(Vector3D(coords[i])) * init);
-	}
-
-	/**/
-
-	graph.describe();
-}
 
 int main(int argc, char* argv[])
 {
-	/**/
-	populateScene();
-
 	/**/
 	int gl_major = 4, gl_minor = 3;
 	int is_fullscreen = 0;
@@ -732,18 +604,6 @@ int main(int argc, char* argv[])
 		640, 480, "Hello Modern 2D World", is_fullscreen, is_vsync);
 
 	run(win);
-	/** /
-	
-	SceneGraph graph;
-	graph.setTransform(MxFactory::translation4(Vector3D(0, 0, -1)));
-	graph.addChild("frame");
-	graph.addChild("backpiece");
-	graph.addChild("cube_container");
-	graph.setCurr();
-	graph.addChild("cube1", MxFactory::translation4(Vector3D(0, 0, 1)));
-	graph.addChild("cube2", MxFactory::translation4(Vector3D(0, 0, 2)));
-
-	graph.describe();
 	/**/
 	exit(EXIT_SUCCESS);
 }

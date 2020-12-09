@@ -5,7 +5,7 @@
 #include <cfloat>
 #include <array>
 #include <iomanip> // setprecision(x)
-#include "../HeaderFiles/vector.h"
+#include "vector.h"
 
 using namespace std;
 

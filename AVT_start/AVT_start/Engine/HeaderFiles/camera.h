@@ -2,6 +2,7 @@
 
 #define _USE_MATH_DEFINES
 
+#include "vector.h"
 #include "matrix.h"
 
 const GLuint UBO_BP = 0;
@@ -27,7 +28,6 @@ public:
 	Camera() { };
 	Camera(Vector3D _eye, Vector3D _center, Vector3D _up);
 
-	void setupCamera(GLuint ProgramId);
 	void parallelProjection(double l, double r, double b,double t, double n, double f);
 	void perspectiveProjection(double fovy, double aspect, double near, double far);
 	void move(Vector3D dir, double speed);

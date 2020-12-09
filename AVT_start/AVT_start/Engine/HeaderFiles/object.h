@@ -8,10 +8,12 @@
 #include "vertexBuffer.h"
 #include "indexBuffer.h"
 #include "mesh.h"
+#include "vertexArray.h"
 
 class Object {
 public:
 	Mesh mesh;
+	VertexArray* va;
 	GLuint VaoId, ProgramId;
 	Matrix4 transform;
 	Matrix4 initTransform;

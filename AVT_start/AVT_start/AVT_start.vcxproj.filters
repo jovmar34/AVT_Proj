@@ -45,13 +45,19 @@
     <ClCompile Include="Engine\SourceFiles\indexBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\SourceFiles\shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\SourceFiles\mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Engine\SourceFiles\sceneGraph.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\SourceFiles\vertexArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\SourceFiles\shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\SourceFiles\sceneNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -83,20 +89,39 @@
     <ClInclude Include="Engine\HeaderFiles\indexBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\HeaderFiles\shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\HeaderFiles\mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Engine\HeaderFiles\SceneGraph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\HeaderFiles\vertexArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\HeaderFiles\vertexBufferLayout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\HeaderFiles\engine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\HeaderFiles\shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\HeaderFiles\sceneNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\HeaderFiles\manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Basic.shader" />
-    <None Include="res\shaders\ThreeD.shader" />
     <None Include="res\shaders\cube.shader" />
-    <None Include="res\shaders\ass6.shader" />
+    <None Include="res\shaders\vertex.glsl" />
+    <None Include="res\shaders\frag.glsl" />
+    <None Include="res\shaders\frag_alt.glsl" />
+    <None Include="res\shaders\vertex_alt.glsl" />
+    <None Include="res\shaders\cube_fs.glsl" />
+    <None Include="res\shaders\cube_vs.glsl" />
   </ItemGroup>
 </Project>

@@ -9,8 +9,8 @@ void ObjLoader::loadMeshData(std::string& filename)
 		std::stringstream sline(line);
 		parseLine(sline);
 	}
-	ret->hasTextures = (textInd.size() > 0);
-	ret->hasNormals = (normInd.size() > 0);
+	ret->hasTextures = (textData.size() > 0);
+	ret->hasNormals = (normData.size() > 0);
 }
 
 void ObjLoader::processMeshData()

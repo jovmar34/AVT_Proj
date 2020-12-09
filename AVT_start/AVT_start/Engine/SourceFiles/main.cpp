@@ -195,10 +195,18 @@ void populateScene() {
 	Manager* h = Manager::getInstance();
 	h->addMesh("cube_mesh", new Mesh(vertices));
 
-	h->addShader("basic_shader", new Shader("res/shaders/vertex.glsl", "res/shaders/frag.glsl"));
+	filepath = "res/meshes/smooth.obj";
+	vertices = c_loader.readFromFile(filepath);
 
-	Mesh* cube_mesh = h->getMesh("cube_mesh");
-	Shader* shader = h->getShader("basic_shader");
+	h->addMesh("smooth_mesh", new Mesh(vertices));
+
+	h->addShader("basic_shader", new Shader("res/shaders/vertex.glsl", "res/shaders/frag.glsl"));
+	h->addShader("alt", new Shader("res/shaders/cube_vs.glsl", "res/shaders/cube_fs.glsl"));
+
+	Mesh* cube_mesh = h->getMesh("cube_mesh"),
+		*smooth_mesh = h->getMesh("smooth_mesh");
+	Shader* shader = h->getShader("basic_shader"),
+		*alt = h->getShader("alt");
 
 	graph.addChild(shader, cube_mesh, "cube");
 
@@ -206,7 +214,7 @@ void populateScene() {
 
 	graph.setCurr("orbit");
 
-	graph.addChild(shader, cube_mesh, "cube2");
+	graph.addChild(alt, smooth_mesh, "cube2");
 
 	graph.describe();
 }
@@ -290,7 +298,7 @@ void look(GLFWwindow* win, double elapsed) {
 }
 
 void animate(GLFWwindow* win, double elapsed) {
-	graph.applyTransform("orbit", MxFactory::rotation4(Vector3D(0,0,1), 360 * elapsed));
+	graph.applyTransform("orbit", MxFactory::rotation4(Vector3D(0,0,1), 180 * elapsed));
 }
 
 void processInput(GLFWwindow* win, double elapsed) {

@@ -119,5 +119,9 @@
     <None Include="res\shaders\cube.shader" />
     <None Include="res\shaders\vertex.glsl" />
     <None Include="res\shaders\frag.glsl" />
+    <None Include="res\shaders\frag_alt.glsl" />
+    <None Include="res\shaders\vertex_alt.glsl" />
+    <None Include="res\shaders\cube_fs.glsl" />
+    <None Include="res\shaders\cube_vs.glsl" />
   </ItemGroup>
 </Project>

@@ -187,10 +187,14 @@
     <ClInclude Include="Engine\HeaderFiles\shader.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\shaders\cube_fs.glsl" />
+    <None Include="res\shaders\cube_vs.glsl" />
     <None Include="res\shaders\frag.glsl" />
     <None Include="res\shaders\Basic.shader" />
     <None Include="res\shaders\cube.shader" />
+    <None Include="res\shaders\frag_alt.glsl" />
     <None Include="res\shaders\vertex.glsl" />
+    <None Include="res\shaders\vertex_alt.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

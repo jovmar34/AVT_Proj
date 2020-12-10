@@ -95,7 +95,7 @@ void Shader::setUniformVec3(std::string uniformName, Vector3D vec)
 	glUniform3f(getUniformLocation(uniformName), vec.x, vec.y, vec.z);
 }
 
-void Shader::setUniformVec2(std::string uniformName, Vector3D vec)
+void Shader::setUniformVec2(std::string uniformName, Vector2D vec)
 {
 	glUniform2f(getUniformLocation(uniformName), vec.x, vec.y);
 }

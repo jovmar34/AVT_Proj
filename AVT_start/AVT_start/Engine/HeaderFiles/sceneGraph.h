@@ -26,8 +26,8 @@ public:
 	SceneGraph();
 	~SceneGraph();
 
-	void addChild(Shader* shader, Mesh* mesh, std::string name);
-	void addChild(Shader* shader, Mesh* mesh, std::string name, Matrix4 transform);
+	void addChild(Material* material, Mesh* mesh, std::string name);
+	void addChild(Material* material, Mesh* mesh, std::string name, Matrix4 transform);
 	void setCurr(std::string name);
 	void upLevels(int x);
 	void setCurrToRoot();

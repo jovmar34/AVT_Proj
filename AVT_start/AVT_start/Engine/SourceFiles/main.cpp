@@ -179,42 +179,67 @@ Camera cam;
 SceneGraph graph;
 
 void populateScene() {
+	
 	// Camera init
 	cam = Camera(Vector3D(4, 4, 4), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
-	cam.perspectiveProjection(60, 4.0f / 3.0f, 1, 50);
+	cam.perspectiveProjection(60, 4.0f / 3.0f, 1, 200);
 
 	graph.setCamera(&cam);
 
-	std::string filepath;
-	ObjLoader c_loader;
-
-	filepath = "res/meshes/cube.obj";
-
-	LoaderInfo vertices = c_loader.readFromFile(filepath);
-
 	Manager* h = Manager::getInstance();
-	h->addMesh("cube_mesh", new Mesh(vertices));
 
-	filepath = "res/meshes/smooth.obj";
-	vertices = c_loader.readFromFile(filepath);
+	// Meshes
+	h->addMesh("plane_mesh", new Mesh("res/meshes/plane.obj"));
+	h->addMesh("cube_mesh", new Mesh("res/meshes/cube_smooth.obj"));
+	h->addMesh("cylinder_mesh", new Mesh("res/meshes/cylinder.obj"));
+	h->addMesh("torus_mesh", new Mesh("res/meshes/torus.obj"));
 
-	h->addMesh("smooth_mesh", new Mesh(vertices));
+	// Textures
+	h->addTexture("test_texture", new Texture("res/textures/test_texture.png"));
 
-	h->addShader("basic_shader", new Shader("res/shaders/vertex.glsl", "res/shaders/frag.glsl"));
-	h->addShader("alt", new Shader("res/shaders/cube_vs.glsl", "res/shaders/cube_fs.glsl"));
+	// Shaders
+	h->addShader("texture_shader", new Shader("res/shaders/texture_vs.glsl", "res/shaders/texture_fs.glsl"));
+	h->addShader("cube_shader", new Shader("res/shaders/cube_vs.glsl", "res/shaders/cube_fs.glsl"));
 
-	Mesh* cube_mesh = h->getMesh("cube_mesh"),
-		*smooth_mesh = h->getMesh("smooth_mesh");
-	Shader* shader = h->getShader("basic_shader"),
-		*alt = h->getShader("alt");
+	//Get Meshes
+	Mesh	*plane_mesh		= h->getMesh("plane_mesh"), 
+			*cube_mesh		= h->getMesh("cube_mesh"),
+			*cylinder_mesh	= h->getMesh("cylinder_mesh"),
+			*torus_mesh		= h->getMesh("torus_mesh");
 
-	graph.addChild(shader, cube_mesh, "cube");
+	//Get Shaders
+	Shader	*texture_shader = h->getShader("texture_shader"), 
+			*cube_shader	= h->getShader("cube_shader");
 
-	graph.addChild(nullptr, nullptr, "orbit", MxFactory::translation4(Vector3D(0, 3, 0)));
+	//Get Textures
+	Texture* test_texture = h->getTexture("test_texture");
 
-	graph.setCurr("orbit");
 
-	graph.addChild(alt, smooth_mesh, "cube2");
+	// Materials 
+	Material* test_mat_r = new Material(cube_shader);
+	Material* test_mat_g = new Material(cube_shader);
+	Material* test_mat_b = new Material(cube_shader);
+	test_mat_r->setUniformVec3("u_AlbedoColor", Vector3D(1, 0, 0));
+	test_mat_g->setUniformVec3("u_AlbedoColor", Vector3D(0, 1, 0));
+	test_mat_b->setUniformVec3("u_AlbedoColor", Vector3D(0, 0, 1));
+
+	Material* test_mat_texture = new Material(texture_shader);
+	test_mat_texture->setAlbedoTexture(test_texture);
+
+	//plane
+	Matrix4 plane_transform = MxFactory::rotation4(Vector3D(1, 0, 0), 90) 
+							* MxFactory::scaling4(Vector3D(4, 1, 4))
+							* MxFactory::translation4(Vector3D(0,-5,0));
+	graph.addChild(test_mat_texture, plane_mesh, "plane", plane_transform);
+	
+	//cylinder
+	graph.addChild(test_mat_r, cylinder_mesh, "cylinder", MxFactory::translation4(Vector3D(-3, 0, 0)));
+
+	//cube
+	graph.addChild(test_mat_g, cube_mesh, "cube");
+
+	//torus
+	graph.addChild(test_mat_b, torus_mesh, "torus", MxFactory::translation4(Vector3D(3, 0, 0)));
 
 	graph.describe();
 }
@@ -298,7 +323,7 @@ void look(GLFWwindow* win, double elapsed) {
 }
 
 void animate(GLFWwindow* win, double elapsed) {
-	graph.applyTransform("orbit", MxFactory::rotation4(Vector3D(0,0,1), 180 * elapsed));
+	//graph.applyTransform("orbit", MxFactory::rotation4(Vector3D(0,0,1), 180 * elapsed));
 }
 
 void processInput(GLFWwindow* win, double elapsed) {
@@ -379,7 +404,7 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 		case GLFW_KEY_R:
 			reset_cam = true;
 			break;
-		case GLFW_KEY_S:
+		case GLFW_KEY_I:
 			save_img = true;
 			break;
 		}
@@ -609,7 +634,7 @@ int main(int argc, char* argv[])
 	int is_fullscreen = 0;
 	int is_vsync = 1;
 	GLFWwindow* win = setup(gl_major, gl_minor,
-		640, 480, "Hello Modern 2D World", is_fullscreen, is_vsync);
+		1920, 1080, "Hello Modern 2D World", is_fullscreen, is_vsync);
 
 	run(win);
 	/**/

@@ -5,6 +5,7 @@
 #include "GL/glew.h"
 #include "shader.h"
 #include "mesh.h"
+#include "texture.h"
 
 
 class Manager {
@@ -12,10 +13,12 @@ protected:
 	static Manager* instance;
 	std::unordered_map<std::string, Shader*> shaders;
 	std::unordered_map<std::string, Mesh*> meshes;
+	std::unordered_map<std::string, Texture*> textures;
 
 	~Manager() {
 		shaders.clear();
 		meshes.clear();
+		textures.clear();
 	}
 
 public:
@@ -38,12 +41,20 @@ public:
 		meshes[name] = mesh;
 	}
 
+	void addTexture(std::string name, Texture* texture) {
+		textures[name] = texture;
+	}
+
 	Shader* getShader(std::string name) {
 		return shaders[name];
 	}
 
 	Mesh* getMesh(std::string name) {
 		return meshes[name];
+	}
+
+	Texture* getTexture(std::string name) {
+		return textures[name];
 	}
 };
 

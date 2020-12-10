@@ -60,6 +60,15 @@
     <ClCompile Include="Engine\SourceFiles\sceneNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\SourceFiles\texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Vendor\stb_image\stb_image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\SourceFiles\material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\HeaderFIles\vector.h">
@@ -113,15 +122,29 @@
     <ClInclude Include="Engine\HeaderFiles\manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\HeaderFiles\texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Vendor\stb_image\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\HeaderFiles\material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\Basic.shader" />
-    <None Include="res\shaders\cube.shader" />
     <None Include="res\shaders\vertex.glsl" />
     <None Include="res\shaders\frag.glsl" />
     <None Include="res\shaders\frag_alt.glsl" />
     <None Include="res\shaders\vertex_alt.glsl" />
     <None Include="res\shaders\cube_fs.glsl" />
     <None Include="res\shaders\cube_vs.glsl" />
+    <None Include="res\shaders\texture_fs.glsl" />
+    <None Include="res\shaders\texture_vs.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\textures\test_texture.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

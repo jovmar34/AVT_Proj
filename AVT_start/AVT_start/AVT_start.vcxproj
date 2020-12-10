@@ -163,13 +163,17 @@
     <ClCompile Include="Engine\SourceFiles\sceneGraph.cpp" />
     <ClCompile Include="Engine\SourceFiles\sceneNode.cpp" />
     <ClCompile Include="Engine\SourceFiles\shader.cpp" />
+    <ClCompile Include="Engine\SourceFiles\material.cpp" />
+    <ClCompile Include="Engine\SourceFiles\texture.cpp" />
     <ClCompile Include="Engine\SourceFiles\vector.cpp" />
     <ClCompile Include="Engine\SourceFiles\vertexArray.cpp" />
     <ClCompile Include="Engine\SourceFiles\vertexBuffer.cpp" />
+    <ClCompile Include="Engine\Vendor\stb_image\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\HeaderFiles\camera.h" />
     <ClInclude Include="Engine\HeaderFiles\engine.h" />
+    <ClInclude Include="Engine\HeaderFiles\material.h" />
     <ClInclude Include="Engine\HeaderFiles\indexBuffer.h" />
     <ClInclude Include="Engine\HeaderFiles\manager.h" />
     <ClInclude Include="Engine\HeaderFiles\mesh.h" />
@@ -180,21 +184,26 @@
     <ClInclude Include="Engine\HeaderFiles\quaternion.h" />
     <ClInclude Include="Engine\HeaderFiles\SceneGraph.h" />
     <ClInclude Include="Engine\HeaderFiles\sceneNode.h" />
+    <ClInclude Include="Engine\HeaderFiles\texture.h" />
     <ClInclude Include="Engine\HeaderFIles\vector.h" />
     <ClInclude Include="Engine\HeaderFiles\vertexArray.h" />
     <ClInclude Include="Engine\HeaderFiles\VertexBuffer.h" />
     <ClInclude Include="Engine\HeaderFiles\vertexBufferLayout.h" />
     <ClInclude Include="Engine\HeaderFiles\shader.h" />
+    <ClInclude Include="Engine\Vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\cube_fs.glsl" />
     <None Include="res\shaders\cube_vs.glsl" />
     <None Include="res\shaders\frag.glsl" />
-    <None Include="res\shaders\Basic.shader" />
-    <None Include="res\shaders\cube.shader" />
     <None Include="res\shaders\frag_alt.glsl" />
+    <None Include="res\shaders\texture_fs.glsl" />
     <None Include="res\shaders\vertex.glsl" />
     <None Include="res\shaders\vertex_alt.glsl" />
+    <None Include="res\shaders\texture_vs.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\textures\test_texture.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

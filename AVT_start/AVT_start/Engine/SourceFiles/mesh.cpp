@@ -1,8 +1,10 @@
 #include "..\HeaderFiles\Mesh.h"
 
-Mesh::Mesh(LoaderInfo _vertices) 
-	: vertices(_vertices), posbuf(nullptr), uvbuf(nullptr), normbuf(nullptr), indbuf(nullptr), va(nullptr)
+Mesh::Mesh(std::string path)
+	: posbuf(nullptr), uvbuf(nullptr), normbuf(nullptr), indbuf(nullptr), va(nullptr)
 {
+	ObjLoader c_loader;
+	vertices = c_loader.readFromFile(path);
 }
 
 Mesh::~Mesh()

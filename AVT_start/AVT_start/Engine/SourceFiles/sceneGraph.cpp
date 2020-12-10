@@ -26,19 +26,19 @@ SceneGraph::~SceneGraph()
 	}
 }
 
-void SceneGraph::addChild(Shader* shader, Mesh* mesh, std::string name)
+void SceneGraph::addChild(Material* material, Mesh* mesh, std::string name)
 {
-	addChild(shader, mesh, name, MxFactory::identity4());
+	addChild(material, mesh, name, MxFactory::identity4());
 }
 
-void SceneGraph::addChild(Shader* shader, Mesh* mesh, std::string name, Matrix4 transform)
+void SceneGraph::addChild(Material* material, Mesh* mesh, std::string name, Matrix4 transform)
 {
 	SceneNode* child = new SceneNode();
 	child->name = name;
 	child->parent = current;
 	child->mesh = mesh;
 	child->transform = transform;
-	child->myShader = shader;
+	child->material = material;
 	
 	current->children.push_back(child);
 
@@ -127,19 +127,21 @@ void SceneGraph::draw()
 		}
 
 		if (curr->mesh) {
-			curr->myShader->bind();
 
-			if (update) {
-				curr->myShader->setUniformMat4("ViewMatrix", cam->view);
-				curr->myShader->setUniformMat4("ProjectionMatrix", cam->projection);
+			curr->material->bind();
+
+			if (update) 
+			{
+				curr->material->update(cam->view, cam->projection, curr->getTransform());
 			}
-
-			Matrix4 transf = curr->getTransform();
-			curr->myShader->setUniformMat4("ModelMatrix", transf);
+			else 
+			{
+				curr->material->update(curr->getTransform());
+			}
 
 			curr->mesh->draw();
 
-			curr->myShader->unbind();
+			curr->material->unbind();
 		}
 	}
 }

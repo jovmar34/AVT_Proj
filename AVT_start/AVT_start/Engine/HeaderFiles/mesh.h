@@ -21,7 +21,7 @@ public:
 	VertexBuffer *posbuf, *uvbuf, *normbuf;
 	IndexBuffer* indbuf;
 
-	Mesh(LoaderInfo _vertices);
+	Mesh(std::string path);
 
 	~Mesh();
 

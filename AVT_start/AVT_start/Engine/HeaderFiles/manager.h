@@ -14,11 +14,13 @@ protected:
 	std::unordered_map<std::string, Shader*> shaders;
 	std::unordered_map<std::string, Mesh*> meshes;
 	std::unordered_map<std::string, Texture*> textures;
+	std::unordered_map<std::string, Material*> materials;
 
 	~Manager() {
 		shaders.clear();
 		meshes.clear();
 		textures.clear();
+		materials.clear();
 	}
 
 public:
@@ -48,6 +50,11 @@ public:
 		return texture;
 	}
 
+	Material* addMaterial(std::string name, Material* material) {
+		materials[name] = material;
+		return material;
+	}
+
 	Shader* getShader(std::string name) {
 		return shaders[name];
 	}
@@ -58,6 +65,10 @@ public:
 
 	Texture* getTexture(std::string name) {
 		return textures[name];
+	}
+
+	Material* getMaterial(std::string name) {
+		return materials[name];
 	}
 
 	void init() {

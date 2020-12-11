@@ -117,6 +117,7 @@ void setupErrorCallback()
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, 0, GL_TRUE);
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, 0, GL_FALSE);
+	glDebugMessageControl(GL_DEBUG_SOURCE_API, GL_DEBUG_TYPE_PERFORMANCE, GL_DEBUG_SEVERITY_MEDIUM, 0, 0, GL_FALSE);
 	// params: source, type, severity, count, ids, enabled
 }
 
@@ -201,16 +202,15 @@ void populateScene() {
 	Shader	*texture_shader = h->addShader("texture_shader", new Shader("res/shaders/texture_vs.glsl", "res/shaders/texture_fs.glsl")),
 			*cube_shader = h->addShader("cube_shader", new Shader("res/shaders/cube_vs.glsl", "res/shaders/cube_fs.glsl"));
 
-
 	// Materials 
-	Material* test_mat_r = new Material(cube_shader);
-	Material* test_mat_g = new Material(cube_shader);
-	Material* test_mat_b = new Material(cube_shader);
+	Material* test_mat_r = h->addMaterial("test_mat_r", new Material(cube_shader));
+	Material* test_mat_g = h->addMaterial("test_mat_g", new Material(cube_shader));
+	Material* test_mat_b = h->addMaterial("test_mat_b", new Material(cube_shader));
 	test_mat_r->setUniformVec3("u_AlbedoColor", Vector3D(1, 0, 0));
 	test_mat_g->setUniformVec3("u_AlbedoColor", Vector3D(0, 1, 0));
 	test_mat_b->setUniformVec3("u_AlbedoColor", Vector3D(0, 0, 1));
 
-	Material* test_mat_texture = new Material(texture_shader);
+	Material* test_mat_texture = h->addMaterial("test_mat_texture", new Material(texture_shader));
 	test_mat_texture->setAlbedoTexture(test_texture);
 
 	//plane

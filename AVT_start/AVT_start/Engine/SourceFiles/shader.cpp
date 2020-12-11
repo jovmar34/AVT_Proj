@@ -87,17 +87,17 @@ void Shader::unbind()
 
 void Shader::setUniformVec4(std::string uniformName, Vector4D vec)
 {
-	glUniform4f(getUniformLocation(uniformName), vec.x, vec.y, vec.z, vec.w);
+	glUniform4f(getUniformLocation(uniformName), (float) vec.x, (float) vec.y, (float) vec.z, (float) vec.w);
 }
 
 void Shader::setUniformVec3(std::string uniformName, Vector3D vec)
 {
-	glUniform3f(getUniformLocation(uniformName), vec.x, vec.y, vec.z);
+	glUniform3f(getUniformLocation(uniformName), (float)vec.x, (float)vec.y, (float)vec.z);
 }
 
 void Shader::setUniformVec2(std::string uniformName, Vector2D vec)
 {
-	glUniform2f(getUniformLocation(uniformName), vec.x, vec.y);
+	glUniform2f(getUniformLocation(uniformName), (float)vec.x, (float)vec.y);
 }
 
 void Shader::setUniformMat4(std::string uniformName, Matrix4 mat)

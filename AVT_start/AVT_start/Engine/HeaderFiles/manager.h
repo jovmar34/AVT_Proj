@@ -56,6 +56,12 @@ public:
 	Texture* getTexture(std::string name) {
 		return textures[name];
 	}
+
+	void init() {
+		for (auto mesh_entry : meshes) {
+			mesh_entry.second->init();
+		}
+	}
 };
 
 Manager* Manager::instance = 0;

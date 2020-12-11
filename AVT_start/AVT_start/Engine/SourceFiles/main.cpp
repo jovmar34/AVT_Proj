@@ -190,7 +190,7 @@ void populateScene() {
 
 	// Meshes
 	h->addMesh("plane_mesh", new Mesh("res/meshes/plane.obj"));
-	h->addMesh("cube_mesh", new Mesh("res/meshes/cube_smooth.obj"));
+	h->addMesh("cube_mesh", new Mesh("res/meshes/bunny.obj"));
 	h->addMesh("cylinder_mesh", new Mesh("res/meshes/cylinder.obj"));
 	h->addMesh("torus_mesh", new Mesh("res/meshes/torus.obj"));
 
@@ -268,7 +268,7 @@ int fakes[] = {	0,	0,	0, 0, 0, 0, 0, 0, 1 };
 
 void createBufferObjects()
 {
-	graph.init(ProgramId);
+	Manager::getInstance()->init();
 	
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not create VAOs and VBOs.");

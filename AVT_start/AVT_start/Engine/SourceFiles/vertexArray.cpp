@@ -2,13 +2,13 @@
 
 VertexArray::VertexArray()
 {
-	glGenVertexArrays(1, &my_ID);
-	glBindVertexArray(my_ID);
+	glGenVertexArrays(1, &m_RendererID);
+	glBindVertexArray(m_RendererID);
 }
 
 VertexArray::~VertexArray()
 {
-	glDeleteVertexArrays(1, &my_ID);
+	glDeleteVertexArrays(1, &m_RendererID);
 }
 
 void VertexArray::AddBuffer(VertexBuffer& vb, VertexBufferLayout& layout)
@@ -34,7 +34,7 @@ void VertexArray::addAttribute(unsigned int location, VertexBufferElement& eleme
 
 void VertexArray::bind()
 {
-	glBindVertexArray(my_ID);
+	glBindVertexArray(m_RendererID);
 }
 
 void VertexArray::unbind()

@@ -3,7 +3,7 @@
 
 class IndexBuffer {
 private:
-	GLuint m_idGL;
+	GLuint m_RendererID;
 	GLuint m_count;
 
 public:

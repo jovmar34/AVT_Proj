@@ -3,7 +3,7 @@
 
 class VertexBuffer {
 private:
-	GLuint m_idGL;
+	GLuint m_RendererID;
 
 public:
 	VertexBuffer(const void* data, unsigned int size);

@@ -189,30 +189,17 @@ void populateScene() {
 	Manager* h = Manager::getInstance();
 
 	// Meshes
-	h->addMesh("plane_mesh", new Mesh("res/meshes/plane.obj"));
-	h->addMesh("cube_mesh", new Mesh("res/meshes/bunny.obj"));
-	h->addMesh("cylinder_mesh", new Mesh("res/meshes/cylinder.obj"));
-	h->addMesh("torus_mesh", new Mesh("res/meshes/torus.obj"));
+	Mesh	*plane_mesh = h->addMesh("plane_mesh", new Mesh("res/meshes/plane.obj")),
+			*cube_mesh = h->addMesh("cube_mesh", new Mesh("res/meshes/bunny.obj")),
+			*cylinder_mesh = h->addMesh("cylinder_mesh", new Mesh("res/meshes/cylinder.obj")),
+			*torus_mesh = h->addMesh("torus_mesh", new Mesh("res/meshes/torus.obj"));
 
 	// Textures
-	h->addTexture("test_texture", new Texture("res/textures/test_texture.png"));
+	Texture *test_texture = h->addTexture("test_texture", new Texture("res/textures/test_texture.png"));
 
 	// Shaders
-	h->addShader("texture_shader", new Shader("res/shaders/texture_vs.glsl", "res/shaders/texture_fs.glsl"));
-	h->addShader("cube_shader", new Shader("res/shaders/cube_vs.glsl", "res/shaders/cube_fs.glsl"));
-
-	//Get Meshes
-	Mesh	*plane_mesh		= h->getMesh("plane_mesh"), 
-			*cube_mesh		= h->getMesh("cube_mesh"),
-			*cylinder_mesh	= h->getMesh("cylinder_mesh"),
-			*torus_mesh		= h->getMesh("torus_mesh");
-
-	//Get Shaders
-	Shader	*texture_shader = h->getShader("texture_shader"), 
-			*cube_shader	= h->getShader("cube_shader");
-
-	//Get Textures
-	Texture* test_texture = h->getTexture("test_texture");
+	Shader	*texture_shader = h->addShader("texture_shader", new Shader("res/shaders/texture_vs.glsl", "res/shaders/texture_fs.glsl")),
+			*cube_shader = h->addShader("cube_shader", new Shader("res/shaders/cube_vs.glsl", "res/shaders/cube_fs.glsl"));
 
 
 	// Materials 

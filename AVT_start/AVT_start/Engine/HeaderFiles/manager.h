@@ -33,16 +33,19 @@ public:
 			delete instance;
 	}
 
-	void addShader(std::string name, Shader* shader) {
+	Shader* addShader(std::string name, Shader* shader) {
 		shaders[name] = shader;
+		return shader;
 	}
 
-	void addMesh(std::string name, Mesh* mesh) {
+	Mesh* addMesh(std::string name, Mesh* mesh) {
 		meshes[name] = mesh;
+		return mesh;
 	}
 
-	void addTexture(std::string name, Texture* texture) {
+	Texture* addTexture(std::string name, Texture* texture) {
 		textures[name] = texture;
+		return texture;
 	}
 
 	Shader* getShader(std::string name) {

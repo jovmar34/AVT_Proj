@@ -90,14 +90,16 @@ void populateScene() {
 	Texture *test_texture = h->addTexture("test_texture", new Texture("res/textures/test_texture.png"));
 
 	// Shaders
-	Shader	*texture_shader = h->addShader("texture_shader", new Shader("res/shaders/texture_vs.glsl", "res/shaders/texture_fs.glsl")),
-			*cube_shader = h->addShader("cube_shader", new Shader("res/shaders/cube_vs.glsl", "res/shaders/cube_fs.glsl")),
-			*test_shader = h->addShader("test_shader", new Shader("res/shaders/blinn_phong_vs.glsl", "res/shaders/blinn_phong_fs.glsl"));
+	Shader* texture_shader = h->addShader("texture_shader", new Shader("res/shaders/texture_vs.glsl", "res/shaders/texture_fs.glsl")),
+		* phong_shader = h->addShader("phong_shader", new Shader("res/shaders/phong_vs.glsl", "res/shaders/phong_fs.glsl")),
+		* blinn_phong_shader = h->addShader("blinn_phong_shader", new Shader("res/shaders/blinn_phong_vs.glsl", "res/shaders/blinn_phong_fs.glsl")),
+		* gouraud_shader = h->addShader("gouraud_shader", new Shader("res/shaders/gouraud_vs.glsl", "res/shaders/gouraud_fs.glsl"));
+
 
 	// Materials 
-	Material* test_mat_r = h->addMaterial("test_mat_r", new Material(test_shader,true));
-	Material* test_mat_g = h->addMaterial("test_mat_g", new Material(test_shader));
-	Material* test_mat_b = h->addMaterial("test_mat_b", new Material(test_shader));
+	Material* test_mat_r = h->addMaterial("test_mat_r", new Material(phong_shader));
+	Material* test_mat_g = h->addMaterial("test_mat_g", new Material(gouraud_shader));
+	Material* test_mat_b = h->addMaterial("test_mat_b", new Material(blinn_phong_shader));
 	test_mat_r->setUniformVec3("u_AlbedoColor", Vector3D(1, 0, 0));
 	test_mat_g->setUniformVec3("u_AlbedoColor", Vector3D(0, 1, 0));
 	test_mat_b->setUniformVec3("u_AlbedoColor", Vector3D(0, 0, 1));

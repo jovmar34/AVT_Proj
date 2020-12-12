@@ -82,7 +82,7 @@ void populateScene() {
 
 	// Meshes
 	Mesh	*plane_mesh = h->addMesh("plane_mesh", new Mesh("res/meshes/plane.obj")),
-			*cube_mesh = h->addMesh("cube_mesh", new Mesh("res/meshes/bunny.obj")),
+			*cube_mesh = h->addMesh("cube_mesh", new Mesh("res/meshes/bunny_smooth.obj")),
 			*cylinder_mesh = h->addMesh("cylinder_mesh", new Mesh("res/meshes/cylinder.obj")),
 			*torus_mesh = h->addMesh("torus_mesh", new Mesh("res/meshes/torus.obj"));
 
@@ -91,12 +91,13 @@ void populateScene() {
 
 	// Shaders
 	Shader	*texture_shader = h->addShader("texture_shader", new Shader("res/shaders/texture_vs.glsl", "res/shaders/texture_fs.glsl")),
-			*cube_shader = h->addShader("cube_shader", new Shader("res/shaders/cube_vs.glsl", "res/shaders/cube_fs.glsl"));
+			*cube_shader = h->addShader("cube_shader", new Shader("res/shaders/cube_vs.glsl", "res/shaders/cube_fs.glsl")),
+			*test_shader = h->addShader("test_shader", new Shader("res/shaders/blinn_phong_vs.glsl", "res/shaders/blinn_phong_fs.glsl"));
 
 	// Materials 
-	Material* test_mat_r = h->addMaterial("test_mat_r", new Material(cube_shader));
-	Material* test_mat_g = h->addMaterial("test_mat_g", new Material(cube_shader));
-	Material* test_mat_b = h->addMaterial("test_mat_b", new Material(cube_shader));
+	Material* test_mat_r = h->addMaterial("test_mat_r", new Material(test_shader));
+	Material* test_mat_g = h->addMaterial("test_mat_g", new Material(test_shader));
+	Material* test_mat_b = h->addMaterial("test_mat_b", new Material(test_shader));
 	test_mat_r->setUniformVec3("u_AlbedoColor", Vector3D(1, 0, 0));
 	test_mat_g->setUniformVec3("u_AlbedoColor", Vector3D(0, 1, 0));
 	test_mat_b->setUniformVec3("u_AlbedoColor", Vector3D(0, 0, 1));

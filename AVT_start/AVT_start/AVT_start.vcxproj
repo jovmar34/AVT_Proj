@@ -193,6 +193,8 @@
     <ClInclude Include="Engine\Vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\shaders\blinn_phong_fs.glsl" />
+    <None Include="res\shaders\blinn_phong_vs.glsl" />
     <None Include="res\shaders\cube_fs.glsl" />
     <None Include="res\shaders\cube_vs.glsl" />
     <None Include="res\shaders\frag.glsl" />

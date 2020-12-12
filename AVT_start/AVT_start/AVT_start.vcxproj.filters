@@ -141,6 +141,8 @@
     <None Include="res\shaders\cube_vs.glsl" />
     <None Include="res\shaders\texture_fs.glsl" />
     <None Include="res\shaders\texture_vs.glsl" />
+    <None Include="res\shaders\blinn_phong_vs.glsl" />
+    <None Include="res\shaders\blinn_phong_fs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\test_texture.png">

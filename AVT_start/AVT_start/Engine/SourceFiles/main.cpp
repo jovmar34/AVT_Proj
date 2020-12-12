@@ -95,7 +95,7 @@ void populateScene() {
 			*test_shader = h->addShader("test_shader", new Shader("res/shaders/blinn_phong_vs.glsl", "res/shaders/blinn_phong_fs.glsl"));
 
 	// Materials 
-	Material* test_mat_r = h->addMaterial("test_mat_r", new Material(test_shader));
+	Material* test_mat_r = h->addMaterial("test_mat_r", new Material(test_shader,true));
 	Material* test_mat_g = h->addMaterial("test_mat_g", new Material(test_shader));
 	Material* test_mat_b = h->addMaterial("test_mat_b", new Material(test_shader));
 	test_mat_r->setUniformVec3("u_AlbedoColor", Vector3D(1, 0, 0));
@@ -103,7 +103,7 @@ void populateScene() {
 	test_mat_b->setUniformVec3("u_AlbedoColor", Vector3D(0, 0, 1));
 
 	Material* test_mat_texture = h->addMaterial("test_mat_texture", new Material(texture_shader));
-	test_mat_texture->setAlbedoTexture(test_texture);
+	test_mat_texture->setTexture(test_texture);
 
 	//plane
 	Matrix4 plane_transform = MxFactory::rotation4(Vector3D(1, 0, 0), 90) 

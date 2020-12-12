@@ -139,6 +139,11 @@ void SceneGraph::draw()
 				curr->material->update(curr->getTransform());
 			}
 
+			if (curr->material->outline) 
+			{
+				//outline
+			}
+			
 			curr->mesh->draw();
 
 			curr->material->unbind();

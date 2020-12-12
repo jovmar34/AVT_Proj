@@ -141,9 +141,14 @@
     <None Include="res\shaders\phong_vs.glsl" />
     <None Include="res\shaders\gouraud_vs.glsl" />
     <None Include="res\shaders\gouraud_fs.glsl" />
+    <None Include="res\shaders\toon_fs.glsl" />
+    <None Include="res\shaders\toon_vs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\test_texture.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\toon_ramp_texture.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

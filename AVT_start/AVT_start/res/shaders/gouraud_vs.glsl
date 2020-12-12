@@ -26,7 +26,7 @@ void main(void)
 
 	//light
 	vec3 light_dir      = vec3(0, 0.5, 1);
-    vec3 light_color    = vec3(0.5);
+    vec3 light_color    = vec3(0.7);
     vec3 ambient_color  = 0.2 * u_AlbedoColor; 
 
     //Transform to eyespace
@@ -43,7 +43,7 @@ void main(void)
     vec3 E = normalize(-mv_vertex);
     vec3 R = normalize(-reflect(light_dir, mv_normal));
 
-	float specular = pow(max(dot(R,E),0.0),0.3);
+	float specular = pow(max(dot(R,E),0.0), 32.0);
     vec3 specular_color = specular * light_color;
 
     exColor = vec3(ambient_color + diffuse_color + specular_color);

@@ -18,9 +18,13 @@ void Material::bind()
 {
 	shader->bind();
 
-	if (albedo) {
-		albedo->Bind();
-		shader->setUniform1int("u_Texture", 0);
+	if (!textures.empty()) {
+
+		for(auto &item : textures) {
+
+			item.second->Bind(item.first);
+			shader->setUniform1int("u_Texture", item.first);
+		}
 	}
 
 	for (auto& it : vals_Vec4) {
@@ -52,7 +56,13 @@ void Material::unbind() {
 	
 	shader->unbind();
 
-	if (albedo) albedo->Unbind();
+	if (!textures.empty()) {
+
+		for (auto& item : textures) {
+
+			item.second->Unbind();
+		}
+	}
 }
 
 // Set uniform values
@@ -86,7 +96,7 @@ void Material::setUniform1float(std::string uniformName, float val)
 	vals_1float[uniformName] = val;
 }
 
-void Material::setAlbedoTexture(Texture* _albedo) 
+void Material::setTexture(Texture* texture, int channel) 
 {
-	albedo = _albedo;
+	textures[channel] = texture;
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include <unordered_map>
+#include <map>
 #include <string>
 #include <sstream>
 #include <fstream>
@@ -10,7 +11,8 @@ class Material {
 private:
 	
 	Shader* shader;
-	Texture* albedo;
+
+	std::map<int, Texture*> textures;
 	
 	unordered_map<std::string, Vector4D>	vals_Vec4;
 	unordered_map<std::string, Vector3D>	vals_Vec3;
@@ -20,7 +22,10 @@ private:
 	unordered_map<std::string, float>		vals_1float;
 
 public:
-	Material(Shader* _shader) : shader(_shader), albedo(nullptr) {};
+	bool outline;
+
+	Material(Shader* _shader) : shader(_shader), outline(false) {};
+	Material(Shader* _shader, bool _outline) : shader(_shader), outline(_outline){};
 
 	void update(Matrix4 model_matrix);
 	void update(Matrix4 view_matrix, Matrix4 proj_matrix, Matrix4 model_matrix);
@@ -37,5 +42,5 @@ public:
 	void setUniform1float(std::string uniformName, float val);
 
 	// Textures
-	void setAlbedoTexture(Texture* _albedo);
+	void setTexture(Texture* texture, int channel = 0);
 };

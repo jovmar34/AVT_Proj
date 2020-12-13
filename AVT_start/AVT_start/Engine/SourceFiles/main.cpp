@@ -38,7 +38,68 @@
 bool save_img = false;
 
 SceneGraph graph;
+<<<<<<< HEAD
 myApp app;
+=======
+
+void populateScene() {
+	
+	// Camera init
+	cam = Camera(Vector3D(4, 4, 4), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
+	cam.perspectiveProjection(60, 4.0f / 3.0f, 1, 200);
+
+	graph.setCamera(&cam);
+
+	Manager* h = Manager::getInstance();
+
+	// Meshes
+	Mesh	*plane_mesh = h->addMesh("plane_mesh", new Mesh("res/meshes/plane.obj")),
+			*cube_mesh = h->addMesh("cube_mesh", new Mesh("res/meshes/bunny_smooth.obj")),
+			*cylinder_mesh = h->addMesh("cylinder_mesh", new Mesh("res/meshes/cylinder.obj")),
+			*torus_mesh = h->addMesh("torus_mesh", new Mesh("res/meshes/torus.obj"));
+
+	// Textures
+	Texture *test_texture = h->addTexture("test_texture", new Texture("res/textures/test_texture.png"));
+	Texture* toon_ramp_texture = h->addTexture("toon_ramp_texture", new Texture("res/textures/toon_ramp_texture.png"));
+
+	// Shaders
+	Shader	*texture_shader = h->addShader("texture_shader", new Shader("res/shaders/texture_vs.glsl", "res/shaders/texture_fs.glsl")),
+			*phong_shader = h->addShader("phong_shader", new Shader("res/shaders/phong_vs.glsl", "res/shaders/phong_fs.glsl")),
+			*blinn_phong_shader = h->addShader("blinn_phong_shader", new Shader("res/shaders/blinn_phong_vs.glsl", "res/shaders/blinn_phong_fs.glsl")),
+			*gouraud_shader = h->addShader("gouraud_shader", new Shader("res/shaders/gouraud_vs.glsl", "res/shaders/gouraud_fs.glsl")),
+			*toon_shader = h->addShader("toon_shader", new Shader("res/shaders/toon_vs.glsl", "res/shaders/toon_fs.glsl"));
+
+	// Materials 
+	Material* test_mat_r = h->addMaterial("test_mat_r", new Material(gouraud_shader));
+	Material* test_mat_g = h->addMaterial("test_mat_g", new Material(blinn_phong_shader));
+	Material* test_mat_b = h->addMaterial("test_mat_b", new Material(toon_shader));
+	test_mat_r->setUniformVec3("u_AlbedoColor", Vector3D(1, 0, 0));
+	test_mat_g->setUniformVec3("u_AlbedoColor", Vector3D(0, 1, 0));
+	test_mat_b->setUniformVec3("u_AlbedoColor", Vector3D(0, 0, 1));
+	test_mat_b->setTexture(toon_ramp_texture);
+
+	Material* test_mat_texture = h->addMaterial("test_mat_texture", new Material(texture_shader));
+	test_mat_texture->setTexture(test_texture);
+
+	//plane
+	Matrix4 plane_transform = MxFactory::rotation4(Vector3D(1, 0, 0), 90) 
+							* MxFactory::scaling4(Vector3D(4, 1, 4))
+							* MxFactory::translation4(Vector3D(0,-5,0));
+	graph.addChild(test_mat_texture, plane_mesh, "plane", plane_transform);
+	
+	//cylinder
+	graph.addChild(test_mat_r, cylinder_mesh, "cylinder", MxFactory::translation4(Vector3D(-3, 0, 0)));
+
+	//cube
+	graph.addChild(test_mat_g, cube_mesh, "cube");
+
+	//torus
+	graph.addChild(test_mat_b, torus_mesh, "torus", MxFactory::translation4(Vector3D(3, 0, 0)));
+
+	graph.describe();
+}
+
+>>>>>>> main
 
 void createShaderProgram()
 {
@@ -78,6 +139,68 @@ void destroyBufferObjects()
 
 /////////////////////////////////////////////////////////////////////// SCENE
 
+<<<<<<< HEAD
+=======
+void walk(GLFWwindow* win, double elapsed) {
+	int r = (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS ), 
+		l = (glfwGetKey(win, GLFW_KEY_A) == GLFW_PRESS),
+		d = (glfwGetKey(win, GLFW_KEY_S) == GLFW_PRESS),
+		u = (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS);
+
+	double xaxis = (double) r - l, 
+		yaxis = (double) d - u;
+
+	if (xaxis != 0 || yaxis != 0) {
+		Vector3D dir = Vector3D(xaxis, 0, yaxis);
+		dir.normalize();
+
+		cam.move(dir, sprint_factor * speed * elapsed);
+	}
+}
+
+double old_x, old_y;
+double angle_x = M_PI_2 / 50, angle_y = M_PI / 50;
+
+void look(GLFWwindow* win, double elapsed) {
+	double x, y;
+	glfwGetCursorPos(win, &x, &y);
+
+	int w, h;
+	glfwGetWindowSize(win, &w, &h);
+
+	double move_x = (x - old_x);
+	double move_y = (y - old_y);
+
+	if (move_x != 0 || move_y != 0) 
+		cam.look(angle_x * move_x * elapsed, angle_y * move_y * elapsed);
+
+	old_x = x;
+	old_y = y;
+}
+
+void animate(GLFWwindow* win, double elapsed) {
+	//Matrix4 transf = MxFactory::rotation4(Vector3D(1, 0, 0), 180 * elapsed);
+	//graph.applyTransform("torus",transf);
+}
+
+void processInput(GLFWwindow* win, double elapsed) {
+	if (reset_cam) {
+		cam.eye = Vector3D(0, 0, 20);
+		cam.center = Vector3D(0, 0, 0);
+		cam.up = Vector3D(0, 1, 0);
+
+		cam.updateView();
+		reset_cam = false;
+	}
+	else {
+		walk(win, elapsed);
+		look(win, elapsed);
+	}
+
+	animate(win, elapsed);
+}
+
+>>>>>>> main
 void drawScene(GLFWwindow* win, double elapsed)
 {
 	app.update(win, elapsed);

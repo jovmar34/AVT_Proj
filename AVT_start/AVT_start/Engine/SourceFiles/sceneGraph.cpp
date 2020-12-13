@@ -143,7 +143,7 @@ void SceneGraph::draw()
 			{
 				curr->material->update(curr->getTransform());
 			}
-
+			
 			curr->mesh->draw();
 
 			curr->material->unbind();

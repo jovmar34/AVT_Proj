@@ -145,17 +145,22 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\vertex.glsl" />
-    <None Include="res\shaders\frag.glsl" />
-    <None Include="res\shaders\frag_alt.glsl" />
-    <None Include="res\shaders\vertex_alt.glsl" />
-    <None Include="res\shaders\cube_fs.glsl" />
-    <None Include="res\shaders\cube_vs.glsl" />
     <None Include="res\shaders\texture_fs.glsl" />
     <None Include="res\shaders\texture_vs.glsl" />
+    <None Include="res\shaders\blinn_phong_vs.glsl" />
+    <None Include="res\shaders\blinn_phong_fs.glsl" />
+    <None Include="res\shaders\phong_fs.glsl" />
+    <None Include="res\shaders\phong_vs.glsl" />
+    <None Include="res\shaders\gouraud_vs.glsl" />
+    <None Include="res\shaders\gouraud_fs.glsl" />
+    <None Include="res\shaders\toon_fs.glsl" />
+    <None Include="res\shaders\toon_vs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\test_texture.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\toon_ramp_texture.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

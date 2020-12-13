@@ -34,6 +34,8 @@ public:
 	void setCamera(Camera* cam);
 	void saveCurr();
 
+	Camera* getCam();
+
 	void init(GLuint ProgramId);
 	void draw();
 

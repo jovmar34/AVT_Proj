@@ -32,43 +32,15 @@
 #include "FreeImage.h"
 #include "../HeaderFiles/engine.h"
 #include "../HeaderFiles/manager.h"
-
-double sprint_factor = 1;
-double speed = 10;
-bool animate_frame = false;
-bool animate_cubes = false;
-bool stop_cubes = true;
-double ani_time_cubes = 2.0f;
-double ani_time_frame = 5.0f;
-double t_frame = 0.0f, t_cubes = 0.0f;
-bool reset_cam = false;
-bool save_img = false;
-
-Vector3D coords[] = {
-		Vector3D(-0.6666, -1, 2),
-		Vector3D(-2, -1	, 3),
-		Vector3D(-1.3333, 0.1547, 4),
-		Vector3D(-0.6666, 1.3094, 5),
-		Vector3D(0.0, 2.4641, 6),
-		Vector3D(0.6666, 1.3094, 7),
-		Vector3D(1.3333, 0.1547, 8),
-		Vector3D(2, -1	, 0),
-		Vector3D(0.6666, -1, 1),
-};
+#include "../HeaderFiles/myApp.h"
 
 /////////////////////////////////////////////////////////////////////// SHADERs
+bool save_img = false;
 
-struct ShaderSource {
-	std::string VertexSource;
-	std::string FragmentSource;
-
-};
-
-GLuint VaoId, VboId[2], UboId;
-GLuint VertexShaderId, FragmentShaderId, ProgramId;
-GLint UniformId;
-Camera cam;
 SceneGraph graph;
+<<<<<<< HEAD
+myApp app;
+=======
 
 void populateScene() {
 	
@@ -127,10 +99,11 @@ void populateScene() {
 	graph.describe();
 }
 
+>>>>>>> main
 
 void createShaderProgram()
 {
-	populateScene();
+	app.populateScene();
 
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not create shaders.");
@@ -146,8 +119,6 @@ void destroyShaderProgram()
 }
 
 /////////////////////////////////////////////////////////////////////// VAOs & VBOs
-
-int fakes[] = {	0,	0,	0, 0, 0, 0, 0, 0, 1 };
 
 void createBufferObjects()
 {
@@ -168,6 +139,8 @@ void destroyBufferObjects()
 
 /////////////////////////////////////////////////////////////////////// SCENE
 
+<<<<<<< HEAD
+=======
 void walk(GLFWwindow* win, double elapsed) {
 	int r = (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS ), 
 		l = (glfwGetKey(win, GLFW_KEY_A) == GLFW_PRESS),
@@ -227,11 +200,10 @@ void processInput(GLFWwindow* win, double elapsed) {
 	animate(win, elapsed);
 }
 
+>>>>>>> main
 void drawScene(GLFWwindow* win, double elapsed)
 {
-	processInput(win, elapsed);
-
-	graph.draw();
+	app.update(win, elapsed);
 
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not draw scene.");
@@ -256,56 +228,12 @@ void window_size_callback(GLFWwindow* win, int winx, int winy)
 
 void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 {
-	std::cout << "key: " << key << " " << scancode << " " << action << " " << mods << std::endl;
-	if (action == GLFW_RELEASE) {
-		switch (key) {
-		case GLFW_KEY_P:
-			if (cam.projType == CameraProj::Parallel) {
-				cam.perspectiveProjection(60, 4.0f / 3.0f, 1, 50);
-			}
-			else {
-				cam.parallelProjection(-10, 10, -10, 10, 1, 50);
-			}
-			break;
-		case GLFW_KEY_ESCAPE:
-			if (cam.state == Working::On) {
-				glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			}
-			else {
-				glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-			}
-			cam.toggle();
-			break;
-		case GLFW_KEY_LEFT_SHIFT:
-			sprint_factor = 1;
-			break;
-		case GLFW_KEY_F:
-			animate_frame = true;
-			break;
-		case GLFW_KEY_C:
-			stop_cubes = !stop_cubes;
-			break;
-		case GLFW_KEY_R:
-			reset_cam = true;
-			break;
-		case GLFW_KEY_I:
-			save_img = true;
-			break;
-		}
-	}
-	else if (action == GLFW_PRESS) {
-		switch (key)
-		{
-		case GLFW_KEY_LEFT_SHIFT:
-			sprint_factor = 3;
-			break;
-		}
-	}
+	app.keyCallback(win, key, scancode, action, mods);
 }
 
 void mouse_callback(GLFWwindow* win, double xpos, double ypos)
 {
-	std::cout << "mouse: " << xpos << " " << ypos << std::endl;
+	app.mouseCallback(win, xpos, ypos);
 }
 
 void mouse_button_callback(GLFWwindow* win, int button, int action, int mods)
@@ -458,33 +386,10 @@ void updateFPS(GLFWwindow* win, double elapsed_sec)
 	}
 }
 
-void save(GLFWwindow* win) {
-	int w, h;
-	glfwGetWindowSize(win, &w, &h);
-
-	GLubyte* pixels = new GLubyte[3 * w * h];
-
-	glReadPixels(0, 0, w, h, GL_BGR, GL_UNSIGNED_BYTE, pixels);
-
-	// Convert to FreeImage format & save to file
-	FIBITMAP* image = FreeImage_ConvertFromRawBits(pixels, w, h, 3 * w, 24, 0x0000FF, 0xFF0000, 0x00FF00, false);
-	FreeImage_Save(FIF_BMP, image, "test.bmp", 0);
-
-	// Free resources
-	FreeImage_Unload(image);
-	delete[] pixels;
-
-	//std::cout << "width: " << w << "; height: " << h << std::endl;
-}
-
 void display_callback(GLFWwindow* win, double elapsed_sec)
 {
-	//updateFPS(win, elapsed_sec);
+	updateFPS(win, elapsed_sec);
 	drawScene(win, elapsed_sec);
-	if (save_img) {
-		save(win);
-		save_img = false;
-	}
 }
 
 void run(GLFWwindow* win)

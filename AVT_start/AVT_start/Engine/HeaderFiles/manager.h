@@ -6,6 +6,7 @@
 #include "shader.h"
 #include "mesh.h"
 #include "texture.h"
+#include "material.h"
 
 
 class Manager {
@@ -77,5 +78,3 @@ public:
 		}
 	}
 };
-
-Manager* Manager::instance = 0;

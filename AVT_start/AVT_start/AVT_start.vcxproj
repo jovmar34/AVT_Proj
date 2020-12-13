@@ -152,7 +152,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Engine\SourceFiles\indexBuffer.cpp" />
+    <ClCompile Include="Engine\SourceFiles\manager.cpp" />
     <ClCompile Include="Engine\SourceFiles\mesh.cpp" />
+    <ClCompile Include="Engine\SourceFiles\myApp.cpp" />
     <ClCompile Include="Engine\SourceFiles\objLoader.cpp" />
     <ClCompile Include="Engine\SourceFiles\camera.cpp" />
     <ClCompile Include="Engine\SourceFiles\mxfactory.cpp" />
@@ -173,10 +175,12 @@
   <ItemGroup>
     <ClInclude Include="Engine\HeaderFiles\camera.h" />
     <ClInclude Include="Engine\HeaderFiles\engine.h" />
+    <ClInclude Include="Engine\HeaderFiles\IApp.h" />
     <ClInclude Include="Engine\HeaderFiles\material.h" />
     <ClInclude Include="Engine\HeaderFiles\indexBuffer.h" />
     <ClInclude Include="Engine\HeaderFiles\manager.h" />
     <ClInclude Include="Engine\HeaderFiles\mesh.h" />
+    <ClInclude Include="Engine\HeaderFiles\myApp.h" />
     <ClInclude Include="Engine\HeaderFiles\object.h" />
     <ClInclude Include="Engine\HeaderFiles\mxfactory.h" />
     <ClInclude Include="Engine\HeaderFiles\matrix.h" />

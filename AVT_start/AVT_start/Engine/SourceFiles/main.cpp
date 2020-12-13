@@ -32,100 +32,17 @@
 #include "FreeImage.h"
 #include "../HeaderFiles/engine.h"
 #include "../HeaderFiles/manager.h"
-
-double sprint_factor = 1;
-double speed = 10;
-bool animate_frame = false;
-bool animate_cubes = false;
-bool stop_cubes = true;
-double ani_time_cubes = 2.0f;
-double ani_time_frame = 5.0f;
-double t_frame = 0.0f, t_cubes = 0.0f;
-bool reset_cam = false;
-bool save_img = false;
-
-Vector3D coords[] = {
-		Vector3D(-0.6666, -1, 2),
-		Vector3D(-2, -1	, 3),
-		Vector3D(-1.3333, 0.1547, 4),
-		Vector3D(-0.6666, 1.3094, 5),
-		Vector3D(0.0, 2.4641, 6),
-		Vector3D(0.6666, 1.3094, 7),
-		Vector3D(1.3333, 0.1547, 8),
-		Vector3D(2, -1	, 0),
-		Vector3D(0.6666, -1, 1),
-};
+#include "../HeaderFiles/myApp.h"
 
 /////////////////////////////////////////////////////////////////////// SHADERs
+bool save_img = false;
 
-struct ShaderSource {
-	std::string VertexSource;
-	std::string FragmentSource;
-
-};
-
-GLuint VaoId, VboId[2], UboId;
-GLuint VertexShaderId, FragmentShaderId, ProgramId;
-GLint UniformId;
-Camera cam;
 SceneGraph graph;
-
-void populateScene() {
-	
-	// Camera init
-	cam = Camera(Vector3D(4, 4, 4), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
-	cam.perspectiveProjection(60, 4.0f / 3.0f, 1, 200);
-
-	graph.setCamera(&cam);
-
-	Manager* h = Manager::getInstance();
-
-	// Meshes
-	Mesh	*plane_mesh = h->addMesh("plane_mesh", new Mesh("res/meshes/plane.obj")),
-			*cube_mesh = h->addMesh("cube_mesh", new Mesh("res/meshes/bunny.obj")),
-			*cylinder_mesh = h->addMesh("cylinder_mesh", new Mesh("res/meshes/cylinder.obj")),
-			*torus_mesh = h->addMesh("torus_mesh", new Mesh("res/meshes/torus.obj"));
-
-	// Textures
-	Texture *test_texture = h->addTexture("test_texture", new Texture("res/textures/test_texture.png"));
-
-	// Shaders
-	Shader	*texture_shader = h->addShader("texture_shader", new Shader("res/shaders/texture_vs.glsl", "res/shaders/texture_fs.glsl")),
-			*cube_shader = h->addShader("cube_shader", new Shader("res/shaders/cube_vs.glsl", "res/shaders/cube_fs.glsl"));
-
-	// Materials 
-	Material* test_mat_r = h->addMaterial("test_mat_r", new Material(cube_shader));
-	Material* test_mat_g = h->addMaterial("test_mat_g", new Material(cube_shader));
-	Material* test_mat_b = h->addMaterial("test_mat_b", new Material(cube_shader));
-	test_mat_r->setUniformVec3("u_AlbedoColor", Vector3D(1, 0, 0));
-	test_mat_g->setUniformVec3("u_AlbedoColor", Vector3D(0, 1, 0));
-	test_mat_b->setUniformVec3("u_AlbedoColor", Vector3D(0, 0, 1));
-
-	Material* test_mat_texture = h->addMaterial("test_mat_texture", new Material(texture_shader));
-	test_mat_texture->setAlbedoTexture(test_texture);
-
-	//plane
-	Matrix4 plane_transform = MxFactory::rotation4(Vector3D(1, 0, 0), 90) 
-							* MxFactory::scaling4(Vector3D(4, 1, 4))
-							* MxFactory::translation4(Vector3D(0,-5,0));
-	graph.addChild(test_mat_texture, plane_mesh, "plane", plane_transform);
-	
-	//cylinder
-	graph.addChild(test_mat_r, cylinder_mesh, "cylinder", MxFactory::translation4(Vector3D(-3, 0, 0)));
-
-	//cube
-	graph.addChild(test_mat_g, cube_mesh, "cube");
-
-	//torus
-	graph.addChild(test_mat_b, torus_mesh, "torus", MxFactory::translation4(Vector3D(3, 0, 0)));
-
-	graph.describe();
-}
-
+myApp app;
 
 void createShaderProgram()
 {
-	populateScene();
+	app.populateScene();
 
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not create shaders.");
@@ -141,8 +58,6 @@ void destroyShaderProgram()
 }
 
 /////////////////////////////////////////////////////////////////////// VAOs & VBOs
-
-int fakes[] = {	0,	0,	0, 0, 0, 0, 0, 0, 1 };
 
 void createBufferObjects()
 {
@@ -163,69 +78,9 @@ void destroyBufferObjects()
 
 /////////////////////////////////////////////////////////////////////// SCENE
 
-void walk(GLFWwindow* win, double elapsed) {
-	int r = (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS ), 
-		l = (glfwGetKey(win, GLFW_KEY_A) == GLFW_PRESS),
-		d = (glfwGetKey(win, GLFW_KEY_S) == GLFW_PRESS),
-		u = (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS);
-
-	double xaxis = (double) r - l, 
-		yaxis = (double) d - u;
-
-	if (xaxis != 0 || yaxis != 0) {
-		Vector3D dir = Vector3D(xaxis, 0, yaxis);
-		dir.normalize();
-
-		cam.move(dir, sprint_factor * speed * elapsed);
-	}
-}
-
-double old_x, old_y;
-double angle_x = M_PI_2 / 50, angle_y = M_PI / 50;
-
-void look(GLFWwindow* win, double elapsed) {
-	double x, y;
-	glfwGetCursorPos(win, &x, &y);
-
-	int w, h;
-	glfwGetWindowSize(win, &w, &h);
-
-	double move_x = (x - old_x);
-	double move_y = (y - old_y);
-
-	if (move_x != 0 || move_y != 0) 
-		cam.look(angle_x * move_x * elapsed, angle_y * move_y * elapsed);
-
-	old_x = x;
-	old_y = y;
-}
-
-void animate(GLFWwindow* win, double elapsed) {
-	//graph.applyTransform("orbit", MxFactory::rotation4(Vector3D(0,0,1), 180 * elapsed));
-}
-
-void processInput(GLFWwindow* win, double elapsed) {
-	if (reset_cam) {
-		cam.eye = Vector3D(0, 0, 20);
-		cam.center = Vector3D(0, 0, 0);
-		cam.up = Vector3D(0, 1, 0);
-
-		cam.updateView();
-		reset_cam = false;
-	}
-	else {
-		walk(win, elapsed);
-		look(win, elapsed);
-	}
-
-	animate(win, elapsed);
-}
-
 void drawScene(GLFWwindow* win, double elapsed)
 {
-	processInput(win, elapsed);
-
-	graph.draw();
+	app.update(win, elapsed);
 
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not draw scene.");
@@ -250,56 +105,12 @@ void window_size_callback(GLFWwindow* win, int winx, int winy)
 
 void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 {
-	std::cout << "key: " << key << " " << scancode << " " << action << " " << mods << std::endl;
-	if (action == GLFW_RELEASE) {
-		switch (key) {
-		case GLFW_KEY_P:
-			if (cam.projType == CameraProj::Parallel) {
-				cam.perspectiveProjection(60, 4.0f / 3.0f, 1, 50);
-			}
-			else {
-				cam.parallelProjection(-10, 10, -10, 10, 1, 50);
-			}
-			break;
-		case GLFW_KEY_ESCAPE:
-			if (cam.state == Working::On) {
-				glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			}
-			else {
-				glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-			}
-			cam.toggle();
-			break;
-		case GLFW_KEY_LEFT_SHIFT:
-			sprint_factor = 1;
-			break;
-		case GLFW_KEY_F:
-			animate_frame = true;
-			break;
-		case GLFW_KEY_C:
-			stop_cubes = !stop_cubes;
-			break;
-		case GLFW_KEY_R:
-			reset_cam = true;
-			break;
-		case GLFW_KEY_I:
-			save_img = true;
-			break;
-		}
-	}
-	else if (action == GLFW_PRESS) {
-		switch (key)
-		{
-		case GLFW_KEY_LEFT_SHIFT:
-			sprint_factor = 3;
-			break;
-		}
-	}
+	app.keyCallback(win, key, scancode, action, mods);
 }
 
 void mouse_callback(GLFWwindow* win, double xpos, double ypos)
 {
-	std::cout << "mouse: " << xpos << " " << ypos << std::endl;
+	app.mouseCallback(win, xpos, ypos);
 }
 
 void mouse_button_callback(GLFWwindow* win, int button, int action, int mods)
@@ -452,33 +263,10 @@ void updateFPS(GLFWwindow* win, double elapsed_sec)
 	}
 }
 
-void save(GLFWwindow* win) {
-	int w, h;
-	glfwGetWindowSize(win, &w, &h);
-
-	GLubyte* pixels = new GLubyte[3 * w * h];
-
-	glReadPixels(0, 0, w, h, GL_BGR, GL_UNSIGNED_BYTE, pixels);
-
-	// Convert to FreeImage format & save to file
-	FIBITMAP* image = FreeImage_ConvertFromRawBits(pixels, w, h, 3 * w, 24, 0x0000FF, 0xFF0000, 0x00FF00, false);
-	FreeImage_Save(FIF_BMP, image, "test.bmp", 0);
-
-	// Free resources
-	FreeImage_Unload(image);
-	delete[] pixels;
-
-	//std::cout << "width: " << w << "; height: " << h << std::endl;
-}
-
 void display_callback(GLFWwindow* win, double elapsed_sec)
 {
-	//updateFPS(win, elapsed_sec);
+	updateFPS(win, elapsed_sec);
 	drawScene(win, elapsed_sec);
-	if (save_img) {
-		save(win);
-		save_img = false;
-	}
 }
 
 void run(GLFWwindow* win)

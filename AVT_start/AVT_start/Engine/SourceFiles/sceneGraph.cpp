@@ -92,6 +92,11 @@ void SceneGraph::saveCurr()
 	nameMap[current->name] = current;
 }
 
+Camera* SceneGraph::getCam()
+{
+	return cam;
+}
+
 void SceneGraph::init(GLuint ProgramId)
 {
 	SceneNode* curr;

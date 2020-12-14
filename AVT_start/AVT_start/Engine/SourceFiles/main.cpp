@@ -37,6 +37,7 @@
 /////////////////////////////////////////////////////////////////////// SHADERs
 bool save_img = false;
 
+SceneGraph graph;
 myApp app;
 
 void createShaderProgram()

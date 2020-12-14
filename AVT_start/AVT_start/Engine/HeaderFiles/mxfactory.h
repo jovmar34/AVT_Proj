@@ -20,7 +20,9 @@ public:
 	static Matrix4 scaling4(Vector3D scaleVec);
 	static Matrix4 translation4(Vector3D translateVec);
 	static Matrix4 rotation4(Vector3D axis, double theta);
+	static Matrix3 rotation3(Vector3D axis, double theta);
 	static Matrix4 invscaling4(Vector3D scaleVec);
 	static Matrix4 invtranslation4(Vector3D translateVec);
 	static Matrix4 invrotation4(Vector3D axis, double theta);
+	static Matrix3 invrotation3(Vector3D axis, double theta);
 };

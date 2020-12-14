@@ -9,16 +9,21 @@ out vec2 exTexcoord;
 out vec3 exNormal;
 
 out vec3 view_pos;
-
+uniform mat4 NormalMatrix;
 uniform mat4 ModelMatrix;
 uniform mat4 ViewMatrix;
 uniform mat4 ProjectionMatrix;
 
 void main(void)
 {
+	vec4 MCPosition = vec4(inPosition, 1.0);
+	
 	exPosition = inPosition;
 	exTexcoord = inTexcoord;
-	exNormal = inNormal;
+	vec4 norm = NormalMatrix * vec4(inNormal, 1.0);
+	exNormal.x = norm.x;
+	exNormal.y = norm.y;
+	exNormal.z = norm.z;
 
 	//camera position
 	mat4 view = inverse(ViewMatrix);
@@ -26,6 +31,5 @@ void main(void)
 	view_pos.y = view[3][1];
 	view_pos.z = view[3][2];
 
-	vec4 MCPosition = vec4(inPosition, 1.0);
 	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * MCPosition;
 }

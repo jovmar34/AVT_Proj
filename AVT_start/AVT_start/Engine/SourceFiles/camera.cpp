@@ -2,20 +2,7 @@
 
 Camera::Camera(Vector3D _eye, Vector3D _center, Vector3D _up) : eye(_eye), center(_center), up(_up)
 {
-	v = center - eye;
-	v.normalize();
-
-	s = v % up;
-	s.normalize();
-
-	u = s % v;
-
-	view = Matrix4(
-		s.x, s.y, s.z, -(s * eye),
-		u.x, u.y, u.z, -(u * eye),
-		-v.x, -v.y, -v.z, v * eye,
-		0.0f, 0.0f, 0.0f, 1.0f
-	);
+	updateView();
 }
 
 void Camera::parallelProjection(double l, double r, double b, double t, double n, double f)
@@ -93,6 +80,12 @@ void Camera::updateView()
 		-v.x, -v.y, -v.z, v * eye,
 		0.0f, 0.0f, 0.0f, 1.0f
 	);
+
+	invView = Matrix4(
+		s.x, u.x, -v.x, eye.x,
+		s.y, u.y, -v.y, eye.y,
+		s.z, u.z, -v.z, eye.z,
+		0.0f, 0.0f, 0.0f, 1.0f);
 
 	change = true;
 }

@@ -22,6 +22,21 @@ void myApp::processInput(GLFWwindow* win, double elapsed)
 
 void myApp::animate(GLFWwindow* win, double elapsed)
 {
+	t_frame += elapsed;
+	Matrix4 transf = MxFactory::translation4(Vector3D(3, 0, 0)) * MxFactory::rotation4(Vector3D(0, 0, 1), 180 * t_frame);
+
+	graph.setTransform("torus", transf);
+
+	if (graph.getCam()->change) {
+		Matrix4 invModel = MxFactory::invrotation4(Vector3D(0, 0, 1), 180 * t_frame) * MxFactory::invtranslation4(Vector3D(3, 0, 0));
+
+		Matrix4 invModelView = graph.getCam()->invView * invModel;
+
+		invModelView = invModelView.transpose();
+		Shader* shader = Manager::getInstance()->getShader("toon_shader");
+		shader->bind();
+		shader->setUniformMat4("NormalMatrix", invModelView);
+	}
 }
 
 void myApp::look(GLFWwindow* win, double elapsed)
@@ -139,7 +154,6 @@ void myApp::populateScene()
 	//torus
 	graph.addChild(test_mat_b, torus_mesh, "torus", MxFactory::translation4(Vector3D(3, 0, 0)));
 
-	graph.describe();
 }
 
 void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int mods)

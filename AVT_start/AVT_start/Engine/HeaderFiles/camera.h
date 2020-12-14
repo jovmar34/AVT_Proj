@@ -17,7 +17,7 @@ enum class Working {
 
 class Camera {
 public:
-	Matrix4 view, projection;
+	Matrix4 view, projection, invView;
 	Vector3D eye, center, up;
 	Vector3D v, s, u;
 	bool change = true;

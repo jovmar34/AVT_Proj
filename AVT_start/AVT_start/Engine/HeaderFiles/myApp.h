@@ -11,8 +11,6 @@ private:
 	bool animate_frame = false;
 	bool animate_cubes = false;
 	bool stop_cubes = true;
-	double ani_time_cubes = 2.0f;
-	double ani_time_frame = 5.0f;
 	double t_frame = 0.0f, t_cubes = 0.0f;
 	bool reset_cam = false;
 	bool save_img = false;

@@ -52,6 +52,12 @@ Matrix4 MxFactory::translation4(Vector3D translateVec)
 
 Matrix4 MxFactory::rotation4(Vector3D axis, double theta)
 {
+    Matrix3 mat3 = rotation3(axis, theta);
+    return mat3.increase();
+}
+
+Matrix3 MxFactory::rotation3(Vector3D axis, double theta)
+{
     Vector3D axis_c = axis; // assume axis may not be normalized
     axis_c.normalize();
     double angle = theta * M_PI / 180.0f; // degree to radian
@@ -59,7 +65,7 @@ Matrix4 MxFactory::rotation4(Vector3D axis, double theta)
     Matrix3 mat3 = identity3();
     mat3 += dual(axis_c.x, axis_c.y, axis_c.z) * sin(angle);
     mat3 += squaredual(axis_c.x, axis_c.y, axis_c.z) * (1 - cos(angle));
-    return mat3.increase();
+    return mat3;
 }
 
 Matrix4 MxFactory::invscaling4(Vector3D scaleVec)
@@ -79,5 +85,10 @@ Matrix4 MxFactory::invtranslation4(Vector3D tranlateVec)
 Matrix4 MxFactory::invrotation4(Vector3D axis, double theta)
 {
     return rotation4(axis, -theta);
+}
+
+Matrix3 MxFactory::invrotation3(Vector3D axis, double theta)
+{
+    return rotation3(axis, -theta);
 }
 

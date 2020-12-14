@@ -30,7 +30,7 @@ void myApp::animate(GLFWwindow* win, double elapsed)
 	if (graph.getCam()->change) {
 		Matrix4 invModel = MxFactory::invrotation4(Vector3D(0, 0, 1), 180 * t_frame) * MxFactory::invtranslation4(Vector3D(3, 0, 0));
 
-		Matrix4 invModelView = graph.getCam()->invView * invModel;
+		Matrix4 invModelView = invModel * graph.getCam()->invView;
 
 		invModelView = invModelView.transpose();
 		Shader* shader = Manager::getInstance()->getShader("toon_shader");

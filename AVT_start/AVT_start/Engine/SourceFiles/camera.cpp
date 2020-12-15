@@ -5,6 +5,16 @@ Camera::Camera(Vector3D _eye, Vector3D _center, Vector3D _up) : eye(_eye), cente
 	updateView();
 }
 
+void Camera::init()
+{
+	glGenBuffers(1, &UboId);
+	glBindBuffer(GL_UNIFORM_BUFFER, UboId);
+	glBufferData(GL_UNIFORM_BUFFER, 2 * Matrix4::byteSize(), NULL, GL_DYNAMIC_DRAW); // allocate 2 matrices worth of space
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	glBindBufferBase(GL_UNIFORM_BUFFER, 0, UboId);
+}
+
 void Camera::parallelProjection(double l, double r, double b, double t, double n, double f)
 {
 	projection = Matrix4(
@@ -107,10 +117,10 @@ void Camera::drawCamera()
 	GLfloat* viewMatrix = view.toOpenGl(),
 		*projectionMatrix = projection.toOpenGl();
 
-	glBindBuffer(GL_UNIFORM_BUFFER, VboId);
+	glBindBuffer(GL_UNIFORM_BUFFER, UboId);
 	{
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, 16 * sizeof(GLfloat), viewMatrix);
-		glBufferSubData(GL_UNIFORM_BUFFER, 16 * sizeof(GLfloat), 16 * sizeof(GLfloat), projectionMatrix);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, Matrix4::byteSize(), viewMatrix);
+		glBufferSubData(GL_UNIFORM_BUFFER, Matrix4::byteSize(), Matrix4::byteSize(), projectionMatrix);
 	}
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 

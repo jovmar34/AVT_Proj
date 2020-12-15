@@ -119,7 +119,8 @@ void SceneGraph::draw()
 {
 	SceneNode* curr;
 	queue<SceneNode*> unvisited;
-	bool update = cam->change;
+
+	cam->drawCamera();
 
 	unvisited.push(root);
 
@@ -135,14 +136,7 @@ void SceneGraph::draw()
 
 			curr->material->bind();
 
-			if (update) 
-			{
-				curr->material->update(cam->view, cam->projection, curr->getTransform());
-			}
-			else 
-			{
-				curr->material->update(curr->getTransform());
-			}
+			curr->material->update(curr->getTransform());
 			
 			curr->mesh->draw();
 

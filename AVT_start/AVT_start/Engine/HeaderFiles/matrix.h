@@ -113,6 +113,10 @@ class Matrix2 {
 		s << "[" << m.mat[0] << " " << m.mat[2] << "]\n[" << m.mat[1] << " " << m.mat[3] << "]\n";
 		return s;
 	}
+
+	static size_t byteSize() {
+		return 4 * sizeof(GLfloat);
+	}
 };
 
 class Matrix3 {
@@ -221,6 +225,10 @@ public:
 				 << m.mat[1] << " " << m.mat[4] << " " << m.mat[7] << "]\n["
 				 << m.mat[2] << " " << m.mat[5] << " " << m.mat[8] << "]\n";
 		return s;
+	}
+
+	static size_t byteSize() {
+		return 9 * sizeof(GLfloat);
 	}
 };
 
@@ -335,5 +343,9 @@ public:
 				 << m.mat[2] << " " << m.mat[6] << " " << m.mat[10] << " " << m.mat[14] << "]\n["
 				 << m.mat[3] << " " << m.mat[7] << " " << m.mat[11] << " " << m.mat[15] << "]\n";
 		return s;
+	}
+
+	static size_t byteSize() {
+		return 16 * sizeof(GLfloat);
 	}
 };

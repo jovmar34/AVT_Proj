@@ -28,6 +28,7 @@ public:
 	Camera() { };
 	Camera(Vector3D _eye, Vector3D _center, Vector3D _up);
 
+	void init();
 	void parallelProjection(double l, double r, double b,double t, double n, double f);
 	void perspectiveProjection(double fovy, double aspect, double near, double far);
 	void move(Vector3D dir, double speed);

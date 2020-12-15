@@ -14,7 +14,7 @@ void main(void)
 {
     
     //light properties
-    vec3 light_dir      = vec3(0, 0.5, 1);
+    vec3 light_dir      = normalize(vec3(0, 0.5, 1));
     vec3 light_color    = vec3(0.7);
     vec3 ambient_color  = 0.2 * u_AlbedoColor; 
 

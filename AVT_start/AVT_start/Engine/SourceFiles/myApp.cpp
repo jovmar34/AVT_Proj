@@ -22,7 +22,9 @@ void myApp::processInput(GLFWwindow* win, double elapsed)
 
 void myApp::animate(GLFWwindow* win, double elapsed)
 {
-	
+	t_frame += elapsed;
+
+	graph.setTransform("cube", MxFactory::translation4(3 * Vector3D(sin(t_frame),0,0)));
 }
 
 void myApp::look(GLFWwindow* win, double elapsed)

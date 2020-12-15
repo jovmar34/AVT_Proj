@@ -22,21 +22,7 @@ void myApp::processInput(GLFWwindow* win, double elapsed)
 
 void myApp::animate(GLFWwindow* win, double elapsed)
 {
-	t_frame += elapsed;
-	Matrix4 transf = MxFactory::translation4(Vector3D(3, 0, 0)) * MxFactory::rotation4(Vector3D(0, 0, 1), 180 * t_frame);
-
-	graph.setTransform("torus", transf);
-
-	if (graph.getCam()->change) {
-		Matrix4 invModel = MxFactory::invrotation4(Vector3D(0, 0, 1), 180 * t_frame) * MxFactory::invtranslation4(Vector3D(3, 0, 0));
-
-		Matrix4 invModelView = invModel * graph.getCam()->invView;
-
-		invModelView = invModelView.transpose();
-		Shader* shader = Manager::getInstance()->getShader("toon_shader");
-		shader->bind();
-		shader->setUniformMat4("NormalMatrix", invModelView);
-	}
+	
 }
 
 void myApp::look(GLFWwindow* win, double elapsed)
@@ -101,59 +87,28 @@ void myApp::save(GLFWwindow* win)
 
 void myApp::populateScene()
 {
-
 	// Camera init
 	Camera* cam = new Camera(Vector3D(4, 4, 4), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
 	cam->perspectiveProjection(60, 4.0f / 3.0f, 1, 200);
+	cam->init();
 
 	graph.setCamera(cam);
 
 	Manager* h = Manager::getInstance();
 
 	// Meshes
-	Mesh* plane_mesh = h->addMesh("plane_mesh", new Mesh("res/meshes/plane.obj")),
-		* cube_mesh = h->addMesh("cube_mesh", new Mesh("res/meshes/bunny_smooth.obj")),
-		* cylinder_mesh = h->addMesh("cylinder_mesh", new Mesh("res/meshes/cylinder.obj")),
-		* torus_mesh = h->addMesh("torus_mesh", new Mesh("res/meshes/torus.obj"));
-
-	// Textures
-	Texture* test_texture = h->addTexture("test_texture", new Texture("res/textures/test_texture.png"));
-	Texture* toon_ramp_texture = h->addTexture("toon_ramp_texture", new Texture("res/textures/toon_ramp_texture.png"));
+	Mesh* cube_mesh = h->addMesh("cube_mesh", new Mesh("res/meshes/bunny_smooth.obj"));
 
 	// Shaders
-	Shader* texture_shader = h->addShader("texture_shader", new Shader("res/shaders/texture_vs.glsl", "res/shaders/texture_fs.glsl")),
-		* phong_shader = h->addShader("phong_shader", new Shader("res/shaders/phong_vs.glsl", "res/shaders/phong_fs.glsl")),
-		* blinn_phong_shader = h->addShader("blinn_phong_shader", new Shader("res/shaders/blinn_phong_vs.glsl", "res/shaders/blinn_phong_fs.glsl")),
-		* gouraud_shader = h->addShader("gouraud_shader", new Shader("res/shaders/gouraud_vs.glsl", "res/shaders/gouraud_fs.glsl")),
-		* toon_shader = h->addShader("toon_shader", new Shader("res/shaders/toon_vs.glsl", "res/shaders/toon_fs.glsl"));
+	Shader* blinn_phong_shader = h->addShader("blinn_phong_shader", new Shader("res/shaders/blinn_phong_vs.glsl", "res/shaders/blinn_phong_fs.glsl"));
+	blinn_phong_shader->addUniformBlock("Matrices", 0);
 
 	// Materials 
-	Material* test_mat_r = h->addMaterial("test_mat_r", new Material(gouraud_shader));
 	Material* test_mat_g = h->addMaterial("test_mat_g", new Material(blinn_phong_shader));
-	Material* test_mat_b = h->addMaterial("test_mat_b", new Material(toon_shader));
-	test_mat_r->setUniformVec3("u_AlbedoColor", Vector3D(1, 0, 0));
 	test_mat_g->setUniformVec3("u_AlbedoColor", Vector3D(0, 1, 0));
-	test_mat_b->setUniformVec3("u_AlbedoColor", Vector3D(0, 0, 1));
-	test_mat_b->setTexture(toon_ramp_texture);
-
-	Material* test_mat_texture = h->addMaterial("test_mat_texture", new Material(texture_shader));
-	test_mat_texture->setTexture(test_texture);
-
-	//plane
-	Matrix4 plane_transform = MxFactory::rotation4(Vector3D(1, 0, 0), 90)
-		* MxFactory::scaling4(Vector3D(4, 1, 4))
-		* MxFactory::translation4(Vector3D(0, -5, 0));
-	graph.addChild(test_mat_texture, plane_mesh, "plane", plane_transform);
-
-	//cylinder
-	graph.addChild(test_mat_r, cylinder_mesh, "cylinder", MxFactory::translation4(Vector3D(-3, 0, 0)));
 
 	//cube
 	graph.addChild(test_mat_g, cube_mesh, "cube");
-
-	//torus
-	graph.addChild(test_mat_b, torus_mesh, "torus", MxFactory::translation4(Vector3D(3, 0, 0)));
-
 }
 
 void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int mods)

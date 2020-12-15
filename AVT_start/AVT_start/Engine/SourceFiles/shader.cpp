@@ -85,6 +85,12 @@ void Shader::unbind()
 	glUseProgram(0);
 }
 
+void Shader::addUniformBlock(std::string uniformName, unsigned int binding)
+{
+	unsigned int index = glGetUniformBlockIndex(programId, uniformName.c_str());
+	glUniformBlockBinding(programId, index, binding);
+}
+
 void Shader::setUniformVec4(std::string uniformName, Vector4D vec)
 {
 	glUniform4f(getUniformLocation(uniformName), (float) vec.x, (float) vec.y, (float) vec.z, (float) vec.w);

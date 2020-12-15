@@ -11,8 +11,10 @@ out vec3 exNormal;
 out vec3 view_pos;
 
 uniform mat4 ModelMatrix;
-uniform mat4 ViewMatrix;
-uniform mat4 ProjectionMatrix;
+layout(std140) uniform Matrices{
+	mat4 ViewMatrix;
+	mat4 ProjectionMatrix;
+};
 
 void main(void)
 {

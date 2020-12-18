@@ -24,7 +24,7 @@ void myApp::animate(GLFWwindow* win, double elapsed)
 {
 	t_frame += elapsed;
 
-	graph.setTransform("cube", MxFactory::translation4(3 * Vector3D(sin(t_frame),0,0)));
+	graph.setTransform("cube", MxFactory::rotation4(Vector3D(0,1,0), t_frame * 90));
 }
 
 void myApp::look(GLFWwindow* win, double elapsed)
@@ -90,7 +90,7 @@ void myApp::save(GLFWwindow* win)
 void myApp::populateScene()
 {
 	// Camera init
-	Camera* cam = new Camera(Vector3D(4, 4, 4), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
+	Camera* cam = new Camera(Vector3D(8, 8, 8), Vector3D(0, 0, 0), Vector3D(0, 1, 0));
 	cam->perspectiveProjection(60, 4.0f / 3.0f, 1, 200);
 	cam->init();
 
@@ -111,6 +111,9 @@ void myApp::populateScene()
 
 	//cube
 	graph.addChild(test_mat_g, cube_mesh, "cube");
+
+	//cube
+	graph.addChild(test_mat_g, cube_mesh, "cube2", MxFactory::translation4(Vector3D(0,0,-5)));
 }
 
 void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int mods)
@@ -142,14 +145,20 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 		case GLFW_KEY_F:
 			animate_frame = true;
 			break;
-		case GLFW_KEY_C:
-			stop_cubes = !stop_cubes;
-			break;
 		case GLFW_KEY_R:
 			reset_cam = true;
 			break;
 		case GLFW_KEY_I:
 			save_img = true;
+			break;
+		case GLFW_KEY_C:
+			set_child = true;
+			break;
+		case GLFW_KEY_M:
+			add_mesh = true;
+			break;
+		case GLFW_KEY_N:
+			new_mat = true;
 			break;
 		}
 	}
@@ -170,5 +179,37 @@ void myApp::update(GLFWwindow *win, double elapsed)
 	if (save_img) {
 		save(win);
 		save_img = false;
+	}
+	if (set_child) {
+		graph.setTransform("cube2", MxFactory::invrotation4(Vector3D(0, 1, 0), t_frame * 90) * MxFactory::translation4(Vector3D(0,0,-5)));
+		graph.changeParent("cube2", "cube");
+		set_child = false;
+	}
+	if (add_mesh) {
+		Manager* h = Manager::getInstance();
+		Mesh* mesh = h->addMesh("new_mesh", new Mesh("res/meshes/cube.obj"));
+		mesh->init();
+
+		Material* material = h->getMaterial("test_mat_g");
+
+		graph.setCurrToRoot();
+		graph.addChild(material, mesh, "new_guy", MxFactory::translation4(Vector3D(0,5,0)));
+		add_mesh = false;
+	}
+	if (new_mat) {
+		Manager* h = Manager::getInstance();
+		SceneNode* node = graph.getNode("cube");
+
+		Shader* toon_shader = h->addShader("toon_shader", new Shader("res/shaders/toon_vs.glsl", "res/shaders/toon_fs.glsl"));
+		toon_shader->addUniformBlock("Matrices", 0);
+
+		Texture* toon_ramp_texture = h->addTexture("toon_ramp_texture", new Texture("res/textures/toon_ramp_texture.png"));
+
+		Material* test_mat_b = h->addMaterial("test_mat_b", new Material(toon_shader));
+		test_mat_b->setUniformVec3("u_AlbedoColor", Vector3D(0, 0, 1));
+		test_mat_b->setTexture(toon_ramp_texture);
+
+		node->material = test_mat_b;
+		new_mat = false;
 	}
 }

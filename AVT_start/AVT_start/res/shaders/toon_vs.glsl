@@ -9,10 +9,11 @@ out vec2 exTexcoord;
 out vec3 exNormal;
 
 out vec3 view_pos;
-uniform mat4 NormalMatrix;
 uniform mat4 ModelMatrix;
-uniform mat4 ViewMatrix;
-uniform mat4 ProjectionMatrix;
+uniform Matrices {
+	mat4 ViewMatrix;
+	mat4 ProjectionMatrix;
+};
 
 void main(void)
 {
@@ -20,7 +21,7 @@ void main(void)
 	
 	exPosition = inPosition;
 	exTexcoord = inTexcoord;
-	vec4 norm = NormalMatrix * vec4(inNormal, 1.0);
+	vec4 norm = vec4(inNormal, 1.0);
 	exNormal.x = norm.x;
 	exNormal.y = norm.y;
 	exNormal.z = norm.z;

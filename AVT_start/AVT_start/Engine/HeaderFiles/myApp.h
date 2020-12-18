@@ -10,10 +10,12 @@ private:
 	double speed = 10;
 	bool animate_frame = false;
 	bool animate_cubes = false;
-	bool stop_cubes = true;
-	double t_frame = 0.0f, t_cubes = 0.0f;
+	bool set_child = false;
+	double t_frame = 0.0f;
 	bool reset_cam = false;
 	bool save_img = false;
+	bool add_mesh = false;
+	bool new_mat = false;
 
 	double old_x = 0, old_y = 0;
 	double angle_x = M_PI_2 / 50, angle_y = M_PI / 50;

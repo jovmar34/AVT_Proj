@@ -10,7 +10,6 @@ out vec4 FragmentColor;
 
 uniform vec3 u_AlbedoColor;
 uniform sampler2D u_Texture;
-uniform mat4 NormalMatrix;
 
 void main(void)
 {

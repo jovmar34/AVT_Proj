@@ -154,3 +154,26 @@ void SceneGraph::applyTransform(std::string node, Matrix4 transform)
 {
 	nameMap[node]->transform = transform * nameMap[node]->transform;
 }
+
+SceneNode* SceneGraph::getNode(std::string name)
+{
+	return nameMap[name];
+}
+
+void SceneGraph::changeParent(std::string node, std::string newParent)
+{
+	SceneNode* changed = nameMap[node];
+	SceneNode* origParentNode = changed->parent;
+	SceneNode* newParentNode = nameMap[newParent];
+
+	if (origParentNode == newParentNode) {
+		std::cout << "same" << std::endl;
+		return;
+	}
+
+	origParentNode->children.erase(std::remove(origParentNode->children.begin(), origParentNode->children.end(), changed), origParentNode->children.end());
+	
+	changed->parent = newParentNode;
+	newParentNode->children.push_back(changed);
+
+}

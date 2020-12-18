@@ -41,7 +41,11 @@ public:
 
 	void setTransform(std::string node, Matrix4 transform);
 	void applyTransform(std::string node, Matrix4 transform);
+
+	SceneNode* getNode(std::string name);
 	
+	void changeParent(std::string node, std::string newParent);
+
 	// Debug
 	void describe();
 };

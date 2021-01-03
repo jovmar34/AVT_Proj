@@ -178,6 +178,91 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 			break;
 		}
 	}
+	if (key == GLFW_KEY_LEFT) //left arrow - object movement
+	{
+		MxFactory m = MxFactory();
+		Vector3D axis = { 0, 1, 0 };
+		Matrix4 rot = m.rotation4(axis, 1);
+		SceneNode* root = graph.getNode("root");
+		SceneNode* n;
+		if (root->selected) {
+			graph.applyTransform("root", rot);
+		}
+		/*for (int i = 0; i < root->children.size(); i++) {
+			n = root->children[i];
+			if (n->selected) {
+				string name = n->getName();
+				graph.applyTransform(name, rot);
+			}
+		}*/
+		//rotateAroundAxis(axis, angle)
+	}
+
+	else if (key == GLFW_KEY_RIGHT) //right arrow - object movement
+	{
+		MxFactory m = MxFactory();
+		Vector3D axis = { 0, 1, 0 };
+		Matrix4 rot = m.rotation4(axis, -1);
+		SceneNode* root = graph.getNode("root");
+		SceneNode* n;
+		if (root->selected) {
+			graph.applyTransform("root", rot);
+		}
+	}
+
+	else if (key == GLFW_KEY_UP) //up arrow - object movement
+	{
+		MxFactory m = MxFactory();
+		Vector3D axis = { 1, 0, 0 };
+		Matrix4 rot = m.rotation4(axis, 1);
+		SceneNode* root = graph.getNode("root");
+		SceneNode* n;
+		if (root->selected) {
+			graph.applyTransform("root", rot);
+		}
+	}
+
+	else if (key == GLFW_KEY_DOWN) //down arrow - object movement
+	{
+		MxFactory m = MxFactory();
+		Vector3D axis = { 1, 0, 0 };
+		Matrix4 rot = m.rotation4(axis, -1);
+		SceneNode* root = graph.getNode("root");
+		SceneNode* n;
+		if (root->selected) {
+			graph.applyTransform("root", rot);
+		}
+	}
+	else if (key == GLFW_KEY_A && action == GLFW_PRESS) //a key (left) - camera movement
+	{
+		Vector3D axis = { 0, 1, 0 };
+		cam->move(axis, -5);
+	}
+	else if (key == GLFW_KEY_D && action == GLFW_PRESS) //d key (right)- camera movement
+	{
+		Vector3D axis = { 0, 1, 0 };
+		cam->move(axis, 5);
+	}
+	else if (key == GLFW_KEY_S && action == GLFW_PRESS)//s key (down) - camera movement
+	{
+		Vector3D axis = { 1, 0, 0 };
+		cam->move(axis, -5);
+	}
+	else if (key == GLFW_KEY_W && action == GLFW_PRESS)//w key (up) - camera movement
+	{
+		Vector3D axis = { 1, 0, 0 };
+		cam->move(axis, 5);
+	}
+	else if (key == GLFW_KEY_ENTER && action == GLFW_PRESS)
+	{
+		//graph.serializeScene(&C);
+		cout << "serialize\n";
+	}
+	else if (key == GLFW_KEY_G && action == GLFW_PRESS)
+	{
+		cout << "deserialize\n";
+		//graph.deserializeScene();
+	}
 }
 
 void myApp::update(GLFWwindow *win, double elapsed)

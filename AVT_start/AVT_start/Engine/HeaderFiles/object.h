@@ -19,6 +19,7 @@ public:
 	Matrix4 initTransform;
 	float m_zbuf;
 	bool m_fake;
+	bool selected;
 
 	Object(Mesh _mesh, float zbuf, int fake);
 

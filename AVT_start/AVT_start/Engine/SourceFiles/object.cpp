@@ -2,6 +2,7 @@
 
 Object::Object(Mesh _mesh, float zbuf, int fake) : mesh(_mesh), m_zbuf(zbuf), va(nullptr) {
 	m_fake = (fake == 1) ? true : false;
+	selected = false;
 	transform = MxFactory::identity4();
 	initTransform = transform;
 }

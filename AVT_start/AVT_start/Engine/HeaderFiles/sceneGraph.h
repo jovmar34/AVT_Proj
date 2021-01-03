@@ -15,14 +15,17 @@
 #include "object.h"
 #include "shader.h"
 #include "sceneNode.h"
+#include "../HeaderFiles/manager.h"
 
 class SceneGraph {
 	SceneNode* root = nullptr;
 	SceneNode* current = nullptr;
 	Camera* cam = nullptr;
 	unordered_map<std::string, SceneNode*> nameMap;
+	unordered_map<unsigned int, SceneNode*> idMap;
 
 	Material* outline;
+	unsigned int selected = 0;
 
 public:
 	SceneGraph();
@@ -36,6 +39,7 @@ public:
 	void setCamera(Camera* cam);
 	void saveCurr();
 	void setOutline(Material* mat);
+	void setSelected(unsigned int selected);
 
 	Camera* getCam();
 
@@ -46,9 +50,11 @@ public:
 	void applyTransform(std::string node, Matrix4 transform);
 
 	SceneNode* getNode(std::string name);
+	SceneNode* getSelected();
 	
 	void changeParent(std::string node, std::string newParent);
 
 	// Debug
 	void describe();
+
 };

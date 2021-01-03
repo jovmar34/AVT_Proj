@@ -11,4 +11,5 @@ public:
 	virtual void update(GLFWwindow *win, double elapsed) = 0;
 	virtual void keyCallback(GLFWwindow* win, int key, int scancode, int action, int mods) = 0;
 	virtual void mouseCallback(GLFWwindow* win, double xpos, double ypos) = 0;
+	virtual void mouseButtonCallback(GLFWwindow* win, int button, int action, int mods) = 0;
 };

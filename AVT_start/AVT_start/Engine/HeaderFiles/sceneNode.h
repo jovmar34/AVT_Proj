@@ -12,6 +12,7 @@ struct SceneNode {
 	Matrix4 transform = MxFactory::identity4();
 	Material* material = nullptr;
 	Material* outline = nullptr;
+	unsigned int id = -1;
 
 	//Debug thingies
 	std::string name;

@@ -180,6 +180,24 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 	}
 }
 
+void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mods)
+{
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+		double xpos, ypos;
+		int height;
+		glfwGetCursorPos(win, &xpos, &ypos);
+		int x = static_cast<int>(xpos);
+
+		glfwGetWindowSize(win, NULL, &height);
+		int y = height - static_cast<int>(ypos);
+
+		GLuint index;
+		glReadPixels(x, y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
+
+		graph.setSelected(index);
+	}
+}
+
 void myApp::update(GLFWwindow *win, double elapsed)
 {
 	processInput(win, elapsed);

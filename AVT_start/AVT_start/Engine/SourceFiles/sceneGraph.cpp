@@ -8,6 +8,7 @@ SceneGraph::SceneGraph()
 	root->transform = MxFactory::identity4();
 	root->name = "root";
 	nameMap[root->name] = root;
+	idMap[0] = nullptr;
 }
 
 SceneGraph::~SceneGraph()
@@ -39,6 +40,10 @@ void SceneGraph::addChild(Material* material, Mesh* mesh, std::string name, Matr
 	child->mesh = mesh;
 	child->transform = transform;
 	child->material = material;
+	if (child->mesh) {
+		child->id = Manager::getInstance()->getCounter();
+		idMap[child->id] = child;
+	}
 	
 	current->children.push_back(child);
 
@@ -96,6 +101,11 @@ void SceneGraph::setOutline(Material* mat) {
 	outline = mat;
 }
 
+void SceneGraph::setSelected(unsigned int selected)
+{
+	this->selected = selected;
+}
+
 Camera* SceneGraph::getCam()
 {
 	return cam;
@@ -128,6 +138,10 @@ void SceneGraph::draw()
 	cam->drawCamera();
 
 	unvisited.push(root);
+	glClearStencil(0);
+	glClear(GL_STENCIL_BUFFER_BIT);
+
+	glEnable(GL_STENCIL_TEST);
 
 	while (!unvisited.empty()) {
 		curr = unvisited.front();
@@ -143,12 +157,15 @@ void SceneGraph::draw()
 
 			curr->material->update(curr->getTransform());
 			
+			glStencilFunc(GL_ALWAYS, curr->id, 0xFF);
+			glStencilOp(GL_ZERO, GL_KEEP, GL_REPLACE);
+
 			curr->mesh->draw();
 
 			curr->material->unbind();
 
 			// Draw Outline
-			if (outline != NULL) 
+			if (selected == curr->id) 
 			{
 				outline->bind();
 				outline->update(curr->getTransform());
@@ -159,6 +176,8 @@ void SceneGraph::draw()
 			}
 		}
 	}
+
+	glDisable(GL_STENCIL_TEST);
 }
 
 void SceneGraph::setTransform(std::string node, Matrix4 transform)
@@ -174,6 +193,11 @@ void SceneGraph::applyTransform(std::string node, Matrix4 transform)
 SceneNode* SceneGraph::getNode(std::string name)
 {
 	return nameMap[name];
+}
+
+SceneNode* SceneGraph::getSelected()
+{
+	return idMap[selected];
 }
 
 void SceneGraph::changeParent(std::string node, std::string newParent)

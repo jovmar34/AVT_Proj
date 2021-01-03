@@ -115,7 +115,7 @@ void mouse_callback(GLFWwindow* win, double xpos, double ypos)
 
 void mouse_button_callback(GLFWwindow* win, int button, int action, int mods)
 {
-	std::cout << "button: " << button << " " << action << " " << mods << std::endl;
+	app.mouseButtonCallback(win, button, action, mods);
 }
 
 void scroll_callback(GLFWwindow* win, double xoffset, double yoffset)
@@ -153,9 +153,9 @@ GLFWwindow* setupWindow(int winx, int winy, const char* title,
 void setupCallbacks(GLFWwindow* win)
 {
 	glfwSetKeyCallback(win, key_callback);
+	glfwSetMouseButtonCallback(win, mouse_button_callback);
 	/*
 	glfwSetCursorPosCallback(win, mouse_callback);
-	glfwSetMouseButtonCallback(win, mouse_button_callback);
 	glfwSetScrollCallback(win, scroll_callback);
 	glfwSetJoystickCallback(joystick_callback);
 	*/

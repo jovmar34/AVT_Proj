@@ -233,25 +233,29 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 			graph.applyTransform("root", rot);
 		}
 	}
-	else if (key == GLFW_KEY_A && action == GLFW_PRESS) //a key (left) - camera movement
+	else if (key == GLFW_KEY_A) //a key (left) - camera movement
 	{
-		Vector3D axis = { 0, 1, 0 };
-		cam->move(axis, -5);
+		cam->toggle();
+		Vector3D axis(-1, 0, 0);
+		cam->move(axis, 0.2);
 	}
-	else if (key == GLFW_KEY_D && action == GLFW_PRESS) //d key (right)- camera movement
+	else if (key == GLFW_KEY_D) //d key (right)- camera movement
 	{
-		Vector3D axis = { 0, 1, 0 };
-		cam->move(axis, 5);
+		cam->toggle();
+		Vector3D axis(1, 0, 0);
+		cam->move(axis, 0.2);
 	}
-	else if (key == GLFW_KEY_S && action == GLFW_PRESS)//s key (down) - camera movement
+	else if (key == GLFW_KEY_S)//s key (down) - camera movement
 	{
-		Vector3D axis = { 1, 0, 0 };
-		cam->move(axis, -5);
+		cam->toggle();
+		Vector3D axis(0, 0, 0);
+		cam->move(axis, -1);
 	}
-	else if (key == GLFW_KEY_W && action == GLFW_PRESS)//w key (up) - camera movement
+	else if (key == GLFW_KEY_W)//w key (up) - camera movement
 	{
-		Vector3D axis = { 1, 0, 0 };
-		cam->move(axis, 5);
+		cam->toggle();
+		Vector3D axis(0, 0, 0);
+		cam->move(axis, 1);
 	}
 	else if (key == GLFW_KEY_ENTER && action == GLFW_PRESS)
 	{

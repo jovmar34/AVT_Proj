@@ -22,6 +22,8 @@ class SceneGraph {
 	Camera* cam = nullptr;
 	unordered_map<std::string, SceneNode*> nameMap;
 
+	Material* outline;
+
 public:
 	SceneGraph();
 	~SceneGraph();
@@ -33,6 +35,7 @@ public:
 	void setCurrToRoot();
 	void setCamera(Camera* cam);
 	void saveCurr();
+	void setOutline(Material* mat);
 
 	Camera* getCam();
 

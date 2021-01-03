@@ -10,7 +10,8 @@ struct SceneNode {
 	std::vector<SceneNode*> children;
 	Mesh* mesh = nullptr;
 	Matrix4 transform = MxFactory::identity4();
-	Material *material = nullptr;
+	Material* material = nullptr;
+	Material* outline = nullptr;
 
 	//Debug thingies
 	std::string name;

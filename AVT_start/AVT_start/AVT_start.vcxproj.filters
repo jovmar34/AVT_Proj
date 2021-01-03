@@ -155,6 +155,8 @@
     <None Include="res\shaders\gouraud_fs.glsl" />
     <None Include="res\shaders\toon_fs.glsl" />
     <None Include="res\shaders\toon_vs.glsl" />
+    <None Include="res\shaders\outline_vs.glsl" />
+    <None Include="res\shaders\outline_fs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\test_texture.png">

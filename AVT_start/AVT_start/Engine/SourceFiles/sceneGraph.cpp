@@ -92,10 +92,15 @@ void SceneGraph::saveCurr()
 	nameMap[current->name] = current;
 }
 
+void SceneGraph::setOutline(Material* mat) {
+	outline = mat;
+}
+
 Camera* SceneGraph::getCam()
 {
 	return cam;
 }
+
 
 void SceneGraph::init(GLuint ProgramId)
 {
@@ -141,6 +146,17 @@ void SceneGraph::draw()
 			curr->mesh->draw();
 
 			curr->material->unbind();
+
+			// Draw Outline
+			if (outline != NULL) 
+			{
+				outline->bind();
+				outline->update(curr->getTransform());
+				glCullFace(GL_FRONT);
+				curr->mesh->draw();
+				glCullFace(GL_BACK);
+				outline->unbind();
+			}
 		}
 	}
 }

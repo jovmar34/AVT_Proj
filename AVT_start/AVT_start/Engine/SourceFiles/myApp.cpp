@@ -95,11 +95,19 @@ void myApp::populateScene()
 	cam->init();
 
 	graph.setCamera(cam);
+	
+	// Outline
+	Shader* outline_shader = new Shader("res/shaders/outline_vs.glsl", "res/shaders/outline_fs.glsl");
+	outline_shader->addUniformBlock("Matrices", 0);
+	Material* outline_material = new Material(outline_shader);
+	graph.setOutline(outline_material);
 
+	//Asset Manager
 	Manager* h = Manager::getInstance();
 
 	// Meshes
 	Mesh* cube_mesh = h->addMesh("cube_mesh", new Mesh("res/meshes/bunny_smooth.obj"));
+	Mesh* tous_mesh = h->addMesh("torus_mesh", new Mesh("res/meshes/torus.obj"));
 
 	// Shaders
 	Shader* blinn_phong_shader = h->addShader("blinn_phong_shader", new Shader("res/shaders/blinn_phong_vs.glsl", "res/shaders/blinn_phong_fs.glsl"));
@@ -113,7 +121,7 @@ void myApp::populateScene()
 	graph.addChild(test_mat_g, cube_mesh, "cube");
 
 	//cube
-	graph.addChild(test_mat_g, cube_mesh, "cube2", MxFactory::translation4(Vector3D(0,0,-5)));
+	graph.addChild(test_mat_g, tous_mesh, "torus", MxFactory::translation4(Vector3D(0,0,-5)));
 }
 
 void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int mods)
@@ -181,13 +189,13 @@ void myApp::update(GLFWwindow *win, double elapsed)
 		save_img = false;
 	}
 	if (set_child) {
-		graph.setTransform("cube2", MxFactory::invrotation4(Vector3D(0, 1, 0), t_frame * 90) * MxFactory::translation4(Vector3D(0,0,-5)));
-		graph.changeParent("cube2", "cube");
+		graph.setTransform("torus", MxFactory::invrotation4(Vector3D(0, 1, 0), t_frame * 90) * MxFactory::translation4(Vector3D(0,0,-5)));
+		graph.changeParent("torus", "cube");
 		set_child = false;
 	}
 	if (add_mesh) {
 		Manager* h = Manager::getInstance();
-		Mesh* mesh = h->addMesh("new_mesh", new Mesh("res/meshes/cube.obj"));
+		Mesh* mesh = h->addMesh("new_mesh", new Mesh("res/meshes/smooth.obj"));
 		mesh->init();
 
 		Material* material = h->getMaterial("test_mat_g");

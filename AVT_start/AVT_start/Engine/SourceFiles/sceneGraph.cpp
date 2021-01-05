@@ -193,3 +193,8 @@ void SceneGraph::changeParent(std::string node, std::string newParent)
 	newParentNode->children.push_back(changed);
 
 }
+
+void SceneGraph::serializeScene(Camera* cam, const std::string& filepath) {
+	SceneSerializer ss = SceneSerializer(cam, root);
+	ss.serialize(filepath);
+}

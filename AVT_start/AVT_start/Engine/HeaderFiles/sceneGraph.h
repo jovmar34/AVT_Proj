@@ -15,6 +15,7 @@
 #include "object.h"
 #include "shader.h"
 #include "sceneNode.h"
+#include "serializer.h"
 
 class SceneGraph {
 	SceneNode* root = nullptr;
@@ -51,4 +52,6 @@ public:
 
 	// Debug
 	void describe();
+
+	void serializeScene(Camera* cam, const std::string& filepath);
 };

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -164,6 +164,7 @@
     <ClCompile Include="Engine\SourceFiles\quaternion.cpp" />
     <ClCompile Include="Engine\SourceFiles\sceneGraph.cpp" />
     <ClCompile Include="Engine\SourceFiles\sceneNode.cpp" />
+    <ClCompile Include="Engine\SourceFiles\serializer.cpp" />
     <ClCompile Include="Engine\SourceFiles\shader.cpp" />
     <ClCompile Include="Engine\SourceFiles\material.cpp" />
     <ClCompile Include="Engine\SourceFiles\texture.cpp" />
@@ -188,6 +189,7 @@
     <ClInclude Include="Engine\HeaderFiles\quaternion.h" />
     <ClInclude Include="Engine\HeaderFiles\SceneGraph.h" />
     <ClInclude Include="Engine\HeaderFiles\sceneNode.h" />
+    <ClInclude Include="Engine\HeaderFiles\serializer.h" />
     <ClInclude Include="Engine\HeaderFiles\texture.h" />
     <ClInclude Include="Engine\HeaderFIles\vector.h" />
     <ClInclude Include="Engine\HeaderFiles\vertexArray.h" />

@@ -268,6 +268,30 @@ public:
 				arr[3], arr[7], arr[11], arr[15], };
 	}
 
+	string toString() {
+		string res = "\n[";
+		int n = 0;
+		while (n < 16) {
+			if (n >= 4 && n % 4 == 0) {
+				res += "[";
+				res += mat[n];
+				res += " ";
+				n++;
+			}
+			else if (n % 4 == 3) {
+				res += mat[n];
+				res += "]\n";
+				n++;
+			}
+			else {
+				res += mat[n];
+				res += " ";
+				n++;
+			}
+		}
+		return res;
+	}
+
 	Matrix4(const Matrix4& other) {
 		std::copy(std::begin(other.mat), std::end(other.mat), std::begin(mat));
 	}

@@ -176,6 +176,15 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 		case GLFW_KEY_LEFT_SHIFT:
 			sprint_factor = 3;
 			break;
+		case GLFW_KEY_ENTER: { //save a scene
+			const std::string path = "res/scenes/scene.txt";
+			graph.serializeScene(cam, path);
+			cout << "serialize\n";
+			break;
+		}
+		case GLFW_KEY_L: //load a saved scene
+			cout << "deserialize\n";
+			break;
 		}
 	}
 	if (key == GLFW_KEY_LEFT) //left arrow - object movement

@@ -320,6 +320,8 @@ public:
 	// Transpose
 	Matrix4 transpose();
 
+	Matrix3 decrease();
+
 	// toOpenGl
 	GLfloat* toOpenGl() {
 		for (int i = 0; i < 16; i++) {

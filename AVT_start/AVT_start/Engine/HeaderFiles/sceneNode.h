@@ -19,5 +19,6 @@ struct SceneNode {
 
 	std::string getName();
 	Matrix4 getTransform();
+	Matrix3 getNormal();
 	void init();
 };

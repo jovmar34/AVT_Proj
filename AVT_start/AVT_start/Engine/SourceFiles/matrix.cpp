@@ -180,7 +180,9 @@ Vector2D Matrix2::operator*(Vector2D point)
 
 Matrix2 Matrix2::transpose()
 {
-	return Matrix2(mat[0], mat[1], mat[2], mat[3]);
+	return Matrix2(
+		mat[0], mat[2], 
+		mat[1], mat[3]);
 }
 
 double Matrix2::determinant()
@@ -459,7 +461,10 @@ Vector3D Matrix3::operator*(Vector3D point)
 
 Matrix3 Matrix3::transpose()
 {
-	return Matrix3(mat[0], mat[1], mat[2], mat[3], mat[4], mat[5], mat[6], mat[7], mat[8]);
+	return Matrix3(
+		mat[0], mat[3], mat[6], 
+		mat[1], mat[4], mat[7], 
+		mat[2], mat[5], mat[8]);
 }
 
 double Matrix3::determinant()
@@ -770,4 +775,11 @@ Matrix4 Matrix4::transpose()
 					mat[4],  mat[5],  mat[6],  mat[7],
 					mat[8],  mat[9],  mat[10], mat[11],
 					mat[12], mat[13], mat[14], mat[15]);
+}
+
+Matrix3 Matrix4::decrease() {
+
+	return Matrix3(	mat[0], mat[1], mat[2],
+					mat[4], mat[5], mat[6],
+					mat[8], mat[9], mat[10]);
 }

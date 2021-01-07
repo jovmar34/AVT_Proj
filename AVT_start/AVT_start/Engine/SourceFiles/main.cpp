@@ -215,7 +215,7 @@ void setupOpenGL(int winx, int winy)
 #if _DEBUG
 	checkOpenGLInfo();
 #endif
-	glClearColor(0.1f, 0.1f, 0.3f, 1.0f);
+	glClearColor(0.235f, 0.235f, 0.235f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);

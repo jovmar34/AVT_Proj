@@ -155,7 +155,7 @@ void SceneGraph::draw()
 
 			curr->material->bind();
 
-			curr->material->update(curr->getTransform());
+			curr->material->update(curr->getTransform(), curr->getNormal());
 			
 			glStencilFunc(GL_ALWAYS, curr->id, 0xFF);
 			glStencilOp(GL_ZERO, GL_KEEP, GL_REPLACE);
@@ -168,7 +168,7 @@ void SceneGraph::draw()
 			if (selected == curr->id) 
 			{
 				outline->bind();
-				outline->update(curr->getTransform());
+				outline->update(curr->getTransform(), curr->getNormal());
 				glCullFace(GL_FRONT);
 				curr->mesh->draw();
 				glCullFace(GL_BACK);

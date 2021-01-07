@@ -106,6 +106,11 @@ void Shader::setUniformVec2(std::string uniformName, Vector2D vec)
 	glUniform2f(getUniformLocation(uniformName), (float) vec.x, (float) vec.y);
 }
 
+void Shader::setUniformMat3(std::string uniformName, Matrix3 mat)
+{
+	glUniformMatrix3fv(getUniformLocation(uniformName), 1, GL_FALSE, mat.toOpenGl());
+}
+
 void Shader::setUniformMat4(std::string uniformName, Matrix4 mat)
 {
 	glUniformMatrix4fv(getUniformLocation(uniformName), 1, GL_FALSE, mat.toOpenGl());

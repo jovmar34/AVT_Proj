@@ -1,17 +1,12 @@
 #include "..\HeaderFiles\material.h"
 
 
-void Material::update(Matrix4 model_matrix) 
+void Material::update(Matrix4 model_matrix, Matrix3 normal_matrix) 
 {
 	shader->setUniformMat4("ModelMatrix", model_matrix);
+	shader->setUniformMat3("NormalMatrix", normal_matrix);
 }
 
-void Material::update(Matrix4 view_matrix, Matrix4 proj_matrix, Matrix4 model_matrix) 
-{
-	shader->setUniformMat4("ViewMatrix", view_matrix);
-	shader->setUniformMat4("ProjectionMatrix", proj_matrix);
-	shader->setUniformMat4("ModelMatrix", model_matrix);
-}
 
 // Apply all stored uniform values (and textures)
 void Material::bind()
@@ -37,6 +32,10 @@ void Material::bind()
 
 	for (auto& it : vals_Vec2) {
 		shader->setUniformVec2(it.first, it.second);
+	}
+
+	for (auto& it : vals_Mat3) {
+		shader->setUniformMat3(it.first, it.second);
 	}
 
 	for (auto& it : vals_Mat4) {
@@ -79,6 +78,11 @@ void Material::setUniformVec3(std::string uniformName, Vector3D vec)
 void Material::setUniformVec2(std::string uniformName, Vector2D vec)
 {
 	vals_Vec2[uniformName] = vec;
+}
+
+void Material::setUniformMat3(std::string uniformName, Matrix3 mat)
+{
+	vals_Mat3[uniformName] = mat;
 }
 
 void Material::setUniformMat4(std::string uniformName, Matrix4 mat)

@@ -3,19 +3,20 @@
 in vec3 exPosition;
 in vec2 exTexcoord;
 in vec3 exNormal;
-
 in vec3 view_pos;
-
-out vec4 FragmentColor;
 
 uniform vec3 u_AlbedoColor;
 uniform sampler2D u_Texture;
 
+out vec4 FragmentColor;
+
 void main(void)
 {
-    //light properties
-    vec3 light_pos      = vec3(5,5,5);
-    vec3 light_dir      = normalize(light_pos - exPosition);
+
+    // light properties
+    vec3 light_pos = vec3(5, 5, -5);
+	vec3 light_dir = normalize(light_pos - exPosition);
+
     float light_intensity = 0.7;
 
     //diffuse component

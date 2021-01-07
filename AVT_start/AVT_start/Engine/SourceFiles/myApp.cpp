@@ -117,11 +117,26 @@ void myApp::populateScene()
 	Material* test_mat_g = h->addMaterial("test_mat_g", new Material(blinn_phong_shader));
 	test_mat_g->setUniformVec3("u_AlbedoColor", Vector3D(0, 1, 0));
 
+
+
 	//cube
 	graph.addChild(test_mat_g, cube_mesh, "cube");
 
-	//cube
+	//torus
 	graph.addChild(test_mat_g, tous_mesh, "torus", MxFactory::translation4(Vector3D(0,0,-5)));
+
+	/* 
+	IMPORTANT - This is a WIP. The grid needs to be the last thing drawn, always because it has transaparency
+				In the future we should probably either move this somewhere else or garantee that transparent 
+				objects are drawn after opaque objects. It also shouldn't be selectable...
+	*/
+
+	//grid
+	Mesh* plane_mesh = h->addMesh("plane_mesh", new Mesh("res/meshes/plane.obj"));
+	Shader* grid_shader = h->addShader("grid_shader", new Shader("res/shaders/grid_vs.glsl", "res/shaders/grid_fs.glsl"));
+	grid_shader->addUniformBlock("Matrices", 0);
+	Material* grid_mat = h->addMaterial("grid_mat", new Material(grid_shader));
+	graph.addChild(grid_mat, plane_mesh, "grid", MxFactory::scaling4(Vector3D(100, 100, 100)));
 }
 
 void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int mods)

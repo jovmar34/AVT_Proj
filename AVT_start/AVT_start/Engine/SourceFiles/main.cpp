@@ -216,6 +216,8 @@ void setupOpenGL(int winx, int winy)
 	checkOpenGLInfo();
 #endif
 	glClearColor(0.235f, 0.235f, 0.235f, 1.0f);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);

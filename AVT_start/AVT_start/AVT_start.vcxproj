@@ -201,6 +201,8 @@
     <None Include="res\shaders\blinn_phong_vs.glsl" />
     <None Include="res\shaders\gouraud_fs.glsl" />
     <None Include="res\shaders\gouraud_vs.glsl" />
+    <None Include="res\shaders\grid_fs.glsl" />
+    <None Include="res\shaders\grid_vs.glsl" />
     <None Include="res\shaders\outline_vs.glsl" />
     <None Include="res\shaders\outline_fs.glsl" />
     <None Include="res\shaders\phong_fs.glsl" />

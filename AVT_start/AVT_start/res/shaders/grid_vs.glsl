@@ -25,7 +25,7 @@ void main(void)
 	view_pos.z = view[3][2];
 	
 	// vertex info
-	exPosition = vec4(ModelMatrix * vec4(inPosition,1)).xyz;
+	exPosition = vec4(ViewMatrix * ModelMatrix * vec4(inPosition,1)).xyz;
 	exTexcoord = inTexcoord;
 	exNormal = NormalMatrix * inNormal;
 

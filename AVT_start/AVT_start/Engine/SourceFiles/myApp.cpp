@@ -24,7 +24,7 @@ void myApp::animate(GLFWwindow* win, double elapsed)
 {
 	t_frame += elapsed;
 
-	graph.setTransform("cube", MxFactory::rotation4(Vector3D(0,1,0), t_frame * 90));
+	graph.setTransforms("cube", { MxFactory::scale(Vector3D(2, 1, 1)), MxFactory::rotate(Vector3D(0,1,0), t_frame * 90) });
 }
 
 void myApp::look(GLFWwindow* win, double elapsed)
@@ -121,9 +121,11 @@ void myApp::populateScene()
 
 	//cube
 	graph.addChild(test_mat_g, cube_mesh, "cube");
+	graph.setTransforms("cube", { MxFactory::scale(Vector3D(2, 1, 1)) });
 
 	//torus
-	graph.addChild(test_mat_g, tous_mesh, "torus", MxFactory::translation4(Vector3D(0,0,-5)));
+	graph.addChild(test_mat_g, tous_mesh, "torus");
+	graph.setTransforms("torus", { MxFactory::translate(Vector3D(0,0,-5)) });
 
 	/* 
 	IMPORTANT - This is a WIP. The grid needs to be the last thing drawn, always because it has transaparency
@@ -222,7 +224,8 @@ void myApp::update(GLFWwindow *win, double elapsed)
 		save_img = false;
 	}
 	if (set_child) {
-		graph.setTransform("torus", MxFactory::invrotation4(Vector3D(0, 1, 0), t_frame * 90) * MxFactory::translation4(Vector3D(0,0,-5)));
+		SceneNode *node = graph.getNode("cube");
+		graph.applyTransforms("torus", { {node->inverse, node->transform} });
 		graph.changeParent("torus", "cube");
 		set_child = false;
 	}

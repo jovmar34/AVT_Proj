@@ -136,6 +136,7 @@ void SceneGraph::draw()
 	queue<SceneNode*> unvisited;
 
 	cam->drawCamera();
+	Matrix3 inv = cam->invView.decrease();
 
 	unvisited.push(root);
 	glClearStencil(0);
@@ -155,7 +156,9 @@ void SceneGraph::draw()
 
 			curr->material->bind();
 
-			curr->material->update(curr->getTransform(), curr->getNormal());
+			TransformInfo info = curr->getTransformInfo();
+			Matrix3 transpinv = info.inverse.transpose().decrease();
+			curr->material->update(info.transform, inv.transpose() * transpinv); // FIXME: sceneNode remove getNormal
 			
 			glStencilFunc(GL_ALWAYS, curr->id, 0xFF);
 			glStencilOp(GL_ZERO, GL_KEEP, GL_REPLACE);
@@ -188,6 +191,38 @@ void SceneGraph::setTransform(std::string node, Matrix4 transform)
 void SceneGraph::applyTransform(std::string node, Matrix4 transform)
 {
 	nameMap[node]->transform = transform * nameMap[node]->transform;
+}
+
+void SceneGraph::setTransforms(std::string node, vector<TransformInfo> transforms)
+{
+	SceneNode* changed = nameMap[node];
+
+	Matrix4 transf = MxFactory::identity4();
+	Matrix4 inv = MxFactory::identity4();
+
+	for (auto info : transforms) {
+		transf = info.transform * transf;
+		inv = inv * info.inverse;
+	}
+
+	changed->transform = transf;
+	changed->inverse = inv;
+}
+
+void SceneGraph::applyTransforms(std::string node, vector<TransformInfo> transforms)
+{
+	SceneNode* changed = nameMap[node];
+
+	Matrix4 transf = MxFactory::identity4();
+	Matrix4 inv = MxFactory::identity4();
+
+	for (auto info : transforms) {
+		transf = info.transform * transf;
+		inv = inv * info.inverse;
+	}
+
+	changed->transform = transf * changed->transform;
+	changed->inverse = changed->inverse * inv;
 }
 
 SceneNode* SceneGraph::getNode(std::string name)

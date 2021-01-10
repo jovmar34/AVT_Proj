@@ -8,6 +8,7 @@ out vec3 exPosition;
 out vec2 exTexcoord;
 out vec3 exNormal;
 out vec3 view_pos;
+out vec3 light_pos;
 
 uniform mat4 ModelMatrix;
 uniform mat3 NormalMatrix;
@@ -25,9 +26,10 @@ void main(void)
 	view_pos.z = view[3][2];
 
 	// vertex info
-	exPosition = vec4(ModelMatrix * vec4(inPosition,1)).xyz;
+	exPosition = vec4(ViewMatrix * ModelMatrix * vec4(inPosition,1)).xyz;
 	exTexcoord = inTexcoord;
 	exNormal = NormalMatrix * inNormal;
+	light_pos = vec4(ViewMatrix * vec4(5,5,5,1)).xyz;
 
 	vec4 MCPosition = vec4(inPosition, 1.0);
 	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * MCPosition;

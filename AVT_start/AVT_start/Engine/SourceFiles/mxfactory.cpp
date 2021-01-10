@@ -92,3 +92,18 @@ Matrix3 MxFactory::invrotation3(Vector3D axis, double theta)
     return rotation3(axis, -theta);
 }
 
+TransformInfo MxFactory::scale(Vector3D scaleVec)
+{
+    return { MxFactory::scaling4(scaleVec), MxFactory::invscaling4(scaleVec) };
+}
+
+TransformInfo MxFactory::translate(Vector3D translateVec)
+{
+    return { MxFactory::translation4(translateVec), MxFactory::invtranslation4(translateVec) };
+}
+
+TransformInfo MxFactory::rotate(Vector3D axis, double theta)
+{
+    return { MxFactory::rotation4(axis, theta), MxFactory::invrotation4(axis, theta) };
+}
+

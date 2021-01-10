@@ -25,6 +25,7 @@ class SceneGraph {
 	unordered_map<unsigned int, SceneNode*> idMap;
 
 	Material* outline;
+	SceneNode* grid = nullptr;
 	unsigned int selected = 0;
 
 public:
@@ -48,6 +49,9 @@ public:
 
 	void setTransform(std::string node, Matrix4 transform);
 	void applyTransform(std::string node, Matrix4 transform);
+
+	void setTransforms(std::string node, vector<TransformInfo> transforms);
+	void applyTransforms(std::string node, vector<TransformInfo> transforms);
 
 	SceneNode* getNode(std::string name);
 	SceneNode* getSelected();

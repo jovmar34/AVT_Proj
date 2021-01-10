@@ -26,6 +26,8 @@ class SceneGraph {
 
 	Material* outline;
 	SceneNode* grid = nullptr;
+	SceneNode* gizmo = nullptr;
+	double dist = 0;
 	unsigned int selected = 0;
 
 public:
@@ -40,6 +42,9 @@ public:
 	void setCamera(Camera* cam);
 	void saveCurr();
 	void setOutline(Material* mat);
+	void setGrid(Material* mat, Mesh* mesh, TransformInfo info);
+	void setGizmo(Material* mat, Mesh* mesh);
+	void setDist(double val) { dist = val; };
 	void setSelected(unsigned int selected);
 
 	Camera* getCam();
@@ -61,4 +66,6 @@ public:
 	// Debug
 	void describe();
 
+	// specifics
+	void drawGizmos(Vector3D pos);
 };

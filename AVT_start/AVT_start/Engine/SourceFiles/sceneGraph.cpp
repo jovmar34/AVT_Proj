@@ -70,6 +70,53 @@ void SceneGraph::describe()
 	}
 }
 
+void SceneGraph::drawGizmos(Vector3D pos)
+{
+	Manager* h = Manager::getInstance();
+	Shader* shader = h->getShader("gizmo_shader");
+	Mesh* mesh = h->getMesh("gizmo_mesh");
+	Vector3D color;
+	double percentage = cam->eye.length() / dist;
+	Matrix4 model, 
+		scale = MxFactory::scaling4(percentage * Vector3D(1.5,1.5,1.5)),
+		translate = MxFactory::translation4(pos);
+
+	glDisable(GL_DEPTH_TEST);
+
+	for (int i = 0; i < 3; i++) {
+		switch (i)
+		{
+		case 0:
+			color = Vector3D(0, 0, 1);
+			model = translate * MxFactory::identity4() * scale;
+			break;
+		case 1:
+			color = Vector3D(0, 1, 0);
+			model = translate * MxFactory::rotation4(Vector3D(1, 0, 0), 90) * scale;
+			break;
+		case 2:
+			color = Vector3D(1, 0, 0);
+			model = translate * MxFactory::rotation4(Vector3D(0, 0, 1), -90) * scale;
+			break;
+		}
+
+		glStencilFunc(GL_ALWAYS, 0xFF - i, 0xFF); // FF -> y, FF - 1 -> z, FF - 2 -> x
+		glStencilOp(GL_ZERO, GL_KEEP, GL_REPLACE);
+
+		shader->bind();
+
+		shader->setUniformVec3("u_AlbedoColor", color);
+		shader->setUniformMat4("ModelMatrix", model);
+		mesh->draw();
+		shader->unbind();		
+	}
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_TRUE);
+	glDepthRange(0.0, 1.0);
+}
+
 void SceneGraph::setCurr(std::string name)
 {
 	current = nameMap[name];
@@ -99,6 +146,24 @@ void SceneGraph::saveCurr()
 
 void SceneGraph::setOutline(Material* mat) {
 	outline = mat;
+}
+
+void SceneGraph::setGrid(Material* mat, Mesh* mesh, TransformInfo info)
+{
+	grid = new SceneNode();
+	grid->name = "grid";
+	grid->mesh = mesh;
+	grid->transform = info.transform;
+	grid->inverse = info.inverse; // Hack, because only useful for normal matrix
+
+	grid->material = mat;
+}
+
+void SceneGraph::setGizmo(Material* mat, Mesh* mesh)
+{
+	gizmo = new SceneNode();
+	gizmo->material = mat;
+	gizmo->mesh = mesh;
 }
 
 void SceneGraph::setSelected(unsigned int selected)
@@ -136,7 +201,7 @@ void SceneGraph::draw()
 	queue<SceneNode*> unvisited;
 
 	cam->drawCamera();
-	Matrix3 inv = cam->invView.decrease();
+	Matrix3 invTransView = cam->invView.decrease().transpose();
 
 	unvisited.push(root);
 	glClearStencil(0);
@@ -158,8 +223,8 @@ void SceneGraph::draw()
 
 			TransformInfo info = curr->getTransformInfo();
 			Matrix3 transpinv = info.inverse.transpose().decrease();
-			curr->material->update(info.transform, inv.transpose() * transpinv); // FIXME: sceneNode remove getNormal
-			
+			curr->material->update(info.transform, invTransView * transpinv); // FIXME: sceneNode remove getNormal
+
 			glStencilFunc(GL_ALWAYS, curr->id, 0xFF);
 			glStencilOp(GL_ZERO, GL_KEEP, GL_REPLACE);
 
@@ -176,11 +241,21 @@ void SceneGraph::draw()
 				curr->mesh->draw();
 				glCullFace(GL_BACK);
 				outline->unbind();
+
+				Vector4D pos = info.transform * Vector4D(0, 0, 0, 1);
+				drawGizmos(pos.to3D());
 			}
 		}
 	}
 
 	glDisable(GL_STENCIL_TEST);
+
+
+	// draw grid
+	grid->material->bind();
+	grid->material->update(grid->transform, invTransView * grid->inverse.transpose().decrease());
+	grid->mesh->draw();
+	grid->material->unbind();
 }
 
 void SceneGraph::setTransform(std::string node, Matrix4 transform)

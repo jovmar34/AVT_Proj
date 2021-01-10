@@ -22,9 +22,11 @@ void myApp::processInput(GLFWwindow* win, double elapsed)
 
 void myApp::animate(GLFWwindow* win, double elapsed)
 {
+	/** /
 	t_frame += elapsed;
 
 	graph.setTransforms("cube", { MxFactory::scale(Vector3D(2, 1, 1)), MxFactory::rotate(Vector3D(0,1,0), t_frame * 90) });
+	/**/
 }
 
 void myApp::look(GLFWwindow* win, double elapsed)
@@ -95,6 +97,7 @@ void myApp::populateScene()
 	cam->init();
 
 	graph.setCamera(cam);
+	graph.setDist(Vector3D(8,8,8).length());
 	
 	// Outline
 	Shader* outline_shader = new Shader("res/shaders/outline_vs.glsl", "res/shaders/outline_fs.glsl");
@@ -115,13 +118,10 @@ void myApp::populateScene()
 
 	// Materials 
 	Material* test_mat_g = h->addMaterial("test_mat_g", new Material(blinn_phong_shader));
-	test_mat_g->setUniformVec3("u_AlbedoColor", Vector3D(0, 1, 0));
-
-
+	test_mat_g->setUniformVec3("u_AlbedoColor", Vector3D(0.5f, 0.5f, 0.5f));
 
 	//cube
 	graph.addChild(test_mat_g, cube_mesh, "cube");
-	graph.setTransforms("cube", { MxFactory::scale(Vector3D(2, 1, 1)) });
 
 	//torus
 	graph.addChild(test_mat_g, tous_mesh, "torus");
@@ -138,7 +138,13 @@ void myApp::populateScene()
 	Shader* grid_shader = h->addShader("grid_shader", new Shader("res/shaders/grid_vs.glsl", "res/shaders/grid_fs.glsl"));
 	grid_shader->addUniformBlock("Matrices", 0);
 	Material* grid_mat = h->addMaterial("grid_mat", new Material(grid_shader));
-	graph.addChild(grid_mat, plane_mesh, "grid", MxFactory::scaling4(Vector3D(100, 100, 100)));
+	graph.setGrid(grid_mat, plane_mesh, MxFactory::scale(Vector3D(100, 100, 100)));
+
+	//axis
+	Mesh* gizmo_mesh = h->addMesh("gizmo_mesh", new Mesh("res/meshes/Gizmos/TranslationGizmo.obj"));
+	Shader* gizmo_shader = h->addShader("gizmo_shader", new Shader("res/shaders/gizmo_vs.glsl", "res/shaders/gizmo_fs.glsl"));
+	gizmo_shader->addUniformBlock("Matrices", 0);
+	Material* gizmo_mat = h->addMaterial("gizmo_mat", new Material(gizmo_shader));
 }
 
 void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int mods)
@@ -211,7 +217,23 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 		GLuint index;
 		glReadPixels(x, y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
 
-		graph.setSelected(index);
+		if (index < (0xFF - 2)) {
+			graph.setSelected(index);
+		}
+		else {
+			std::string name = graph.getSelected()->name;
+			switch (index) {
+			case 0xFF:
+				graph.applyTransforms(name, { MxFactory::translate(Vector3D(0,0.1,0)) });
+				break;
+			case 0xFE:
+				graph.applyTransforms(name, { MxFactory::translate(Vector3D(0,0,0.1)) });
+				break;
+			case 0xFD:
+				graph.applyTransforms(name, { MxFactory::translate(Vector3D(0.1,0,0)) });
+				break;
+			}
+		}
 	}
 }
 
@@ -231,7 +253,7 @@ void myApp::update(GLFWwindow *win, double elapsed)
 	}
 	if (add_mesh) {
 		Manager* h = Manager::getInstance();
-		Mesh* mesh = h->addMesh("new_mesh", new Mesh("res/meshes/smooth.obj"));
+		Mesh* mesh = h->addMesh("new_mesh", new Mesh("res/meshes/AxisGizmo.obj"));
 		mesh->init();
 
 		Material* material = h->getMaterial("test_mat_g");

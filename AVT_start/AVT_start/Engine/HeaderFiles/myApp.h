@@ -24,7 +24,7 @@ private:
 	Vector4D worldDir;
 	Vector2D screenDir;
 	bool gizmoActive = false;
-	double gizmo_x, gizmo_y;
+	double gizmo_x, gizmo_y, scale;
 	TransformInfo useful;
 
 	void processInput(GLFWwindow* win, double elapsed);

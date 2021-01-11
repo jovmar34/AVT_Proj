@@ -29,12 +29,29 @@ void myApp::manipulateGizmo(GLFWwindow* win, double elapsed)
 	double x, y;
 	glfwGetCursorPos(win, &x, &y);
 
-	Vector2D currDir = Vector2D(x - gizmo_x, gizmo_y - y);
-
-	double dot = currDir * screenDir;
-
 	std::string name = graph.getSelected()->name;
-	graph.setTransforms(name, {useful, MxFactory::translate(worldDir.to3D() * dot * 0.1) });
+	TransformInfo info;
+	GizmoType type = graph.getGizmoType();
+	Vector3D world3D = worldDir.to3D();
+
+	if (type == GizmoType::Translation) {
+		Vector2D currDir = Vector2D(x - gizmo_x, gizmo_y - y);
+
+		double dot = currDir * screenDir;
+
+		info = MxFactory::translate(world3D * dot * 0.1);
+		graph.setTransforms(name, { useful, info });
+	}
+	else if (type == GizmoType::Scaling) {
+		Vector2D currDir = Vector2D(x - gizmo_x, y - gizmo_y);
+
+		double dot = currDir * screenDir;
+
+		info = MxFactory::scale((Vector3D(1, 1, 1) - world3D) + (world3D * fabs(dot) * scale));
+		graph.setTransforms(name, { info, useful });
+	}
+
+	
 }
 
 void myApp::animate(GLFWwindow* win, double elapsed)
@@ -101,9 +118,6 @@ void myApp::save(GLFWwindow* win)
 	// Free resources
 	FreeImage_Unload(image);
 	delete[] pixels;
-
-	//std::cout << "width: " << w << "; height: " << h << std::endl;
-
 }
 
 void myApp::populateScene()
@@ -200,12 +214,15 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 			animate_frame = true;
 			break;
 		case GLFW_KEY_R:
+			if (!gizmoActive)
 			graph.setGizmoType(GizmoType::Rotation);
 			break;
 		case GLFW_KEY_E:
+			if (!gizmoActive)
 			graph.setGizmoType(GizmoType::Scaling);
 			break;
 		case GLFW_KEY_G:
+			if (!gizmoActive)
 			graph.setGizmoType(GizmoType::Translation);
 			break;
 		case GLFW_KEY_I:
@@ -236,11 +253,11 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 {
 	if (button == GLFW_MOUSE_BUTTON_LEFT) {
 		double xpos, ypos;
-		int height;
+		int height, width;
 		glfwGetCursorPos(win, &xpos, &ypos);
 		int x = static_cast<int>(xpos);
 
-		glfwGetWindowSize(win, NULL, &height);
+		glfwGetWindowSize(win, &width, &height);
 		int y = height - static_cast<int>(ypos);
 
 		GLuint index;
@@ -250,8 +267,7 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 			if (index >= 0xFD) {
 				gizmoActive = true;
 				std::cout << "activate" << std::endl;
-				gizmo_x = xpos;
-				gizmo_y = ypos;
+
 
 				if (index == 0xFF) {
 					worldDir = Vector4D(1, 0, 0, 1);
@@ -270,11 +286,26 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 				Vector4D center = projView * useful.transform * Vector4D(0,0,0,1);
 				center.divideByW();
 
+
 				Vector4D point = projView * ((useful.transform * Vector4D(0, 0, 0, 1)) + worldDir);
 				point.divideByW();			
 					
-				screenDir = (point - center).to2D();
+				screenDir = point.to2D() - center.to2D();
 				std::cout << "screen_dir: " << screenDir <<  std::endl;
+				
+				if (graph.getGizmoType() == GizmoType::Scaling) {
+					gizmo_x = (center.x + 1) / 2 * width;
+					gizmo_y = height - (center.y + 1) / 2 * height;
+
+					Vector2D vec = Vector2D(xpos - gizmo_x, ypos - gizmo_y);
+					screenDir.normalize();
+
+					scale = 1.5 / vec.length();
+				}
+				else {
+					gizmo_x = xpos;
+					gizmo_y = ypos;
+				}
 			}
 		}
 		if (action == GLFW_RELEASE) {

@@ -19,7 +19,7 @@ const vec3 xAxisColor = vec3(1,0,0);
 const vec3 yAxisColor = vec3(0,1,0);
 const float axisAlpha = 0.8;
 
-const float alphaFalloff = 1.5;
+const float alphaFalloff = 2;
 
 void main()
 {

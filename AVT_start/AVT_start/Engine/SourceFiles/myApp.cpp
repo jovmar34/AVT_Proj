@@ -126,21 +126,26 @@ void myApp::populateScene()
 
 	// Meshes
 	Mesh* cube_mesh = h->addMesh("cube_mesh", new Mesh("res/meshes/bunny_smooth.obj"));
-	Mesh* tous_mesh = h->addMesh("torus_mesh", new Mesh("res/meshes/torus.obj"));
+	Mesh* torus_mesh = h->addMesh("torus_mesh", new Mesh("res/meshes/torus.obj"));
 
 	// Shaders
-	Shader* blinn_phong_shader = h->addShader("blinn_phong_shader", new Shader("res/shaders/blinn_phong_vs.glsl", "res/shaders/blinn_phong_fs.glsl"));
-	blinn_phong_shader->addUniformBlock("Matrices", 0);
+	Shader* blinnphong_shader = h->addShader("blinnphong_shader", new Shader("res/shaders/blinn_phong_vs.glsl", "res/shaders/blinn_phong_fs.glsl"));
+	blinnphong_shader->addUniformBlock("Matrices", 0);
+	Shader* gooch_shader = h->addShader("gooch_shader", new Shader("res/shaders/gooch_vs.glsl", "res/shaders/gooch_fs.glsl"));
+	gooch_shader->addUniformBlock("Matrices", 0);
 
 	// Materials 
-	Material* test_mat_g = h->addMaterial("test_mat_g", new Material(blinn_phong_shader));
-	test_mat_g->setUniformVec3("u_AlbedoColor", Vector3D(0.5f, 0.5f, 0.5f));
+	Material* blinnphong_mat = h->addMaterial("blinnphong_mat", new Material(blinnphong_shader));
+	blinnphong_mat->setUniformVec3("u_AlbedoColor", Vector3D(0.8f, 0.8f, 0.8f));
+
+	Material* gooch_mat = h->addMaterial("gooch_mat", new Material(gooch_shader));
+	gooch_mat->setUniformVec3("u_AlbedoColor", Vector3D(0.8f, 0.8f, 0.8f));
 
 	//cube
-	graph.addChild(test_mat_g, cube_mesh, "cube");
+	graph.addChild(gooch_mat, cube_mesh, "cube");
 
 	//torus
-	graph.addChild(test_mat_g, tous_mesh, "torus");
+	graph.addChild(blinnphong_mat, torus_mesh, "torus");
 	graph.setTransforms("torus", { MxFactory::translate(Vector3D(0,0,-5)) });
 
 	/* 
@@ -301,7 +306,7 @@ void myApp::update(GLFWwindow *win, double elapsed)
 		Mesh* mesh = h->addMesh("new_mesh", new Mesh("res/meshes/AxisGizmo.obj"));
 		mesh->init();
 
-		Material* material = h->getMaterial("test_mat_g");
+		Material* material = h->getMaterial("blinnphong_mat");
 
 		graph.setCurrToRoot();
 		graph.addChild(material, mesh, "new_guy", MxFactory::translation4(Vector3D(0,5,0)));

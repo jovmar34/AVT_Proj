@@ -199,6 +199,10 @@
   <ItemGroup>
     <None Include="res\shaders\blinn_phong_fs.glsl" />
     <None Include="res\shaders\blinn_phong_vs.glsl" />
+    <None Include="res\shaders\gizmo_fs.glsl" />
+    <None Include="res\shaders\gizmo_vs.glsl" />
+    <None Include="res\shaders\gooch_fs.glsl" />
+    <None Include="res\shaders\gooch_vs.glsl" />
     <None Include="res\shaders\gouraud_fs.glsl" />
     <None Include="res\shaders\gouraud_vs.glsl" />
     <None Include="res\shaders\grid_fs.glsl" />

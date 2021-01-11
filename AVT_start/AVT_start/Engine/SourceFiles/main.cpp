@@ -138,6 +138,8 @@ void glfw_error_callback(int error, const char* description)
 GLFWwindow* setupWindow(int winx, int winy, const char* title,
 	int is_fullscreen, int is_vsync)
 {
+	glfwWindowHint(GLFW_SAMPLES, 4);
+
 	GLFWmonitor* monitor = is_fullscreen ? glfwGetPrimaryMonitor() : 0;
 	GLFWwindow* win = glfwCreateWindow(winx, winy, title, monitor, 0);
 	if (!win)

@@ -74,10 +74,18 @@ void SceneGraph::drawGizmos(Vector3D pos)
 {
 	Manager* h = Manager::getInstance();
 	Shader* shader = h->getShader("gizmo_shader");
-	Mesh* mesh = h->getMesh("gizmo_mesh");
+	int sign = 1;
+	Mesh* mesh = h->getMesh("translation_gizmo");
+	if (gizmoType == GizmoType::Rotation) {
+		sign = -1;
+		mesh = h->getMesh("rotation_gizmo");
+	}
+	if (gizmoType == GizmoType::Scaling) mesh = h->getMesh("scale_gizmo");
+
 	Vector3D color;
-	double percentage = cam->eye.length() / dist;
-	Matrix4 model, 
+	double percentage = (cam->eye - pos).length() / dist;
+	Matrix4 model,
+		rotate = MxFactory::identity4(),
 		scale = MxFactory::scaling4(percentage * Vector3D(1.5,1.5,1.5)),
 		translate = MxFactory::translation4(pos);
 
@@ -87,18 +95,19 @@ void SceneGraph::drawGizmos(Vector3D pos)
 		switch (i)
 		{
 		case 0:
-			color = Vector3D(0, 0, 1);
-			model = translate * MxFactory::identity4() * scale;
+			color = Vector3D(1, 0, 0);
 			break;
 		case 1:
 			color = Vector3D(0, 1, 0);
-			model = translate * MxFactory::rotation4(Vector3D(1, 0, 0), 90) * scale;
+			rotate = MxFactory::rotation4(Vector3D(0, 0, 1), 90 * sign) * rotate;
 			break;
 		case 2:
-			color = Vector3D(1, 0, 0);
-			model = translate * MxFactory::rotation4(Vector3D(0, 0, 1), -90) * scale;
+			color = Vector3D(0, 0, 1);
+			rotate = MxFactory::rotation4(Vector3D(1, 0, 0), 90 * sign) * rotate;
 			break;
 		}
+
+		model = translate * rotate * scale;
 
 		glStencilFunc(GL_ALWAYS, 0xFF - i, 0xFF); // FF -> y, FF - 1 -> z, FF - 2 -> x
 		glStencilOp(GL_ZERO, GL_KEEP, GL_REPLACE);
@@ -137,6 +146,7 @@ void SceneGraph::setCurrToRoot()
 void SceneGraph::setCamera(Camera* cam)
 {
 	this->cam = cam;
+	this->dist = cam->eye.length();
 }
 
 void SceneGraph::saveCurr()

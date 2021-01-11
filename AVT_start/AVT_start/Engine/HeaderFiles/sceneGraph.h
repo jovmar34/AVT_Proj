@@ -17,6 +17,10 @@
 #include "sceneNode.h"
 #include "../HeaderFiles/manager.h"
 
+enum GizmoType {
+	Translation, Rotation, Scaling, None
+};
+
 class SceneGraph {
 	SceneNode* root = nullptr;
 	SceneNode* current = nullptr;
@@ -27,6 +31,7 @@ class SceneGraph {
 	Material* outline;
 	SceneNode* grid = nullptr;
 	SceneNode* gizmo = nullptr;
+	GizmoType gizmoType = GizmoType::Translation;
 	double dist = 0;
 	unsigned int selected = 0;
 
@@ -45,6 +50,7 @@ public:
 	void setGrid(Material* mat, Mesh* mesh, TransformInfo info);
 	void setGizmo(Material* mat, Mesh* mesh);
 	void setDist(double val) { dist = val; };
+	void setGizmoType(GizmoType type) { gizmoType = type; };
 	void setSelected(unsigned int selected);
 
 	Camera* getCam();

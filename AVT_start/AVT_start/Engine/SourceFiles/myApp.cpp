@@ -17,7 +17,24 @@ void myApp::processInput(GLFWwindow* win, double elapsed)
 		look(win, elapsed);
 	}
 
+	if (gizmoActive) {
+		manipulateGizmo(win, elapsed);
+	}
+
 	animate(win, elapsed);
+}
+
+void myApp::manipulateGizmo(GLFWwindow* win, double elapsed)
+{
+	double x, y;
+	glfwGetCursorPos(win, &x, &y);
+
+	Vector2D currDir = Vector2D(x - gizmo_x, gizmo_y - y);
+
+	double dot = currDir * screenDir;
+
+	std::string name = graph.getSelected()->name;
+	graph.setTransforms(name, {useful, MxFactory::translate(worldDir.to3D() * dot * 0.1) });
 }
 
 void myApp::animate(GLFWwindow* win, double elapsed)
@@ -72,7 +89,7 @@ void myApp::save(GLFWwindow* win)
 {
 	int w, h;
 	glfwGetWindowSize(win, &w, &h);
-
+	
 	GLubyte* pixels = new GLubyte[3 * w * h];
 
 	glReadPixels(0, 0, w, h, GL_BGR, GL_UNSIGNED_BYTE, pixels);
@@ -97,7 +114,6 @@ void myApp::populateScene()
 	cam->init();
 
 	graph.setCamera(cam);
-	graph.setDist(Vector3D(8,8,8).length());
 	
 	// Outline
 	Shader* outline_shader = new Shader("res/shaders/outline_vs.glsl", "res/shaders/outline_fs.glsl");
@@ -141,10 +157,12 @@ void myApp::populateScene()
 	graph.setGrid(grid_mat, plane_mesh, MxFactory::scale(Vector3D(100, 100, 100)));
 
 	//axis
-	Mesh* gizmo_mesh = h->addMesh("gizmo_mesh", new Mesh("res/meshes/Gizmos/TranslationGizmo.obj"));
+	h->addMesh("translation_gizmo", new Mesh("res/meshes/Gizmos/TranslationGizmo.obj"));
+	h->addMesh("scale_gizmo", new Mesh("res/meshes/Gizmos/ScaleGizmo.obj"));
+	h->addMesh("rotation_gizmo", new Mesh("res/meshes/Gizmos/AltRotationGizmo.obj"));
+
 	Shader* gizmo_shader = h->addShader("gizmo_shader", new Shader("res/shaders/gizmo_vs.glsl", "res/shaders/gizmo_fs.glsl"));
 	gizmo_shader->addUniformBlock("Matrices", 0);
-	Material* gizmo_mat = h->addMaterial("gizmo_mat", new Material(gizmo_shader));
 }
 
 void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int mods)
@@ -177,7 +195,13 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 			animate_frame = true;
 			break;
 		case GLFW_KEY_R:
-			reset_cam = true;
+			graph.setGizmoType(GizmoType::Rotation);
+			break;
+		case GLFW_KEY_E:
+			graph.setGizmoType(GizmoType::Scaling);
+			break;
+		case GLFW_KEY_G:
+			graph.setGizmoType(GizmoType::Translation);
 			break;
 		case GLFW_KEY_I:
 			save_img = true;
@@ -205,7 +229,7 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 
 void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mods)
 {
-	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+	if (button == GLFW_MOUSE_BUTTON_LEFT) {
 		double xpos, ypos;
 		int height;
 		glfwGetCursorPos(win, &xpos, &ypos);
@@ -217,22 +241,43 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 		GLuint index;
 		glReadPixels(x, y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
 
-		if (index < (0xFF - 2)) {
-			graph.setSelected(index);
-		}
-		else {
-			std::string name = graph.getSelected()->name;
-			switch (index) {
-			case 0xFF:
-				graph.applyTransforms(name, { MxFactory::translate(Vector3D(0,0.1,0)) });
-				break;
-			case 0xFE:
-				graph.applyTransforms(name, { MxFactory::translate(Vector3D(0,0,0.1)) });
-				break;
-			case 0xFD:
-				graph.applyTransforms(name, { MxFactory::translate(Vector3D(0.1,0,0)) });
-				break;
+		if (action == GLFW_PRESS) {
+			if (index >= 0xFD) {
+				gizmoActive = true;
+				std::cout << "activate" << std::endl;
+				gizmo_x = xpos;
+				gizmo_y = ypos;
+
+				if (index == 0xFF) {
+					worldDir = Vector4D(1, 0, 0, 1);
+				}
+				else if (index == 0xFE) {
+					worldDir = Vector4D(0, 1, 0, 1);
+				}
+				else if (index == 0xFD) {
+					worldDir = Vector4D(0, 0, 1, 1);
+				}
+
+				Matrix4 projView = graph.getCam()->projection * graph.getCam()->view;
+
+				useful = { graph.getSelected()->transform, graph.getSelected()->inverse };
+
+				Vector4D center = projView * useful.transform * Vector4D(0,0,0,1);
+				center.divideByW();
+
+				Vector4D point = projView * ((useful.transform * Vector4D(0, 0, 0, 1)) + worldDir);
+				point.divideByW();			
+					
+				screenDir = (point - center).to2D();
+				std::cout << "screen_dir: " << screenDir <<  std::endl;
 			}
+		}
+		if (action == GLFW_RELEASE) {
+			if (gizmoActive) {
+				std::cout << "deactivate" << std::endl;
+				gizmoActive = false;
+			}
+			else if (index < 0xFD) graph.setSelected(index);
 		}
 	}
 }

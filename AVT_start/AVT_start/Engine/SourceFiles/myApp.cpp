@@ -190,7 +190,7 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 	if (key == GLFW_KEY_LEFT) //left arrow - object movement
 	{
 		MxFactory m = MxFactory();
-		Vector3D axis = { 0, 1, 0 };
+		Vector3D axis(0, 1, 0);
 		Matrix4 rot = m.rotation4(axis, 1);
 		SceneNode* root = graph.getNode("root");
 		SceneNode* n;
@@ -210,7 +210,7 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 	else if (key == GLFW_KEY_RIGHT) //right arrow - object movement
 	{
 		MxFactory m = MxFactory();
-		Vector3D axis = { 0, 1, 0 };
+		Vector3D axis(0, 1, 0);
 		Matrix4 rot = m.rotation4(axis, -1);
 		SceneNode* root = graph.getNode("root");
 		SceneNode* n;
@@ -222,7 +222,7 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 	else if (key == GLFW_KEY_UP) //up arrow - object movement
 	{
 		MxFactory m = MxFactory();
-		Vector3D axis = { 1, 0, 0 };
+		Vector3D axis(1, 0, 0);
 		Matrix4 rot = m.rotation4(axis, 1);
 		SceneNode* root = graph.getNode("root");
 		SceneNode* n;
@@ -234,7 +234,7 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 	else if (key == GLFW_KEY_DOWN) //down arrow - object movement
 	{
 		MxFactory m = MxFactory();
-		Vector3D axis = { 1, 0, 0 };
+		Vector3D axis(1, 0, 0);
 		Matrix4 rot = m.rotation4(axis, -1);
 		SceneNode* root = graph.getNode("root");
 		SceneNode* n;
@@ -270,25 +270,51 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 		cam->move(axis, 0.2);
 		cam->toggle();
 	}
-	else if (key == GLFW_KEY_ENTER && action == GLFW_PRESS)
-	{
-		//graph.serializeScene(&C);
-		cout << "serialize\n";
-	}
-	else if (key == GLFW_KEY_G && action == GLFW_PRESS)
-	{
-		cout << "deserialize\n";
-		//graph.deserializeScene();
-	}
 }
 
 void myApp::mouseCallback(GLFWwindow* win, double xpos, double ypos) {
-	//todo
+	if (move_obj) {
+		float oldXPos = (float)xpos, oldYPos = (float)ypos;
+		glfwGetCursorPos(win, &xpos, &ypos);
+		xDelta = ((float)xpos - oldXPos) * 5;
+		yDelta = ((float)ypos - oldYPos) * 5;
+
+		MxFactory m = MxFactory();
+		Vector3D axisX(xDelta, 1, 1);
+		Vector3D axisY(1, yDelta, 1);
+		Matrix4 rotX = m.rotation4(axisX, 1);
+		Matrix4 rotY = m.rotation4(axisY, 1);
+		Matrix4 totalRot = rotX * rotY;
+		SceneNode* root = graph.getNode("root");
+		SceneNode* n;
+		if (root->selected) {
+			graph.applyTransform("root", totalRot);
+		}
+	}
 }
 
 
 void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mods) {
-	//todo
+	Camera* cam = graph.getCam();
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) { //object movement
+		cout << "left control" << endl;
+		move_obj = true;
+	}
+	else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) { //object movement
+		cout << "left control ended" << endl;
+		move_obj = false;
+	}
+	else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) { //camera movement
+		cout << "right control" << endl;
+		cam->toggle();
+	}
+	else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) { //camera movement
+		cout << "right control ended" << endl;
+		cam->toggle();
+	}
+	else if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS) { //not sure if we'll need this
+		cout << "middle control" << endl;
+	}
 }
 
 

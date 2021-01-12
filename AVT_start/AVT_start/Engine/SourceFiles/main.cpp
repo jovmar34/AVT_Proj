@@ -153,7 +153,7 @@ GLFWwindow* setupWindow(int winx, int winy, const char* title,
 void setupCallbacks(GLFWwindow* win)
 {
 	glfwSetKeyCallback(win, key_callback);
-	//glfwSetCursorPosCallback(win, mouse_callback);
+	glfwSetCursorPosCallback(win, mouse_callback);
 	glfwSetMouseButtonCallback(win, mouse_button_callback);
 	glfwSetScrollCallback(win, scroll_callback);
 	//glfwSetJoystickCallback(joystick_callback);

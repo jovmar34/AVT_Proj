@@ -16,7 +16,9 @@ private:
 	bool save_img = false;
 	bool add_mesh = false;
 	bool new_mat = false;
+	bool move_obj = false;
 
+	float xDelta, yDelta;
 	double old_x = 0, old_y = 0;
 	double angle_x = M_PI_2 / 50, angle_y = M_PI / 50;
 

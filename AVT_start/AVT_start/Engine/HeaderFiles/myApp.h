@@ -22,10 +22,12 @@ private:
 
 	// gizmo manipulation
 	Vector4D worldDir;
+	Vector3D pos;
 	Vector2D screenDir;
 	bool gizmoActive = false;
 	double gizmo_x, gizmo_y, scale;
 	TransformInfo useful;
+
 
 	void processInput(GLFWwindow* win, double elapsed);
 	void manipulateGizmo(GLFWwindow* win, double elapsed);

@@ -48,6 +48,29 @@ void myApp::manipulateGizmo(GLFWwindow* win, double elapsed)
 		info = MxFactory::scale((Vector3D(1, 1, 1) - world3D) + (world3D * fabs(currDir.length()) * scale));
 		graph.setTransforms(name, { info, useful });
 	}
+	else if (type == GizmoType::Rotation) {
+		Vector2D currDir = Vector2D(x - gizmo_x, y - gizmo_y).normalize();
+
+		double cos = currDir * screenDir;
+		if (cos > 1) cos = 1;
+		if (cos < -1) cos = -1;
+		
+		Vector3D axis = screenDir.to3D() % currDir.to3D();
+		if (axis.length() != 0) {
+			axis.normalize();
+		}
+
+		std::cout << "axis: " << axis << std::endl;
+
+		double angleDeg = scale * -axis.z * acos(cos) / M_PI_2 * 90;
+
+		std::cout << "angle: " << angleDeg << std::endl;
+
+		screenDir = currDir;
+
+		info = MxFactory::rotate(world3D, angleDeg);
+		graph.applyTransforms(name, { MxFactory::translate(-1 *  pos), info, MxFactory::translate(pos) });
+	}
 
 	
 }
@@ -277,21 +300,20 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 					worldDir = Vector4D(0, 0, 1, 1);
 				}
 
-				Matrix4 projView = graph.getCam()->projection * graph.getCam()->view;
+				Camera* cam = graph.getCam();
+
+				Matrix4 projView = cam->projection * cam->view;
 
 				useful = { graph.getSelected()->transform, graph.getSelected()->inverse };
 
 				Vector4D center = projView * useful.transform * Vector4D(0,0,0,1);
-				center.divideByW();
-
-
-				Vector4D point = projView * ((useful.transform * Vector4D(0, 0, 0, 1)) + worldDir);
-				point.divideByW();			
-					
-				screenDir = point.to2D() - center.to2D();
-				std::cout << "screen_dir: " << screenDir <<  std::endl;
+				center.divideByW();	
+			
+				Vector4D point;
 				
-				if (graph.getGizmoType() == GizmoType::Scaling) {
+				GizmoType gizType = graph.getGizmoType();
+
+				if (gizType == GizmoType::Scaling) {
 					gizmo_x = (center.x + 1) / 2 * width;
 					gizmo_y = height - (center.y + 1) / 2 * height;
 
@@ -299,9 +321,30 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 
 					scale = 1 / currDir.length();
 				}
-				else {
+				else if (gizType == GizmoType::Translation) {
+					point = projView* ((useful.transform * Vector4D(0, 0, 0, 1)) + worldDir);
+					point.divideByW();
+
 					gizmo_x = xpos;
 					gizmo_y = ypos;
+
+					screenDir = point.to2D() - center.to2D();
+					std::cout << "screen_dir: " << screenDir << std::endl;
+				}
+				else if (gizType == GizmoType::Rotation) {
+					gizmo_x = (center.x + 1) / 2 * width;
+					gizmo_y = height - (center.y + 1) / 2 * height;
+
+					pos = (useful.transform * Vector4D(0, 0, 0, 1)).to3D();
+
+					Vector3D relativeEye = cam->eye - cam->center;
+
+					scale = relativeEye * worldDir.to3D();
+
+					if (scale == 0) scale = 1;
+					else scale /= fabs(scale);
+
+					screenDir = Vector2D(xpos - gizmo_x, ypos - gizmo_y).normalize();
 				}
 			}
 		}

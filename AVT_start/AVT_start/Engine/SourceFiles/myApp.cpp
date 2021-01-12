@@ -247,24 +247,28 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 		cam->toggle();
 		Vector3D axis(-1, 0, 0);
 		cam->move(axis, 0.2);
+		cam->toggle();
 	}
 	else if (key == GLFW_KEY_D) //d key (right)- camera movement
 	{
 		cam->toggle();
 		Vector3D axis(1, 0, 0);
 		cam->move(axis, 0.2);
+		cam->toggle();
 	}
 	else if (key == GLFW_KEY_S)//s key (down) - camera movement
 	{
 		cam->toggle();
-		Vector3D axis(0, 0, 0);
-		cam->move(axis, -1);
+		Vector3D axis(0, 0, -1);
+		cam->move(axis, 0.2);
+		cam->toggle();
 	}
 	else if (key == GLFW_KEY_W)//w key (up) - camera movement
 	{
 		cam->toggle();
-		Vector3D axis(0, 0, 0);
-		cam->move(axis, 1);
+		Vector3D axis(0, 0, 1);
+		cam->move(axis, 0.2);
+		cam->toggle();
 	}
 	else if (key == GLFW_KEY_ENTER && action == GLFW_PRESS)
 	{
@@ -276,6 +280,32 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 		cout << "deserialize\n";
 		//graph.deserializeScene();
 	}
+}
+
+void myApp::mouseCallback(GLFWwindow* win, double xpos, double ypos) {
+	//todo
+}
+
+
+void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mods) {
+	//todo
+}
+
+
+void myApp::scrollCallback(GLFWwindow* win, double xoffset, double yoffset) {
+	Camera* cam = graph.getCam();
+	cam->toggle();
+	if (yoffset == 1) {
+		cout << "up\n";
+		Vector3D dir(0, 0, 1);
+		cam->move(dir, 1);
+	}
+	else {
+		cout << "down\n";
+		Vector3D dir(0, 0, 1);
+		cam->move(dir, -1);
+	}
+	cam->toggle();
 }
 
 void myApp::update(GLFWwindow *win, double elapsed)

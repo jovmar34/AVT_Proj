@@ -30,6 +30,8 @@ private:
 public:
 	void populateScene();
 	void keyCallback(GLFWwindow* win, int key, int scancode, int action, int mods);
-	void mouseCallback(GLFWwindow* win, double xpos, double ypos) { }
+	void mouseCallback(GLFWwindow* win, double xpos, double ypos);
+	void mouseButtonCallback(GLFWwindow* win, int button, int action, int mods);
+	void scrollCallback(GLFWwindow* win, double xoffset, double yoffset);
 	void update(GLFWwindow* win, double elapsed);
 };

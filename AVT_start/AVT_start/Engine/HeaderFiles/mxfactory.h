@@ -8,6 +8,10 @@
 struct TransformInfo {
 	Matrix4 transform;
 	Matrix4 inverse;
+
+	TransformInfo invert() {
+		return { inverse, transform };
+	}
 };
 
 class MxFactory {

@@ -287,6 +287,7 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 		if (action == GLFW_PRESS) {
 			if (index >= 0xFD) {
 				gizmoActive = true;
+				graph.gizmoActive = true;
 				std::cout << "activate" << std::endl;
 
 
@@ -352,6 +353,7 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 			if (gizmoActive) {
 				std::cout << "deactivate" << std::endl;
 				gizmoActive = false;
+				graph.gizmoActive = false;
 			}
 			else if (index < 0xFD) graph.setSelected(index);
 		}
@@ -367,8 +369,6 @@ void myApp::update(GLFWwindow *win, double elapsed)
 		save_img = false;
 	}
 	if (set_child) {
-		SceneNode *node = graph.getNode("cube");
-		graph.applyTransforms("torus", { {node->inverse, node->transform} });
 		graph.changeParent("torus", "cube");
 		set_child = false;
 	}

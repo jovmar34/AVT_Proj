@@ -15,6 +15,8 @@ struct SceneNode {
 	Material* outline = nullptr;
 	unsigned int id = -1;
 
+	TransformInfo parentInfo = { MxFactory::identity4(), MxFactory::identity4() };
+
 	//Debug thingies
 	std::string name;
 

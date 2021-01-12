@@ -72,6 +72,8 @@ void SceneGraph::describe()
 
 void SceneGraph::drawGizmos(Vector3D pos)
 {
+	if (gizmoActive) return;
+
 	Manager* h = Manager::getInstance();
 	Shader* shader = h->getShader("gizmo_shader");
 	int sign = 1;
@@ -88,6 +90,8 @@ void SceneGraph::drawGizmos(Vector3D pos)
 		rotate = MxFactory::identity4(),
 		scale = MxFactory::scaling4(percentage * Vector3D(1.5,1.5,1.5)),
 		translate = MxFactory::translation4(pos);
+
+	SceneNode* sel = getSelected();
 
 	glDisable(GL_DEPTH_TEST);
 
@@ -107,7 +111,7 @@ void SceneGraph::drawGizmos(Vector3D pos)
 			break;
 		}
 
-		model = translate * rotate * scale;
+		model = sel->parent->getTransformInfo().transform * translate * rotate * scale;
 
 		glStencilFunc(GL_ALWAYS, 0xFF - i, 0xFF); // FF -> y, FF - 1 -> z, FF - 2 -> x
 		glStencilOp(GL_ZERO, GL_KEEP, GL_REPLACE);
@@ -251,11 +255,15 @@ void SceneGraph::draw()
 				curr->mesh->draw();
 				glCullFace(GL_BACK);
 				outline->unbind();
-
-				Vector4D pos = info.transform * Vector4D(0, 0, 0, 1);
-				drawGizmos(pos.to3D());
 			}
 		}
+	}
+
+	if (selected != 0) {
+		SceneNode* curr = getSelected();
+
+		Vector4D pos = curr->transform * Vector4D(0, 0, 0, 1);
+		drawGizmos(pos.to3D());
 	}
 
 	glDisable(GL_STENCIL_TEST);
@@ -336,4 +344,7 @@ void SceneGraph::changeParent(std::string node, std::string newParent)
 	changed->parent = newParentNode;
 	newParentNode->children.push_back(changed);
 
+	TransformInfo parentInfo = { newParentNode->transform, newParentNode->inverse };
+	applyTransforms(node, { parentInfo.invert() });
+	changed->parentInfo = parentInfo;
 }

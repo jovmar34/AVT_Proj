@@ -36,6 +36,8 @@ class SceneGraph {
 	unsigned int selected = 0;
 
 public:
+	bool gizmoActive = false;
+
 	SceneGraph();
 	~SceneGraph();
 

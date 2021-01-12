@@ -45,9 +45,7 @@ void myApp::manipulateGizmo(GLFWwindow* win, double elapsed)
 	else if (type == GizmoType::Scaling) {
 		Vector2D currDir = Vector2D(x - gizmo_x, y - gizmo_y);
 
-		double dot = currDir * screenDir;
-
-		info = MxFactory::scale((Vector3D(1, 1, 1) - world3D) + (world3D * fabs(dot) * scale));
+		info = MxFactory::scale((Vector3D(1, 1, 1) - world3D) + (world3D * fabs(currDir.length()) * scale));
 		graph.setTransforms(name, { info, useful });
 	}
 
@@ -297,10 +295,9 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 					gizmo_x = (center.x + 1) / 2 * width;
 					gizmo_y = height - (center.y + 1) / 2 * height;
 
-					Vector2D vec = Vector2D(xpos - gizmo_x, ypos - gizmo_y);
-					screenDir.normalize();
+					Vector2D currDir = Vector2D(xpos - gizmo_x, ypos - gizmo_y);
 
-					scale = 1.5 / vec.length();
+					scale = 1 / currDir.length();
 				}
 				else {
 					gizmo_x = xpos;

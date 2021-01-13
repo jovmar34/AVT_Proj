@@ -242,34 +242,6 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 			graph.applyTransform("root", rot);
 		}
 	}
-	else if (key == GLFW_KEY_A) //a key (left) - camera movement
-	{
-		cam->toggle();
-		Vector3D axis(-1, 0, 0);
-		cam->move(axis, 0.2);
-		cam->toggle();
-	}
-	else if (key == GLFW_KEY_D) //d key (right)- camera movement
-	{
-		cam->toggle();
-		Vector3D axis(1, 0, 0);
-		cam->move(axis, 0.2);
-		cam->toggle();
-	}
-	else if (key == GLFW_KEY_S)//s key (down) - camera movement
-	{
-		cam->toggle();
-		Vector3D axis(0, 0, -1);
-		cam->move(axis, 0.2);
-		cam->toggle();
-	}
-	else if (key == GLFW_KEY_W)//w key (up) - camera movement
-	{
-		cam->toggle();
-		Vector3D axis(0, 0, 1);
-		cam->move(axis, 0.2);
-		cam->toggle();
-	}
 }
 
 void myApp::mouseCallback(GLFWwindow* win, double xpos, double ypos) {

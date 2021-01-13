@@ -126,3 +126,15 @@ void Camera::drawCamera()
 
 	change = false;
 }
+
+string Camera::projTypeToString() {
+	if (projType == CameraProj::None) {
+		return "None";
+	}
+	else if (projType == CameraProj::Parallel) {
+		return "Parallel";
+	}
+	else {
+		return "Perspective";
+	}
+}

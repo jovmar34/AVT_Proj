@@ -35,6 +35,7 @@ public:
 	void look(double angle_h, double angle_v);
 	void updateView();
 	void toggle();
+	string projTypeToString();
 
 	Matrix4 getView() { return view; }
 	Matrix4 getProjection() { return projection; }

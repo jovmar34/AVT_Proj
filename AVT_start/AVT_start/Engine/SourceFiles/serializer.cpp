@@ -21,7 +21,7 @@ SceneSerializer::~SceneSerializer()
 void SceneSerializer::serializeCamera(std::ofstream& out)
 {
 	//_camera->projType
-	out << "Camera:\n" << "- Type: " << "todo" << "\n- View Matrix: " << _camera->getView().toString() << "\n- Projection Matrix: " << _camera->getProjection().toString() << "\n- InvView Matrix: " << _camera->getInvView().toString() << std::endl;
+	out << "Camera:\n" << "- Type: " << _camera->projTypeToString() << "\n- View Matrix: " << _camera->getView().toString() << "\n- Projection Matrix: " << _camera->getProjection().toString() << "\n- InvView Matrix: " << _camera->getInvView().toString() << std::endl;
 }
 
 void SceneSerializer::serializeNode(SceneNode* node, std::ofstream& out)

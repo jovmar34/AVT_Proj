@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <string>
 #include <cmath>
 #include <cfloat>
 #include <array>
@@ -273,21 +274,15 @@ public:
 		int n = 0;
 		while (n < 16) {
 			if (n >= 4 && n % 4 == 0) {
-				res += "[";
-				res += mat[n];
-				res += " ";
-				n++;
+				res += "[" + std::to_string(mat[n]) + " ";
 			}
 			else if (n % 4 == 3) {
-				res += mat[n];
-				res += "]\n";
-				n++;
+				res += std::to_string(mat[n]) + "]\n";
 			}
 			else {
-				res += mat[n];
-				res += " ";
-				n++;
+				res += std::to_string(mat[n])+ " ";
 			}
+			n++;
 		}
 		return res;
 	}

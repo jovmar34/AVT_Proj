@@ -138,3 +138,12 @@ string Camera::projTypeToString() {
 		return "Perspective";
 	}
 }
+
+string Camera::workingStateToString() {
+	if (state == Working::On) {
+		return "On";
+	}
+	else {
+		return "Off";
+	}
+}

@@ -272,15 +272,19 @@ public:
 	string toString() {
 		string res = "\n[";
 		int n = 0;
+		double sc = 0.01;
 		while (n < 16) {
+			float digit = (int)(mat[n] / sc) * sc;
+			string d = std::to_string(digit);
+			d.erase(d.find_last_not_of('0') + 1, std::string::npos);
 			if (n >= 4 && n % 4 == 0) {
-				res += "[" + std::to_string(mat[n]) + " ";
+				res += "[" + d + " ";
 			}
 			else if (n % 4 == 3) {
-				res += std::to_string(mat[n]) + "]\n";
+				res += d + "]\n";
 			}
 			else {
-				res += std::to_string(mat[n])+ " ";
+				res += d + " ";
 			}
 			n++;
 		}

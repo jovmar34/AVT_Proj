@@ -119,9 +119,11 @@ void myApp::populateScene()
 
 	//cube
 	graph.addChild(test_mat_g, cube_mesh, "cube");
+	graph.getNode("cube")->meshName = "res/meshes/bunny_smooth.obj";
 
 	//cube
 	graph.addChild(test_mat_g, tous_mesh, "torus", MxFactory::translation4(Vector3D(0,0,-5)));
+	graph.getNode("torus")->meshName = "res/meshes/torus.obj";
 }
 
 void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int mods)

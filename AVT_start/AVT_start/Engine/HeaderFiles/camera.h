@@ -36,6 +36,7 @@ public:
 	void updateView();
 	void toggle();
 	string projTypeToString();
+	string workingStateToString();
 
 	Matrix4 getView() { return view; }
 	Matrix4 getProjection() { return projection; }

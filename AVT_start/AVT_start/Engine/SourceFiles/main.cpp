@@ -99,8 +99,9 @@ void window_close_callback(GLFWwindow* win)
 
 void window_size_callback(GLFWwindow* win, int winx, int winy)
 {
-	std::cout << "size: " << winx << " " << winy << std::endl;
-	glViewport(0, 0, winx, winy);
+	int width = winx / 32 * 32, height = width * 9/16;
+	std::cout << "size: " << width << " " << winy << std::endl;
+	glViewport(0, 0, width, height);
 }
 
 void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)

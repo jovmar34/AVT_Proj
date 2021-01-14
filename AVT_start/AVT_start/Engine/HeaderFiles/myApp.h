@@ -10,7 +10,6 @@ private:
 	double speed = 10;
 	bool animate_frame = false;
 	bool animate_cubes = false;
-	bool set_child = false;
 	double t_frame = 0.0f;
 	bool reset_cam = false;
 	bool save_img = false;

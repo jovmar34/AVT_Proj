@@ -328,11 +328,24 @@ SceneNode* SceneGraph::getSelected()
 	return idMap[selected];
 }
 
+void SceneGraph::changeParent(unsigned int newChild)
+{
+	if (selected == 0) return;
+	if (selected == newChild) return;
+
+	if (newChild == 0) changeParent(idMap[selected]->name, "root");
+	else changeParent(idMap[newChild]->name, idMap[selected]->name);
+}
+
 void SceneGraph::changeParent(std::string node, std::string newParent)
 {
+	if (node == newParent) return;
+
 	SceneNode* changed = nameMap[node];
 	SceneNode* origParentNode = changed->parent;
 	SceneNode* newParentNode = nameMap[newParent];
+	
+	if (origParentNode == newParentNode) return;
 
 	if (origParentNode == newParentNode) {
 		std::cout << "same" << std::endl;
@@ -344,7 +357,8 @@ void SceneGraph::changeParent(std::string node, std::string newParent)
 	changed->parent = newParentNode;
 	newParentNode->children.push_back(changed);
 
-	TransformInfo parentInfo = { newParentNode->transform, newParentNode->inverse };
-	applyTransforms(node, { parentInfo.invert() });
-	changed->parentInfo = parentInfo;
+	TransformInfo oldParentInfo = origParentNode->getTransformInfo();
+	TransformInfo newParentInfo = newParentNode->getTransformInfo();
+	applyTransforms(node, { oldParentInfo, newParentInfo.invert() });
+	changed->parentInfo = newParentInfo;
 }

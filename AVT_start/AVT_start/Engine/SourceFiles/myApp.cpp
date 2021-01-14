@@ -66,10 +66,10 @@ void myApp::manipulateGizmo(GLFWwindow* win, double elapsed)
 
 		std::cout << "angle: " << angleDeg << std::endl;
 
-		screenDir = currDir;
+		//screenDir = currDir;
 
 		info = MxFactory::rotate(world3D, angleDeg);
-		graph.applyTransforms(name, { MxFactory::translate(-1 *  pos), info, MxFactory::translate(pos) });
+		graph.setTransforms(name, { info, useful });
 	}
 
 	
@@ -112,8 +112,8 @@ void myApp::walk(GLFWwindow* win, double elapsed)
 		d = (glfwGetKey(win, GLFW_KEY_S) == GLFW_PRESS),
 		u = (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS);
 
-	double xaxis = (double)r - l,
-		yaxis = (double)d - u;
+	double xaxis = (double) r - l,
+		yaxis = (double) d - u;
 
 	if (xaxis != 0 || yaxis != 0) {
 		Vector3D dir = Vector3D(xaxis, 0, yaxis);
@@ -128,8 +128,9 @@ void myApp::save(GLFWwindow* win)
 	int w, h;
 	glfwGetWindowSize(win, &w, &h);
 	
-	GLubyte* pixels = new GLubyte[3 * w * h];
+	GLubyte* pixels = new GLubyte[3 * static_cast<size_t>(w * h)];
 
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 	glReadPixels(0, 0, w, h, GL_BGR, GL_UNSIGNED_BYTE, pixels);
 
 	// Convert to FreeImage format & save to file
@@ -160,8 +161,8 @@ void myApp::populateScene()
 	Manager* h = Manager::getInstance();
 
 	// Meshes
-	Mesh* cube_mesh = h->addMesh("cube_mesh", new Mesh("res/meshes/bunny_smooth.obj"));
-	Mesh* torus_mesh = h->addMesh("torus_mesh", new Mesh("res/meshes/torus.obj"));
+	Mesh* cube_mesh = h->addMesh("cube_mesh", new Mesh("res/meshes/cube_smooth.obj"));
+	//Mesh* torus_mesh = h->addMesh("torus_mesh", new Mesh("res/meshes/torus.obj"));
 
 	// Shaders
 	Shader* blinnphong_shader = h->addShader("blinnphong_shader", new Shader("res/shaders/blinn_phong_vs.glsl", "res/shaders/blinn_phong_fs.glsl"));
@@ -180,8 +181,8 @@ void myApp::populateScene()
 	graph.addChild(gooch_mat, cube_mesh, "cube");
 
 	//torus
-	graph.addChild(blinnphong_mat, torus_mesh, "torus");
-	graph.setTransforms("torus", { MxFactory::translate(Vector3D(0,0,-5)) });
+	//graph.addChild(blinnphong_mat, torus_mesh, "torus");
+	//graph.setTransforms("torus", { MxFactory::translate(Vector3D(0,0,-5)) });
 
 	/* 
 	IMPORTANT - This is a WIP. The grid needs to be the last thing drawn, always because it has transaparency
@@ -248,9 +249,6 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 			break;
 		case GLFW_KEY_I:
 			save_img = true;
-			break;
-		case GLFW_KEY_C:
-			set_child = true;
 			break;
 		case GLFW_KEY_M:
 			add_mesh = true;
@@ -355,7 +353,14 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 				gizmoActive = false;
 				graph.gizmoActive = false;
 			}
-			else if (index < 0xFD) graph.setSelected(index);
+			else if (index < 0xFD) {
+				if (glfwGetKey(win, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+					graph.changeParent(index);
+				}
+				else {
+					graph.setSelected(index);
+				}
+			}
 		}
 	}
 }
@@ -367,10 +372,6 @@ void myApp::update(GLFWwindow *win, double elapsed)
 	if (save_img) {
 		save(win);
 		save_img = false;
-	}
-	if (set_child) {
-		graph.changeParent("torus", "cube");
-		set_child = false;
 	}
 	if (add_mesh) {
 		Manager* h = Manager::getInstance();

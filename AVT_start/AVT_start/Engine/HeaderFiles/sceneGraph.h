@@ -70,6 +70,7 @@ public:
 	SceneNode* getNode(std::string name);
 	SceneNode* getSelected();
 	
+	void changeParent(unsigned int newChild);
 	void changeParent(std::string node, std::string newParent);
 
 	// Debug

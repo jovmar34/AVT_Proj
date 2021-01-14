@@ -24,9 +24,17 @@ Node:
 - Name: root
 - Children: 2
 - Material:
-	- Shaders: TODO
-	- Uniforms: TODO
-- Mesh: None
+	- Name: None
+	- Texture:
+		- Filepath: TODO
+	- Shaders:
+		- Name: None
+		- Vertex Shader Filepath: None
+		- Fragment Shader Filepath: None
+	- Outline: 0000000000000000
+- Mesh: 
+	- Name: None
+	- Filepath: None
 - Transformation: 
 [1. 0. 0. 0.]
 [0. 1. 0. 0.]
@@ -37,22 +45,38 @@ Node:
 - Name: root::cube
 - Children: 0
 - Material:
-	- Shaders: TODO
-	- Uniforms: TODO
-- Mesh: res/meshes/bunny_smooth.obj
+	- Name: test_mat_g
+	- Texture:
+		- Filepath: TODO
+	- Shaders:
+		- Name: blinn_phong_shader
+		- Vertex Shader Filepath: res/shaders/blinn_phong_vs.glsl
+		- Fragment Shader Filepath: res/shaders/blinn_phong_fs.glsl
+	- Outline: 0000000000000000
+- Mesh: 
+	- Name: cube_mesh
+	- Filepath: res/meshes/bunny_smooth.obj
 - Transformation: 
-[0.67 0. -0.73 0.]
+[0.66 0. -0.74 0.]
 [0. 1. 0. 0.]
-[0.73 0. 0.67 0.]
+[0.74 0. 0.66 0.]
 [0. 0. 0. 1.]
 
 Node:
 - Name: root::torus
 - Children: 0
 - Material:
-	- Shaders: TODO
-	- Uniforms: TODO
-- Mesh: res/meshes/torus.obj
+	- Name: test_mat_g
+	- Texture:
+		- Filepath: TODO
+	- Shaders:
+		- Name: blinn_phong_shader
+		- Vertex Shader Filepath: res/shaders/blinn_phong_vs.glsl
+		- Fragment Shader Filepath: res/shaders/blinn_phong_fs.glsl
+	- Outline: 0000000000000000
+- Mesh: 
+	- Name: torus_mesh
+	- Filepath: res/meshes/torus.obj
 - Transformation: 
 [1. 0. 0. 0.]
 [0. 1. 0. 0.]

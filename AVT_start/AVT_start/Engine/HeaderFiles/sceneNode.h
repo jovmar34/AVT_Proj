@@ -16,8 +16,12 @@ struct SceneNode {
 
 	//Debug thingies
 	std::string name;
+	std::string meshFile = "None";
 	std::string meshName = "None";
 	std::string materialName = "None";
+	std::string shaderName = "None";
+	std::string vertexShaderFile = "None";
+	std::string fragmentShaderFile = "None";
 
 	std::string getName();
 	Matrix4 getTransform();

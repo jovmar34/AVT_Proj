@@ -25,7 +25,12 @@ void SceneSerializer::serializeCamera(std::ofstream& out)
 
 void SceneSerializer::serializeNode(SceneNode* node, std::ofstream& out)
 {
-	out << "Node:\n" << "- Name: " << node->getName() << "\n- Children: " << node->children.size() << "\n- Material:" << "\n\t- Shaders: TODO\n\t- Uniforms: TODO" << "\n- Mesh: " << node->meshName << "\n- Transformation: " << node->getTransform().toString() << std::endl;
+	out << "Node:\n" << "- Name: " << node->getName() << "\n- Children: " << node->children.size() 
+		<< "\n- Material:" << "\n\t- Name: " << node->materialName << "\n\t- Texture:\n\t\t- Filepath: TODO"
+		<< "\n\t- Shaders:\n\t\t- Name: " << node->shaderName << "\n\t\t- Vertex Shader Filepath: " << node->vertexShaderFile << "\n\t\t- Fragment Shader Filepath: " << node->fragmentShaderFile
+		<< "\n\t- Outline: " << node->outline
+		<< "\n- Mesh: \n\t- Name: "<< node->meshName <<"\n\t- Filepath: " << node->meshFile 
+		<< "\n- Transformation: " << node->getTransform().toString() << std::endl;
 	SceneNode* n;
 	for (int i = 0; i < node->children.size(); i++) {
 		n = node->children[i];
@@ -38,7 +43,12 @@ void SceneSerializer::serialize(const std::string& filepath)
 	SceneNode* n;
 	std::ofstream file(filepath);
 	serializeCamera(file);
-	file << "Node:\n" << "- Name: " << _parent->getName() << "\n- Children: " << _parent->children.size() << "\n- Material:" << "\n\t- Shaders: TODO\n\t- Uniforms: TODO" << "\n- Mesh: " << _parent->meshName << "\n- Transformation: " << _parent->getTransform().toString() << std::endl;
+	file << "Node:\n" << "- Name: " << _parent->getName() << "\n- Children: " << _parent->children.size() 
+		<< "\n- Material:" << "\n\t- Name: " << _parent->materialName << "\n\t- Texture:\n\t\t- Filepath: TODO" 
+		<< "\n\t- Shaders:\n\t\t- Name: " << _parent->shaderName << "\n\t\t- Vertex Shader Filepath: " << _parent->vertexShaderFile << "\n\t\t- Fragment Shader Filepath: " << _parent->fragmentShaderFile
+		<< "\n\t- Outline: " << _parent->outline
+		<< "\n- Mesh: \n\t- Name: " << _parent->meshName << "\n\t- Filepath: " << _parent->meshFile 
+		<< "\n- Transformation: " << _parent->getTransform().toString() << std::endl;
 
 	for (int i = 0; i < _parent->children.size(); i++) {
 		n = _parent->children[i];

@@ -119,11 +119,21 @@ void myApp::populateScene()
 
 	//cube
 	graph.addChild(test_mat_g, cube_mesh, "cube");
-	graph.getNode("cube")->meshName = "res/meshes/bunny_smooth.obj";
+	graph.getNode("cube")->meshName = "cube_mesh";
+	graph.getNode("cube")->meshFile = "res/meshes/bunny_smooth.obj";
+	graph.getNode("cube")->materialName = "test_mat_g";
+	graph.getNode("cube")->shaderName = "blinn_phong_shader";
+	graph.getNode("cube")->vertexShaderFile = "res/shaders/blinn_phong_vs.glsl";
+	graph.getNode("cube")->fragmentShaderFile = "res/shaders/blinn_phong_fs.glsl";
 
-	//cube
+	//torus
 	graph.addChild(test_mat_g, tous_mesh, "torus", MxFactory::translation4(Vector3D(0,0,-5)));
-	graph.getNode("torus")->meshName = "res/meshes/torus.obj";
+	graph.getNode("torus")->meshName = "torus_mesh";
+	graph.getNode("torus")->meshFile = "res/meshes/torus.obj";
+	graph.getNode("torus")->materialName = "test_mat_g";
+	graph.getNode("torus")->shaderName = "blinn_phong_shader";
+	graph.getNode("torus")->vertexShaderFile = "res/shaders/blinn_phong_vs.glsl";
+	graph.getNode("torus")->fragmentShaderFile = "res/shaders/blinn_phong_fs.glsl";
 }
 
 void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int mods)

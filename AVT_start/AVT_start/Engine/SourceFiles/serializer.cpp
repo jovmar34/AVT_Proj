@@ -26,13 +26,35 @@ void SceneSerializer::serializeCamera(std::ofstream& out)
 
 void SceneSerializer::serializeManager(std::ofstream& out)
 {
-	std::unordered_map<std::string, Shader*> shaders = _manager->getShaders();
-	std::unordered_map<std::string, Shader*>::iterator it;
+	out << "Manager:\n";
 
-	for (it = shaders.begin(); it != shaders.end(); it++)
+	std::unordered_map<std::string, Shader*> shaders = _manager->getShaders();
+	std::unordered_map<std::string, Shader*>::iterator itShaders;
+	std::unordered_map<std::string, Mesh*> meshes = _manager->getMeshes();
+	std::unordered_map<std::string, Mesh*>::iterator itMeshes;
+	std::unordered_map<std::string, Texture*> textures = _manager->getTextures();
+	std::unordered_map<std::string, Texture*>::iterator itTextures;
+
+	for (itShaders = shaders.begin(); itShaders != shaders.end(); itShaders++)
 	{
-		out << "Shader:\n" << "- Name: " << it->first << "\n- Filepath: " << _manager->getShader(it->first) << std::endl;
+		std::string name = itShaders->first;
+		out << "- Shader:\n\t- Name: " << name << "\n\t- Vertex Shader Filepath: " << _manager->getShader(name)->vertexShaderFilepath << "\n\t- Fragment Shader Filepath: " << _manager->getShader(name)->fragmentShaderFilepath << std::endl;
 	}
+
+	for (itMeshes = meshes.begin(); itMeshes != meshes.end(); itMeshes++)
+	{
+		std::string name = itMeshes->first;
+		out << "- Mesh:\n\t- Name: " << name << "\n\t- Filepath: " << _manager->getMesh(name)->file_path << std::endl;
+	}
+
+	for (itTextures = textures.begin(); itTextures != textures.end(); itTextures++)
+	{
+		std::string name = itTextures->first;
+		out << "- Texture:\n\t- Name: " << name << "\n\t- Filepath: " << _manager->getTexture(name)->file_path << std::endl;
+	}
+
+	//materials é diferente - todo
+
 }
 
 void SceneSerializer::serializeNode(SceneNode* node, std::ofstream& out)

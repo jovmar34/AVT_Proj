@@ -20,9 +20,17 @@ Camera:
 [0.57 0.57 0.57 0.]
 [8. 8. 8. 1.]
 
-Shader:
-- Name: blinn_phong_shader
-- Filepath: 000001A0B851C370
+Manager:
+- Shader:
+	- Name: blinn_phong_shader
+	- Vertex Shader Filepath: res/shaders/blinn_phong_vs.glsl
+	- Fragment Shader Filepath: res/shaders/blinn_phong_fs.glsl
+- Mesh:
+	- Name: cube_mesh
+	- Filepath: res/meshes/bunny_smooth.obj
+- Mesh:
+	- Name: torus_mesh
+	- Filepath: res/meshes/torus.obj
 Node:
 - Name: root
 - Children: 2
@@ -62,9 +70,9 @@ Node:
 	- Name: cube_mesh
 	- Filepath: res/meshes/bunny_smooth.obj
 - Transformation: 
-[0.75 0. -0.65 0.]
+[0.77 0. -0.63 0.]
 [0. 1. 0. 0.]
-[0.65 0. 0.75 0.]
+[0.63 0. 0.77 0.]
 [0. 0. 0. 1.]
 
 Node:

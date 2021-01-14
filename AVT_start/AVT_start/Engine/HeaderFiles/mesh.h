@@ -21,6 +21,7 @@ public:
 	VertexBuffer *posbuf, *uvbuf, *normbuf;
 	IndexBuffer* indbuf;
 	std::string name = "None";
+	std::string file_path = "None";
 
 	Mesh(const std::string& n, std::string path);
 

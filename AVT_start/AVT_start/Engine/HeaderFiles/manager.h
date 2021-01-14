@@ -76,6 +76,18 @@ public:
 		return shaders;
 	}
 
+	std::unordered_map<std::string, Mesh*> getMeshes() {
+		return meshes;
+	}
+
+	std::unordered_map<std::string, Texture*> getTextures() {
+		return textures;
+	}
+
+	std::unordered_map<std::string, Material*> getMaterials() {
+		return materials;
+	}
+
 	int getShadersSize() {
 		return shaders.size();
 	}

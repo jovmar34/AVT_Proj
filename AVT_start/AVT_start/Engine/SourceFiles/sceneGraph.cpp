@@ -194,7 +194,7 @@ void SceneGraph::changeParent(std::string node, std::string newParent)
 
 }
 
-void SceneGraph::serializeScene(Camera* cam, const std::string& filepath) {
-	SceneSerializer ss = SceneSerializer(cam, root);
+void SceneGraph::serializeScene(Camera* cam, Manager* man, const std::string& filepath) {
+	SceneSerializer ss = SceneSerializer(cam, man, root);
 	ss.serialize(filepath);
 }

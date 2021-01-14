@@ -11,19 +11,22 @@
 class SceneSerializer {
 private:
 	Camera* _camera;
+	Manager* _manager;
 	SceneNode* _parent;
 
 public:
-	SceneSerializer(Camera* cam, SceneNode* par);
+	SceneSerializer(Camera* cam, Manager* man, SceneNode* par);
 	SceneSerializer(SceneNode* par);
 	SceneSerializer(Camera* cam);
 	SceneSerializer();
 	~SceneSerializer();
 
 	void setCamera(Camera* cam) { _camera = cam; }
+	void setManager(Manager* man) { _manager = man; }
 	void setParent(SceneNode* par) { _parent = par; }
 
 	void serializeCamera(std::ofstream& out);
+	void serializeManager(std::ofstream& out);
 	void serializeNode(SceneNode* node, std::ofstream& out);
 	void serialize(const std::string& filepath);
 	void deserialize(const std::string& filepath);

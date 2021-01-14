@@ -72,6 +72,26 @@ public:
 		return materials[name];
 	}
 
+	std::unordered_map<std::string, Shader*> getShaders() {
+		return shaders;
+	}
+
+	int getShadersSize() {
+		return shaders.size();
+	}
+
+	int getMeshesSize() {
+		return meshes.size();
+	}
+
+	int getTexturesSize() {
+		return textures.size();
+	}
+
+	int getMaterialsSize() {
+		return materials.size();
+	}
+
 	void init() {
 		for (auto mesh_entry : meshes) {
 			mesh_entry.second->init();

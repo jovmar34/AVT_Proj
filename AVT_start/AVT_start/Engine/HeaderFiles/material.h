@@ -11,7 +11,6 @@ class Material {
 private:
 	
 	Shader* shader;
-
 	std::map<int, Texture*> textures;
 	
 	unordered_map<std::string, Vector4D>	vals_Vec4;

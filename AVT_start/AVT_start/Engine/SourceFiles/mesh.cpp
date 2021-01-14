@@ -1,6 +1,6 @@
 #include "..\HeaderFiles\Mesh.h"
 
-Mesh::Mesh(std::string path)
+Mesh::Mesh(const std::string& n, std::string path)
 	: posbuf(nullptr), uvbuf(nullptr), normbuf(nullptr), indbuf(nullptr), va(nullptr)
 {
 	ObjLoader c_loader;

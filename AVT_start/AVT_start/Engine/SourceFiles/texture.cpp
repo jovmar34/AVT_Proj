@@ -20,8 +20,8 @@ bool GLLogcall(const char* function, const char* file, int line)
 	return true;
 }
 
-Texture::Texture(const std::string& path)
-	: renderer_ID(0), file_path(path), local_buffer(nullptr), width(0), height(0), bpp(0)
+Texture::Texture(const std::string& n, const std::string& path)
+	: renderer_ID(0), name(n), file_path(path), local_buffer(nullptr), width(0), height(0), bpp(0)
 {
 	stbi_set_flip_vertically_on_load(1);
 	local_buffer = stbi_load(path.c_str(), &width, &height, &bpp, 4);

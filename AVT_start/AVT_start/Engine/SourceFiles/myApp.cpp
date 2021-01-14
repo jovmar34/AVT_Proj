@@ -97,7 +97,7 @@ void myApp::populateScene()
 	graph.setCamera(cam);
 	
 	// Outline
-	Shader* outline_shader = new Shader("res/shaders/outline_vs.glsl", "res/shaders/outline_fs.glsl");
+	Shader* outline_shader = new Shader("outline", "res/shaders/outline_vs.glsl", "res/shaders/outline_fs.glsl");
 	outline_shader->addUniformBlock("Matrices", 0);
 	Material* outline_material = new Material(outline_shader);
 	graph.setOutline(outline_material);
@@ -106,11 +106,11 @@ void myApp::populateScene()
 	Manager* h = Manager::getInstance();
 
 	// Meshes
-	Mesh* cube_mesh = h->addMesh("cube_mesh", new Mesh("res/meshes/bunny_smooth.obj"));
-	Mesh* tous_mesh = h->addMesh("torus_mesh", new Mesh("res/meshes/torus.obj"));
+	Mesh* cube_mesh = h->addMesh("cube_mesh", new Mesh("cube_mesh", "res/meshes/bunny_smooth.obj"));
+	Mesh* tous_mesh = h->addMesh("torus_mesh", new Mesh("torus_mesh", "res/meshes/torus.obj"));
 
 	// Shaders
-	Shader* blinn_phong_shader = h->addShader("blinn_phong_shader", new Shader("res/shaders/blinn_phong_vs.glsl", "res/shaders/blinn_phong_fs.glsl"));
+	Shader* blinn_phong_shader = h->addShader("blinn_phong_shader", new Shader("blinn_phong_shader", "res/shaders/blinn_phong_vs.glsl", "res/shaders/blinn_phong_fs.glsl"));
 	blinn_phong_shader->addUniformBlock("Matrices", 0);
 
 	// Materials 
@@ -189,8 +189,9 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 			sprint_factor = 3;
 			break;
 		case GLFW_KEY_ENTER: { //save a scene
+			Manager* h = Manager::getInstance();
 			const std::string path = "res/scenes/scene.txt";
-			graph.serializeScene(cam, path);
+			graph.serializeScene(cam, h, path);
 			cout << "serialize\n";
 			break;
 		}
@@ -333,7 +334,7 @@ void myApp::update(GLFWwindow *win, double elapsed)
 	}
 	if (add_mesh) {
 		Manager* h = Manager::getInstance();
-		Mesh* mesh = h->addMesh("new_mesh", new Mesh("res/meshes/smooth.obj"));
+		Mesh* mesh = h->addMesh("new_mesh", new Mesh("new_mesh", "res/meshes/smooth.obj"));
 		mesh->init();
 
 		Material* material = h->getMaterial("test_mat_g");
@@ -346,16 +347,18 @@ void myApp::update(GLFWwindow *win, double elapsed)
 		Manager* h = Manager::getInstance();
 		SceneNode* node = graph.getNode("cube");
 
-		Shader* toon_shader = h->addShader("toon_shader", new Shader("res/shaders/toon_vs.glsl", "res/shaders/toon_fs.glsl"));
+		Shader* toon_shader = h->addShader("toon_shader", new Shader("toon_shader", "res/shaders/toon_vs.glsl", "res/shaders/toon_fs.glsl"));
 		toon_shader->addUniformBlock("Matrices", 0);
 
-		Texture* toon_ramp_texture = h->addTexture("toon_ramp_texture", new Texture("res/textures/toon_ramp_texture.png"));
+		Texture* toon_ramp_texture = h->addTexture("toon_ramp_texture", new Texture("toon_ramp_texture", "res/textures/toon_ramp_texture.png"));
 
 		Material* test_mat_b = h->addMaterial("test_mat_b", new Material(toon_shader));
 		test_mat_b->setUniformVec3("u_AlbedoColor", Vector3D(0, 0, 1));
 		test_mat_b->setTexture(toon_ramp_texture);
 
 		node->material = test_mat_b;
+		node->textureName = "toon_ramp_texture";
+		node->textureFile = "res/textures/toon_ramp_texture.png";
 		new_mat = false;
 	}
 }

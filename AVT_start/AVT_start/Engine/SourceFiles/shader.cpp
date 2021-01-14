@@ -49,8 +49,9 @@ GLuint Shader::getUniformLocation(std::string name)
 	return uniforms[name];
 }
 
-Shader::Shader(const std::string vertexFile, const std::string fragmentFile) : programId(0)
+Shader::Shader(const std::string& n, const std::string vertexFile, const std::string fragmentFile) : programId(0)
 {
+	name = n;
 	std::string vShader = Shader::parseShader(vertexFile),
 		fShader = Shader::parseShader(fragmentFile);
 

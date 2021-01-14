@@ -20,8 +20,9 @@ public:
 	LoaderInfo vertices;
 	VertexBuffer *posbuf, *uvbuf, *normbuf;
 	IndexBuffer* indbuf;
+	std::string name = "None";
 
-	Mesh(std::string path);
+	Mesh(const std::string& n, std::string path);
 
 	~Mesh();
 

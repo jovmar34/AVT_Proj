@@ -11,12 +11,13 @@ class Shader {
 private:
 	GLuint programId;
 	unordered_map<std::string, GLuint> uniforms;
+	std::string name = "None";
 
 	static std::string parseShader(const std::string filename);
 	static GLuint compileShader(GLuint type, const std::string& source);
 	GLuint getUniformLocation(std::string name);
 public:
-	Shader(const std::string vertexFile, const std::string fragmentFile);
+	Shader(const std::string& n, const std::string vertexFile, const std::string fragmentFile);
 	~Shader();
 
 	void bind();

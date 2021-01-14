@@ -20,13 +20,17 @@ Camera:
 [0.57 0.57 0.57 0.]
 [8. 8. 8. 1.]
 
+Shader:
+- Name: blinn_phong_shader
+- Filepath: 000001A0B851C370
 Node:
 - Name: root
 - Children: 2
 - Material:
 	- Name: None
 	- Texture:
-		- Filepath: TODO
+		- Name: None
+		- FilePath: None
 	- Shaders:
 		- Name: None
 		- Vertex Shader Filepath: None
@@ -47,7 +51,8 @@ Node:
 - Material:
 	- Name: test_mat_g
 	- Texture:
-		- Filepath: TODO
+		- Name: None
+		- FilePath: None
 	- Shaders:
 		- Name: blinn_phong_shader
 		- Vertex Shader Filepath: res/shaders/blinn_phong_vs.glsl
@@ -57,9 +62,9 @@ Node:
 	- Name: cube_mesh
 	- Filepath: res/meshes/bunny_smooth.obj
 - Transformation: 
-[0.66 0. -0.74 0.]
+[0.75 0. -0.65 0.]
 [0. 1. 0. 0.]
-[0.74 0. 0.66 0.]
+[0.65 0. 0.75 0.]
 [0. 0. 0. 1.]
 
 Node:
@@ -68,7 +73,8 @@ Node:
 - Material:
 	- Name: test_mat_g
 	- Texture:
-		- Filepath: TODO
+		- Name: None
+		- FilePath: None
 	- Shaders:
 		- Name: blinn_phong_shader
 		- Vertex Shader Filepath: res/shaders/blinn_phong_vs.glsl

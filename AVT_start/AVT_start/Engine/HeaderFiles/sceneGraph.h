@@ -15,6 +15,7 @@
 #include "object.h"
 #include "shader.h"
 #include "sceneNode.h"
+#include "manager.h"
 #include "serializer.h"
 
 class SceneGraph {
@@ -53,5 +54,5 @@ public:
 	// Debug
 	void describe();
 
-	void serializeScene(Camera* cam, const std::string& filepath);
+	void serializeScene(Camera* cam, Manager* man, const std::string& filepath);
 };

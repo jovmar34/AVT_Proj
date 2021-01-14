@@ -22,6 +22,8 @@ struct SceneNode {
 	std::string shaderName = "None";
 	std::string vertexShaderFile = "None";
 	std::string fragmentShaderFile = "None";
+	std::string textureName = "None";
+	std::string textureFile = "None";
 
 	std::string getName();
 	Matrix4 getTransform();

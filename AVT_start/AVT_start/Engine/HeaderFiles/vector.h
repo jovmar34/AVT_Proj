@@ -29,6 +29,7 @@ public:
 	double		length();
 	double		quadrance();
 	Vector2D&	normalize();
+	std::string toString();
 
 	// Vector assignment, addition and subtraction
 	Vector2D operator=		(const Vector2D& v);
@@ -113,6 +114,7 @@ public:
 	double length();
 	double quadrance();
 	Vector3D& normalize();
+	std::string toString();
 
 	// Vector assignment, addition and subtraction
 	Vector3D operator=		(const Vector3D& v);
@@ -202,6 +204,7 @@ public:
 	double		length();
 	double		quadrance();
 	Vector4D&	normalize();
+	std::string toString();
 
 	// Vector assignment, addition and subtraction
 	Vector4D operator=		(const Vector4D& v);

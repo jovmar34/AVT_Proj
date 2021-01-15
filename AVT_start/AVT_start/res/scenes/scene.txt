@@ -40,7 +40,7 @@ Manager:
 
 		 - Vector3D:
 			- Name: u_AlbedoColor
-			- Values: TODO
+			- Values: (0., 1., 0.)
 		 - Vector2D:
 		 - Matrix4:
 		 - 1int:
@@ -85,9 +85,9 @@ Node:
 	- Name: cube_mesh
 	- Filepath: res/meshes/bunny_smooth.obj
 - Transformation: 
-[0.66 0. -0.74 0.]
+[-0.23 0. -0.97 0.]
 [0. 1. 0. 0.]
-[0.74 0. 0.66 0.]
+[0.97 0. -0.23 0.]
 [0. 0. 0. 1.]
 
 Node:

@@ -1,5 +1,6 @@
 #include "../HeaderFiles/vector.h"
 #include <cmath>
+#include <string>
 
 // ================================== VECTOR 2D =====================================
 
@@ -29,6 +30,18 @@ Vector2D& Vector2D::normalize()
 	double l = 1.0 / len;
 	x *= l; y *= l;
 	return *this;
+}
+
+std::string Vector2D::toString() {
+	double sc = 0.01;
+	float new_x = (int)(x / sc) * sc;
+	float new_y = (int)(y / sc) * sc;
+	string final_x = std::to_string(new_x);
+	string final_y = std::to_string(new_y);
+	final_x.erase(final_x.find_last_not_of('0') + 1, std::string::npos);
+	final_y.erase(final_y.find_last_not_of('0') + 1, std::string::npos);
+	std::string res = "(" + final_x + ", " + final_y + ")";
+	return res;
 }
 
 // Vector assignment, addition and subtraction
@@ -182,6 +195,21 @@ Vector3D& Vector3D::normalize()
 	double l = 1 / len;
 	x *= l; y *= l; z *= l;
 	return *this;
+}
+
+std::string Vector3D::toString() {
+	double sc = 0.01;
+	float new_x = (int)(x / sc) * sc;
+	float new_y = (int)(y / sc) * sc;
+	float new_z = (int)(z / sc) * sc;
+	string final_x = std::to_string(new_x);
+	string final_y = std::to_string(new_y);
+	string final_z = std::to_string(new_z);
+	final_x.erase(final_x.find_last_not_of('0') + 1, std::string::npos);
+	final_y.erase(final_y.find_last_not_of('0') + 1, std::string::npos);
+	final_z.erase(final_z.find_last_not_of('0') + 1, std::string::npos);
+	std::string res = "(" + final_x + ", " + final_y + ", "+ final_z + ")";
+	return res;
 }
 
 // Vector assignment, addition and subtraction
@@ -349,6 +377,24 @@ Vector4D& Vector4D::normalize()
 	double l = 1 / len;
 	x *= l; y *= l; z *= l;
 	return *this;
+}
+
+std::string Vector4D::toString() {
+	double sc = 0.01;
+	float new_x = (int)(x / sc) * sc;
+	float new_y = (int)(y / sc) * sc;
+	float new_z = (int)(z / sc) * sc;
+	float new_w = (int)(w / sc) * sc;
+	string final_x = std::to_string(new_x);
+	string final_y = std::to_string(new_y);
+	string final_z = std::to_string(new_z);
+	string final_w = std::to_string(new_w);
+	final_x.erase(final_x.find_last_not_of('0') + 1, std::string::npos);
+	final_y.erase(final_y.find_last_not_of('0') + 1, std::string::npos);
+	final_z.erase(final_z.find_last_not_of('0') + 1, std::string::npos);
+	final_w.erase(final_w.find_last_not_of('0') + 1, std::string::npos);
+	std::string res = "(" + final_x + ", " + final_y + ", " + final_z + ", " + final_w + ")";
+	return res;
 }
 
 // Vector assignment, addition and subtraction

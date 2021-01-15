@@ -80,21 +80,21 @@ void SceneSerializer::serializeManager(std::ofstream& out)
 		//Uniforms4D
 		for (itUniformsV4 = vals_Vec4.begin(); itUniformsV4 != vals_Vec4.end(); itUniformsV4++) 
 		{
-			out << "\t\t\t- Name: " << itUniformsV4->first << "\n\t\t\t- Values: TODO" << std::endl;
+			out << "\t\t\t- Name: " << itUniformsV4->first << "\n\t\t\t- Values: " << itUniformsV4->second.toString() << std::endl;
 		}
 
 		//Uniforms3D
 		out << "\t\t - Vector3D:\n";
 		for (itUniformsV3 = vals_Vec3.begin(); itUniformsV3 != vals_Vec3.end(); itUniformsV3++)
 		{
-			out << "\t\t\t- Name: " << itUniformsV3->first << "\n\t\t\t- Values: TODO" << std::endl;
+			out << "\t\t\t- Name: " << itUniformsV3->first << "\n\t\t\t- Values: " << itUniformsV3->second.toString() << std::endl;
 		}
 
 		//Uniforms2D
 		out << "\t\t - Vector2D:\n";
 		for (itUniformsV2 = vals_Vec2.begin(); itUniformsV2 != vals_Vec2.end(); itUniformsV2++)
 		{
-			out << "\t\t\t- Name: " << itUniformsV2->first << "\n\t\t\t- Values: TODO" << std::endl;
+			out << "\t\t\t- Name: " << itUniformsV2->first << "\n\t\t\t- Values: " << itUniformsV2->second.toString() << std::endl;
 		}
 
 		//UniformsM4

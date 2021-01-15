@@ -1,3 +1,4 @@
+--- Camera ---
 Camera:
 - Type: Perspective
 - Eye, Center, Up: (8,8,8), (0,0,0), (0,1,0)
@@ -20,6 +21,7 @@ Camera:
 [0.57 0.57 0.57 0.]
 [8. 8. 8. 1.]
 
+--- Manager ---
 Manager:
 - Shader:
 	- Name: blinn_phong_shader
@@ -31,6 +33,19 @@ Manager:
 - Mesh:
 	- Name: torus_mesh
 	- Filepath: res/meshes/torus.obj
+- Material:
+	- Name: test_mat_g
+	- Uniforms:
+		- Vector4D:
+
+		 - Vector3D:
+			- Name: u_AlbedoColor
+			- Values: TODO
+		 - Vector2D:
+		 - Matrix4:
+		 - 1int:
+		 - 1float:
+--- Graph ---
 Node:
 - Name: root
 - Children: 2
@@ -70,9 +85,9 @@ Node:
 	- Name: cube_mesh
 	- Filepath: res/meshes/bunny_smooth.obj
 - Transformation: 
-[0.77 0. -0.63 0.]
+[0.66 0. -0.74 0.]
 [0. 1. 0. 0.]
-[0.63 0. 0.77 0.]
+[0.74 0. 0.66 0.]
 [0. 0. 0. 1.]
 
 Node:

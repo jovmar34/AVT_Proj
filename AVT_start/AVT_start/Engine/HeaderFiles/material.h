@@ -33,6 +33,14 @@ public:
 	void unbind();
 
 	// Uniforms
+	unordered_map<std::string, Vector4D> getValsVec4() { return vals_Vec4; }
+	unordered_map<std::string, Vector3D> getValsVec3() { return vals_Vec3; }
+	unordered_map<std::string, Vector2D> getValsVec2() { return vals_Vec2; }
+	unordered_map<std::string, Matrix4> getValsMat4() { return vals_Mat4; }
+	unordered_map<std::string, int> getVals1int() { return vals_1int; }
+	unordered_map<std::string, float> getVals1float() { return vals_1float; }
+
+
 	void setUniformVec4(std::string uniformName, Vector4D vec);
 	void setUniformVec3(std::string uniformName, Vector3D vec);
 	void setUniformVec2(std::string uniformName, Vector2D vec);

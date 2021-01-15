@@ -135,7 +135,7 @@ void myApp::save(GLFWwindow* win)
 
 	// Convert to FreeImage format & save to file
 	FIBITMAP* image = FreeImage_ConvertFromRawBits(pixels, w, h, 3 * w, 24, 0x0000FF, 0xFF0000, 0x00FF00, false);
-	FreeImage_Save(FIF_BMP, image, "test.bmp", 0);
+	FreeImage_Save(FIF_PNG, image, "test.png", 0);
 
 	// Free resources
 	FreeImage_Unload(image);

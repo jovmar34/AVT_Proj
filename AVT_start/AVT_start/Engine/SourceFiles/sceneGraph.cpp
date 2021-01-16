@@ -70,8 +70,12 @@ void SceneGraph::describe()
 	}
 }
 
-void SceneGraph::drawGizmos(Vector3D pos)
+void SceneGraph::drawGizmos()
 {
+	SceneNode* sel = getSelected();
+	Vector3D absPos = (sel->getTransformInfo().transform * Vector4D(0, 0, 0, 1)).to3D(),
+		relPos = (sel->transform * Vector4D(0, 0, 0, 1)).to3D();
+
 	if (gizmoActive) return;
 
 	Manager* h = Manager::getInstance();
@@ -85,13 +89,12 @@ void SceneGraph::drawGizmos(Vector3D pos)
 	if (gizmoType == GizmoType::Scaling) mesh = h->getMesh("scale_gizmo");
 
 	Vector3D color;
-	double percentage = (cam->eye - pos).length() / dist;
+	double percentage = (cam->eye - absPos).length() / dist;
 	Matrix4 model,
 		rotate = MxFactory::identity4(),
 		scale = MxFactory::scaling4(percentage * Vector3D(1.5,1.5,1.5)),
-		translate = MxFactory::translation4(pos);
+		translate = MxFactory::translation4(relPos);
 
-	SceneNode* sel = getSelected();
 
 	glDisable(GL_DEPTH_TEST);
 
@@ -237,7 +240,7 @@ void SceneGraph::draw()
 
 			TransformInfo info = curr->getTransformInfo();
 			Matrix3 transpinv = info.inverse.transpose().decrease();
-			curr->material->update(info.transform, invTransView * transpinv); // FIXME: sceneNode remove getNormal
+			curr->material->update(info.transform, invTransView * transpinv); 
 
 			glStencilFunc(GL_ALWAYS, curr->id, 0xFF);
 			glStencilOp(GL_ZERO, GL_KEEP, GL_REPLACE);
@@ -260,10 +263,7 @@ void SceneGraph::draw()
 	}
 
 	if (selected != 0) {
-		SceneNode* curr = getSelected();
-
-		Vector4D pos = curr->transform * Vector4D(0, 0, 0, 1);
-		drawGizmos(pos.to3D());
+		drawGizmos();
 	}
 
 	glDisable(GL_STENCIL_TEST);
@@ -344,21 +344,26 @@ void SceneGraph::changeParent(std::string node, std::string newParent)
 	SceneNode* changed = nameMap[node];
 	SceneNode* origParentNode = changed->parent;
 	SceneNode* newParentNode = nameMap[newParent];
-	
-	if (origParentNode == newParentNode) return;
 
 	if (origParentNode == newParentNode) {
 		std::cout << "same" << std::endl;
 		return;
 	}
 
-	origParentNode->children.erase(std::remove(origParentNode->children.begin(), origParentNode->children.end(), changed), origParentNode->children.end());
+	if (changed == newParentNode->parent) {
+		std::cout << "parent-child switch" << std::endl;
+		return;
+	}
 	
+	TransformInfo newParentInfo = newParentNode->getTransformInfo();
+	std::cout << "new: " << newParentInfo.transform << std::endl;
+
+	setTransforms(node, { changed->getTransformInfo(), newParentInfo.invert() });
+
+	origParentNode->children.erase(std::remove(origParentNode->children.begin(), origParentNode->children.end(), changed), origParentNode->children.end());
+
 	changed->parent = newParentNode;
 	newParentNode->children.push_back(changed);
 
-	TransformInfo oldParentInfo = origParentNode->getTransformInfo();
-	TransformInfo newParentInfo = newParentNode->getTransformInfo();
-	applyTransforms(node, { oldParentInfo, newParentInfo.invert() });
 	changed->parentInfo = newParentInfo;
 }

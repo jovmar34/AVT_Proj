@@ -66,10 +66,11 @@ void myApp::manipulateGizmo(GLFWwindow* win, double elapsed)
 
 		std::cout << "angle: " << angleDeg << std::endl;
 
-		//screenDir = currDir;
+		screenDir = currDir;
 
 		info = MxFactory::rotate(world3D, angleDeg);
-		graph.setTransforms(name, { info, useful });
+		TransformInfo translate = MxFactory::translate(pos);
+		graph.applyTransforms(name, {translate.invert(), info, translate });
 	}
 
 	
@@ -162,7 +163,7 @@ void myApp::populateScene()
 
 	// Meshes
 	Mesh* cube_mesh = h->addMesh("cube_mesh", new Mesh("res/meshes/cube_smooth.obj"));
-	//Mesh* torus_mesh = h->addMesh("torus_mesh", new Mesh("res/meshes/torus.obj"));
+	Mesh* torus_mesh = h->addMesh("torus_mesh", new Mesh("res/meshes/torus.obj"));
 
 	// Shaders
 	Shader* blinnphong_shader = h->addShader("blinnphong_shader", new Shader("res/shaders/blinn_phong_vs.glsl", "res/shaders/blinn_phong_fs.glsl"));
@@ -181,8 +182,8 @@ void myApp::populateScene()
 	graph.addChild(gooch_mat, cube_mesh, "cube");
 
 	//torus
-	//graph.addChild(blinnphong_mat, torus_mesh, "torus");
-	//graph.setTransforms("torus", { MxFactory::translate(Vector3D(0,0,-5)) });
+	graph.addChild(blinnphong_mat, torus_mesh, "torus");
+	graph.setTransforms("torus", { MxFactory::translate(Vector3D(0,0,-5)) });
 
 	/* 
 	IMPORTANT - This is a WIP. The grid needs to be the last thing drawn, always because it has transaparency
@@ -334,7 +335,7 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 					gizmo_x = (center.x + 1) / 2 * width;
 					gizmo_y = height - (center.y + 1) / 2 * height;
 
-					pos = (useful.transform * Vector4D(0, 0, 0, 1)).to3D();
+					pos = (graph.getSelected()->transform * Vector4D(0, 0, 0, 1)).to3D();
 
 					Vector3D relativeEye = cam->eye - cam->center;
 
@@ -375,13 +376,14 @@ void myApp::update(GLFWwindow *win, double elapsed)
 	}
 	if (add_mesh) {
 		Manager* h = Manager::getInstance();
-		Mesh* mesh = h->addMesh("new_mesh", new Mesh("res/meshes/AxisGizmo.obj"));
+		Mesh* mesh = h->addMesh("new_mesh", new Mesh("res/meshes/bunny_smooth.obj"));
 		mesh->init();
 
 		Material* material = h->getMaterial("blinnphong_mat");
 
 		graph.setCurrToRoot();
-		graph.addChild(material, mesh, "new_guy", MxFactory::translation4(Vector3D(0,5,0)));
+		graph.addChild(material, mesh, "new_guy");
+		graph.setTransforms("new_guy", { MxFactory::translate(Vector3D(0,5,0)) });
 		add_mesh = false;
 	}
 	if (new_mat) {

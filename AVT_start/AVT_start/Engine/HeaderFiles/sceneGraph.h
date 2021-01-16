@@ -77,5 +77,5 @@ public:
 	void describe();
 
 	// specifics
-	void drawGizmos(Vector3D pos);
+	void drawGizmos();
 };

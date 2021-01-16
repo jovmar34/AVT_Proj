@@ -40,13 +40,13 @@ void myApp::manipulateGizmo(GLFWwindow* win, double elapsed)
 		double dot = currDir * screenDir;
 
 		info = MxFactory::translate(world3D * dot * 0.1);
-		graph.setTransforms(name, { useful, info });
+		graph.setTransforms(name, { localTransform, info });
 	}
 	else if (type == GizmoType::Scaling) {
 		Vector2D currDir = Vector2D(x - gizmo_x, y - gizmo_y);
 
 		info = MxFactory::scale((Vector3D(1, 1, 1) - world3D) + (world3D * fabs(currDir.length()) * scale));
-		graph.setTransforms(name, { info, useful });
+		graph.setTransforms(name, { info, localTransform });
 	}
 	else if (type == GizmoType::Rotation) {
 		Vector2D currDir = Vector2D(x - gizmo_x, y - gizmo_y).normalize();
@@ -70,6 +70,7 @@ void myApp::manipulateGizmo(GLFWwindow* win, double elapsed)
 
 		info = MxFactory::rotate(world3D, angleDeg);
 		TransformInfo translate = MxFactory::translate(pos);
+
 		graph.applyTransforms(name, {translate.invert(), info, translate });
 	}
 
@@ -304,9 +305,10 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 
 				Matrix4 projView = cam->projection * cam->view;
 
-				useful = graph.getSelected()->getTransformInfo();
+				fullTransform = graph.getSelected()->getTransformInfo();
+				localTransform = { graph.getSelected()->transform, graph.getSelected()->inverse };
 
-				Vector4D center = projView * useful.transform * Vector4D(0,0,0,1);
+				Vector4D center = projView * fullTransform.transform * Vector4D(0,0,0,1);
 				center.divideByW();	
 			
 				Vector4D point;
@@ -322,7 +324,7 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 					scale = 1 / currDir.length();
 				}
 				else if (gizType == GizmoType::Translation) {
-					point = projView* ((useful.transform * Vector4D(0, 0, 0, 1)) + worldDir);
+					point = projView* fullTransform.transform * worldDir;
 					point.divideByW();
 
 					gizmo_x = xpos;

@@ -25,7 +25,8 @@ private:
 	Vector2D screenDir;
 	bool gizmoActive = false;
 	double gizmo_x, gizmo_y, scale;
-	TransformInfo useful;
+	TransformInfo fullTransform,
+		localTransform;
 
 
 	void processInput(GLFWwindow* win, double elapsed);

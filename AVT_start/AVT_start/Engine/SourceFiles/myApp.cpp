@@ -191,14 +191,14 @@ void myApp::populateScene()
 				objects are drawn after opaque objects. It also shouldn't be selectable...
 	*/
 
-	//grid
+	//Grid
 	Mesh* plane_mesh = h->addMesh("plane_mesh", new Mesh("res/meshes/plane.obj"));
 	Shader* grid_shader = h->addShader("grid_shader", new Shader("res/shaders/grid_vs.glsl", "res/shaders/grid_fs.glsl"));
 	grid_shader->addUniformBlock("Matrices", 0);
 	Material* grid_mat = h->addMaterial("grid_mat", new Material(grid_shader));
 	graph.setGrid(grid_mat, plane_mesh, MxFactory::scale(Vector3D(100, 100, 100)));
 
-	//axis
+	//Gizmos
 	h->addMesh("translation_gizmo", new Mesh("res/meshes/Gizmos/TranslationGizmo.obj"));
 	h->addMesh("scale_gizmo", new Mesh("res/meshes/Gizmos/ScaleGizmo.obj"));
 	h->addMesh("rotation_gizmo", new Mesh("res/meshes/Gizmos/AltRotationGizmo.obj"));

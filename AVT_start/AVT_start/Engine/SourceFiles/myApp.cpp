@@ -304,7 +304,7 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 
 				Matrix4 projView = cam->projection * cam->view;
 
-				useful = { graph.getSelected()->transform, graph.getSelected()->inverse };
+				useful = graph.getSelected()->getTransformInfo();
 
 				Vector4D center = projView * useful.transform * Vector4D(0,0,0,1);
 				center.divideByW();	

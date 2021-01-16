@@ -253,7 +253,7 @@ void SceneGraph::draw()
 			if (selected == curr->id) 
 			{
 				outline->bind();
-				outline->update(curr->getTransform(), curr->getNormal());
+				outline->update(info.transform, invTransView * transpinv);
 				glCullFace(GL_FRONT);
 				curr->mesh->draw();
 				glCullFace(GL_BACK);

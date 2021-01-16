@@ -34,24 +34,17 @@ void myApp::manipulateGizmo(GLFWwindow* win, double elapsed)
 	GizmoType type = graph.getGizmoType();
 	Vector3D world3D = worldDir.to3D();
 
-	TransformInfo parent = graph.getSelected()->parent->getTransformInfo();
-
 	if (type == GizmoType::Translation) {
 		Vector2D currDir = Vector2D(x - gizmo_x, gizmo_y - y);
 
 		double dot = currDir * screenDir;
 
 		info = MxFactory::translate(world3D * dot * 0.1);
-		graph.setTransforms(name, { localTransform, parent, info, parent.invert() });
 	}
 	else if (type == GizmoType::Scaling) {
 		Vector2D currDir = Vector2D(x - gizmo_x, y - gizmo_y);
 
 		info = MxFactory::scale((Vector3D(1, 1, 1) - world3D) + (world3D * fabs(currDir.length()) * scale));
-
-		TransformInfo translate = MxFactory::translate(pos);
-
-		graph.setTransforms(name, { localTransform, parent, translate.invert(), info, translate, parent.invert() });
 	}
 	else if (type == GizmoType::Rotation) {
 		Vector2D currDir = Vector2D(x - gizmo_x, y - gizmo_y).normalize();
@@ -65,21 +58,15 @@ void myApp::manipulateGizmo(GLFWwindow* win, double elapsed)
 			axis.normalize();
 		}
 
-		std::cout << "axis: " << axis << std::endl;
-
 		double angleDeg = scale * -axis.z * acos(cos) / M_PI_2 * 90;
 
-		std::cout << "angle: " << angleDeg << std::endl;
-
-		//screenDir = currDir;
-
 		info = MxFactory::rotate(world3D, angleDeg);
-		TransformInfo translate = MxFactory::translate(pos);
-
-		graph.setTransforms(name, { localTransform, parent, translate.invert(), info, translate, parent.invert() });
 	}
 
-	
+	TransformInfo parent = graph.getSelected()->parent->getTransformInfo();
+	TransformInfo translate = MxFactory::translate(pos);
+
+	graph.setTransforms(name, { localTransform, parent, translate.invert(), info, translate, parent.invert() });
 }
 
 void myApp::animate(GLFWwindow* win, double elapsed)
@@ -320,21 +307,21 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 				
 				GizmoType gizType = graph.getGizmoType();
 
+				Vector4D pos4 = fullTransform.transform * Vector4D(0, 0, 0, 1);
+				pos = pos4.to3D();
+
 				if (gizType == GizmoType::Translation) {
-					point = projView * fullTransform.transform * worldDir;
+					point = projView * (pos4 + worldDir);
 					point.divideByW();
 
 					gizmo_x = xpos;
 					gizmo_y = ypos;
 
 					screenDir = point.to2D() - center.to2D();
-					std::cout << "screen_dir: " << screenDir << std::endl;
 				}
 				else if (gizType == GizmoType::Scaling) {
 					gizmo_x = (center.x + 1) / 2 * width;
 					gizmo_y = height - (center.y + 1) / 2 * height;
-
-					pos = (fullTransform.transform * Vector4D(0, 0, 0, 1)).to3D();
 
 					Vector2D currDir = Vector2D(xpos - gizmo_x, ypos - gizmo_y);
 
@@ -344,8 +331,6 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 				else if (gizType == GizmoType::Rotation) {
 					gizmo_x = (center.x + 1) / 2 * width;
 					gizmo_y = height - (center.y + 1) / 2 * height;
-
-					pos = (fullTransform.transform * Vector4D(0, 0, 0, 1)).to3D();
 
 					Vector3D relativeEye = cam->eye - cam->center;
 

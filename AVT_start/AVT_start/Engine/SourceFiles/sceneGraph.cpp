@@ -93,7 +93,7 @@ void SceneGraph::drawGizmos()
 	Matrix4 model,
 		rotate = MxFactory::identity4(),
 		scale = MxFactory::scaling4(percentage * Vector3D(1.5,1.5,1.5)),
-		translate = MxFactory::translation4(relPos);
+		translate = MxFactory::translation4(absPos);
 
 
 	glDisable(GL_DEPTH_TEST);
@@ -114,7 +114,7 @@ void SceneGraph::drawGizmos()
 			break;
 		}
 
-		model = sel->parent->getTransformInfo().transform * translate * rotate * scale;
+		model = translate * rotate * scale;
 
 		glStencilFunc(GL_ALWAYS, 0xFF - i, 0xFF); // FF -> y, FF - 1 -> z, FF - 2 -> x
 		glStencilOp(GL_ZERO, GL_KEEP, GL_REPLACE);

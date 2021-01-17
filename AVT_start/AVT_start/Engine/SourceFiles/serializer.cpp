@@ -14,6 +14,12 @@ SceneSerializer::SceneSerializer(SceneNode* par) {
 	_parent = par;
 }
 
+SceneSerializer::SceneSerializer() {
+	_camera = nullptr;
+	_manager = nullptr;
+	_parent = nullptr;
+}
+
 SceneSerializer::~SceneSerializer()
 {
 //todo
@@ -164,7 +170,30 @@ void SceneSerializer::deserialize(const std::string& filepath)
 	while (std::getline(file, line))
 	{
 		std::istringstream iss(line);
-		cout << line << endl;
+		if (line == "Camera:") {
+			//tyoe
+			//eye, center, up
+			//working state
+			//view, projection and inview matrices
+			cout << "yas camera babyyyy\n";
+		}
+		else if (line == "Manager:") {
+			cout << "manager queennnnnn\n";
+			//shaders
+			//meshes
+			//textures
+			//materials
+		}
+		else if(line == "Node:"){
+			cout << "node slayyyy bitch\n";
+			//name
+			//children
+			//material
+			//texture
+			//mesh
+			//transformation matrix
+		}
+		//cout << line << endl;
 	}
 
 	file.close();

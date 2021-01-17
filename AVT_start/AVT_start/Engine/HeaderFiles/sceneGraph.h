@@ -55,4 +55,5 @@ public:
 	void describe();
 
 	void serializeScene(Camera* cam, Manager* man, const std::string& filepath);
+	void loadScene(const std::string& filepath);
 };

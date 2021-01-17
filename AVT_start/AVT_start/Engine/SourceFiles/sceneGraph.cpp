@@ -198,3 +198,8 @@ void SceneGraph::serializeScene(Camera* cam, Manager* man, const std::string& fi
 	SceneSerializer ss = SceneSerializer(cam, man, root);
 	ss.serialize(filepath);
 }
+
+void SceneGraph::loadScene(const std::string& filepath) {
+	SceneSerializer ss = SceneSerializer();
+	ss.deserialize(filepath);
+}

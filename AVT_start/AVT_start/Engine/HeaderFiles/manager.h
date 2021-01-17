@@ -80,6 +80,9 @@ public:
 	}
 
 	unsigned int getCounter() {
-		return counter++;
+		return counter; //removed ++ otherwise new obj would increase +2
+	}
+	void incCounter() {
+		counter++; 
 	}
 };

@@ -18,7 +18,6 @@ private:
 	bool new_obj = false;
 	bool enter_command = false;
 	int mesh_indicator = 0;
-	int object_id = 0;
 	bool choosing_object = false;
 
 	double old_x = 0, old_y = 0;

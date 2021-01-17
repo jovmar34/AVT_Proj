@@ -522,7 +522,7 @@ void myApp::enterCommand() {
 
 
 	//
-	while ( getline(parsable, current, ',' )) {
+	while ( getline(parsable, current, ' ' )) {
 		tokens.push_back(current);
 	}
 
@@ -590,7 +590,7 @@ void myApp::importTexture(string texturename) {
 
 void myApp::loadObject(string objecttype) {
 	Manager* h = Manager::getInstance();
-	std::string id = std::to_string(object_id);
+	std::string id = std::to_string(h->getCounter());
 	string meshname = objecttype;
 	string objectname = objecttype + id;
 	importMesh(meshname);
@@ -599,15 +599,15 @@ void myApp::loadObject(string objecttype) {
 	Material* material = h->getMaterial("blinnphong_mat");
 
 	graph.setCurrToRoot();
-	graph.addChild(material, mesh, objectname, MxFactory::translation4(Vector3D(1, 1, 1)));
-	object_id++;
+	graph.addChild(material, mesh, objectname);
+	graph.setTransforms(objectname, { MxFactory::translate(Vector3D(1,1,1)) });
 	add_mesh = false;
 	mesh_indicator = 0;
 }
 
 void myApp::createObject(string objecttype, string meshname, string materialname) {
 	Manager* h = Manager::getInstance();
-	std::string id = std::to_string(object_id);
+	std::string id = std::to_string(h->getCounter());
 	string objectname = objecttype + id;
 	importMesh(meshname);
 	Mesh* mesh = h->getMesh(meshname);
@@ -615,8 +615,8 @@ void myApp::createObject(string objecttype, string meshname, string materialname
 	Material* material = h->getMaterial(materialname);
 
 	graph.setCurrToRoot();
-	graph.addChild(material, mesh, objectname, MxFactory::translation4(Vector3D(1, 1, 1)));
-	object_id++;
+	graph.addChild(material, mesh, objectname);
+	graph.setTransforms(objectname, { MxFactory::translate(Vector3D(1,1,1)) });
 	add_mesh = false;
 	mesh_indicator = 0;
 }

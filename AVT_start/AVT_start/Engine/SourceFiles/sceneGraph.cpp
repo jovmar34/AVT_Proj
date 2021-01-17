@@ -41,8 +41,10 @@ void SceneGraph::addChild(Material* material, Mesh* mesh, std::string name, Matr
 	child->transform = transform;
 	child->material = material;
 	if (child->mesh) {
-		child->id = Manager::getInstance()->getCounter();
+		Manager* h = Manager::getInstance();
+		child->id = h->getCounter();
 		idMap[child->id] = child;
+		h->incCounter();
 	}
 	
 	current->children.push_back(child);

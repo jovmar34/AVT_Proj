@@ -163,29 +163,141 @@ void SceneSerializer::serialize(const std::string& filepath)
 	file.close();
 }
 
+double* extractNumbers(std::string str)
+{
+	int num, i = 0;
+	double* numbers = new double[16];
+	std::fill_n(numbers, 16, 0);
+
+	std::string temp;
+	for (int x = 0; x < str.length(); x++ ) {
+		if (isdigit(str[x])) {
+			temp.push_back(str[x]);
+			numbers[i] = std::stoi(temp);
+			cout << "part a: ";
+			cout << numbers[i] << endl;
+			for (int y = x + 1; y < str.length(); y++) {
+				if (y >= str.length()) break;
+				else if (isdigit(str[y]) || str[y] == '.') {
+					if (isdigit(str[y])) {
+						temp.push_back(str[y]);
+							//numbers[i] = numbers[i] * 10 + std::stoi(temp);
+							numbers[i] = numbers[i] + std::stoi(temp);
+							cout << "part b: ";
+							cout << numbers[i] << endl;
+					}
+					x = y;
+				}
+				else break;
+			}
+			i++;
+			temp.clear();
+		}
+	}
+
+	return numbers;
+}
+
 void SceneSerializer::deserialize(const std::string& filepath)
 {
 	std::ifstream file(filepath, ios::in);
-	std::string line;
+	std::string line, delimiter, type, ecu, workingState, matrix;
+	size_t pos = 0;
+	int l;
+	double* numbers;
+	double* values;
+	Matrix4 invViewMatrix;
 	while (std::getline(file, line))
 	{
 		std::istringstream iss(line);
 		if (line == "Camera:") {
-			//tyoe
-			//eye, center, up
-			//working state
-			//view, projection and inview matrices
-			cout << "yas camera babyyyy\n";
+			//Type
+			std::getline(file, type);
+			delimiter = "- Type: ";
+			pos = type.find(delimiter);
+			type.erase(0, pos + delimiter.length());
+
+			//Eye, Center, Up
+			std::getline(file, ecu);
+			delimiter = "- Eye, Center, Up: ";
+			pos = ecu.find(delimiter);
+			ecu.erase(0, pos + delimiter.length());
+			//ecu = "(x, x, x), (y, y, y), (z, z, z)
+			numbers = extractNumbers(ecu);
+			Vector3D eye(numbers[0], numbers[1], numbers[2]);
+			Vector3D center(numbers[3], numbers[4], numbers[5]);
+			Vector3D up(numbers[6], numbers[7], numbers[8]);
+
+			//Working state
+			std::getline(file, workingState);
+			delimiter = "- Working State: ";
+			pos = workingState.find(delimiter);
+			workingState.erase(0, pos + delimiter.length());
+
+			//View Matrix
+			std::getline(file, matrix);
+			l = 0;
+			if (matrix == "- View Matrix: ") {
+				while (l < 4) {
+					std::getline(file, matrix);
+					numbers = extractNumbers(matrix);
+					l++;
+				}
+			}
+			Matrix4 viewMatrix(numbers[0], numbers[1], numbers[2], numbers[3], numbers[4], numbers[5], numbers[6], numbers[7], numbers[8], numbers[9], numbers[10], numbers[11], numbers[12], numbers[13], numbers[14], numbers[15]);
+			std::getline(file, matrix);
+
+			//Projection Matrix
+			std::getline(file, matrix);
+			l = 0;
+			if (matrix == "- Projection Matrix: ") {
+				while (l < 4) {
+					std::getline(file, matrix);
+					numbers = extractNumbers(matrix);
+					l++;
+				}
+			}
+			Matrix4 projMatrix(numbers[0], numbers[1], numbers[2], numbers[3], numbers[4], numbers[5], numbers[6], numbers[7], numbers[8], numbers[9], numbers[10], numbers[11], numbers[12], numbers[13], numbers[14], numbers[15]);
+			std::getline(file, matrix);
+
+			//InvView Matrix
+			std::getline(file, matrix);
+			l = 0;
+			if (matrix == "- InvView Matrix: ") {
+				while (l < 4) {
+					std::getline(file, matrix);
+					values = extractNumbers(matrix);
+					l++;
+				}
+				Matrix4 invViewMatrix(values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15]);
+				cout << invViewMatrix.toString();
+			}
+			//Matrix4 invViewMatrix(values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15]);
+			
+
+			Camera cam = Camera(eye, center, up);
+			if (type == "Parallel") {
+				cam.projType = CameraProj::Parallel;
+
+			}
+			else if (type == "Perspective") {
+				cam.projType = CameraProj::Perspective;
+
+			}
+			if (workingState == "On") {
+				cam.state = Working::On;
+			}
+			
 		}
 		else if (line == "Manager:") {
-			cout << "manager queennnnnn\n";
+			//cout << "manager queennnnnn\n";
 			//shaders
 			//meshes
 			//textures
 			//materials
 		}
 		else if(line == "Node:"){
-			cout << "node slayyyy bitch\n";
+			//cout << "node slayyyy bitch\n";
 			//name
 			//children
 			//material

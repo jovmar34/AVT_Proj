@@ -273,7 +273,6 @@ void myApp::mouseCallback(GLFWwindow* win, double xpos, double ypos) {
 		Matrix4 rotY = m.rotation4(axisY, 1);
 		Matrix4 totalRot = rotX * rotY;
 		SceneNode* root = graph.getNode("root");
-		SceneNode* n;
 		if (root->selected) {
 			graph.applyTransform("root", totalRot);
 		}

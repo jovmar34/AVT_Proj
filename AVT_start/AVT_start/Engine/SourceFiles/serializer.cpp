@@ -165,7 +165,7 @@ void SceneSerializer::serialize(const std::string& filepath)
 
 double* extractNumbers(std::string str)
 {
-	int num, i = 0;
+	int i = 0;
 	double* numbers = new double[9];
 	std::fill_n(numbers, 9, 0);
 
@@ -177,21 +177,16 @@ double* extractNumbers(std::string str)
 
 			for (int y = x + 1; y < str.length(); y++) {
 				if (y >= str.length()) break;
-				else if (isdigit(str[y]) || str[y] == '.') {
-					if (isdigit(str[y])) {
-						temp.push_back(str[y]);
-						if (numbers[i] == 0) numbers[i] = std::stoi(temp) / 10;
-						else numbers[i] = numbers[i] * 10 + std::stoi(temp);
-						//numbers[i] = numbers[i] + std::stoi(temp);
-						//cout << "part b: ";
-						//cout << numbers[i] << endl;
-					}
+				else if (isdigit(str[y])) {
+					temp.push_back(str[y]);
+					if (numbers[i] == 0 && str[y-1] == '.') numbers[i] = std::stoi(temp) / 10;
+					else numbers[i] = numbers[i] * 10 + std::stoi(temp);
 					x = y;
 				}
 				else break;
 			}
-			i++;
 			temp.clear();
+			i++;
 		}
 	}
 
@@ -202,8 +197,10 @@ void SceneSerializer::deserialize(const std::string& filepath)
 {
 	std::ifstream file(filepath, ios::in);
 	std::string line, delimiter, type, ecu, workingState, matrix;
+	std::string shader_name, shaderV_path, shaderF_path, mesh_name, mesh_filepath, texture_name, texture_filepath, material_name;
+	std::string node_name;
 	size_t pos = 0;
-	int l;
+	int l, children;
 	double* numbers;
 	double* aux = new double[16];
 	//double* values;
@@ -269,19 +266,19 @@ void SceneSerializer::deserialize(const std::string& filepath)
 				int j = 0;
 				while (l < 4) {
 					std::getline(file, matrix);
-					double* values = extractNumbers(matrix);
+					numbers = extractNumbers(matrix);
 					aux[j] = numbers[0];
 					aux[j+1] = numbers[1];
 					aux[j+2] = numbers[2];
 					aux[j+3] = numbers[3];
 					l++;
 					j += 4;
-					cout << aux[0] << endl;
+					//cout << aux[0] << endl;
 				}
 			}
 			
 			Matrix4 invViewMatrix(aux[0], aux[1], aux[2], aux[3], aux[4], aux[5], aux[6], aux[7], aux[8], aux[9], aux[10], aux[11], aux[12], aux[13], aux[14], aux[15]);
-			cout << invViewMatrix.toString();
+			//cout << invViewMatrix.toString();
 
 			//Camera creation
 			Camera cam = Camera(eye, center, up);
@@ -291,22 +288,118 @@ void SceneSerializer::deserialize(const std::string& filepath)
 			
 		}
 		else if (line == "Manager:") {
-			//cout << "manager queennnnnn\n";
-			//shaders
-			//meshes
-			//textures
-			//materials
+			std::getline(file, line);
+
+			//Shaders
+			while (line == "- Shader:") {
+				//Name
+				std::getline(file, line);
+				delimiter = "- Name: ";
+				pos = line.find(delimiter);
+				line.erase(0, pos + delimiter.length());
+				shader_name = line;
+
+				//Vertex Shader Filepath
+				std::getline(file, line);
+				delimiter = "- Vertex Shader Filepath: ";
+				pos = line.find(delimiter);
+				line.erase(0, pos + delimiter.length());
+				shaderV_path = line;
+
+				//Fragment Shader Filepath
+				std::getline(file, line);
+				delimiter = "- Fragment Shader Filepath: ";
+				pos = line.find(delimiter);
+				line.erase(0, pos + delimiter.length());
+				shaderF_path = line;
+
+				std::getline(file, line);
+
+			}
+
+			//Meshes
+			while (line == "- Mesh:") {
+				std::getline(file, line);
+
+				//Name
+				delimiter = "- Name: ";
+				pos = line.find(delimiter);
+				line.erase(0, pos + delimiter.length());
+				mesh_name = line;
+
+				//Filepath
+				std::getline(file, line);
+				delimiter = "- Filepath: ";
+				pos = line.find(delimiter);
+				line.erase(0, pos + delimiter.length());
+				mesh_filepath = line;
+
+				std::getline(file, line);
+			}
+
+			//Textures
+			while (line == "- Texture:") {
+				std::getline(file, line);
+
+				//Name
+				delimiter = "- Name: ";
+				pos = line.find(delimiter);
+				line.erase(0, pos + delimiter.length());
+				mesh_name = line;
+
+				//Filepath
+				std::getline(file, line);
+				delimiter = "- Filepath: ";
+				pos = line.find(delimiter);
+				line.erase(0, pos + delimiter.length());
+				mesh_filepath = line;
+
+				std::getline(file, line);
+			}
+
+			//Materials
+			while (line == "- Material:") {
+				std::getline(file, line);
+
+				delimiter = "- Name: ";
+				pos = line.find(delimiter);
+				line.erase(0, pos + delimiter.length());
+				material_name = line;
+
+				//TODO RESTO
+
+				std::getline(file, line);
+			}
 		}
-		else if(line == "Node:"){
-			//cout << "node slayyyy bitch\n";
-			//name
-			//children
-			//material
-			//texture
-			//mesh
-			//transformation matrix
+		else if (line == "Node:") {
+			while (line == "Node:") {
+				std::getline(file, line);
+
+				//Name
+				delimiter = "- Name: ";
+				pos = line.find(delimiter);
+				line.erase(0, pos + delimiter.length());
+				node_name = line;
+
+				//Children
+				std::getline(file, line);
+				delimiter = "- Children: ";
+				pos = line.find(delimiter);
+				line.erase(0, pos + delimiter.length());
+				//children = std::stoi(line);
+				cout << line << endl;
+
+				//TODO RESTO
+				//material
+				//texture
+				//mesh
+				//transformation matrix
+
+				//graph.addChild(test_mat_g, cube_mesh, "cube");
+				std::getline(file, line);
+}
 		}
-		//cout << line << endl;
+
 	}
 
 	file.close();

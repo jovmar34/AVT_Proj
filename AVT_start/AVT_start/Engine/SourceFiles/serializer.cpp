@@ -166,25 +166,25 @@ void SceneSerializer::serialize(const std::string& filepath)
 double* extractNumbers(std::string str)
 {
 	int num, i = 0;
-	double* numbers = new double[16];
-	std::fill_n(numbers, 16, 0);
+	double* numbers = new double[9];
+	std::fill_n(numbers, 9, 0);
 
 	std::string temp;
 	for (int x = 0; x < str.length(); x++ ) {
 		if (isdigit(str[x])) {
 			temp.push_back(str[x]);
 			numbers[i] = std::stoi(temp);
-			cout << "part a: ";
-			cout << numbers[i] << endl;
+
 			for (int y = x + 1; y < str.length(); y++) {
 				if (y >= str.length()) break;
 				else if (isdigit(str[y]) || str[y] == '.') {
 					if (isdigit(str[y])) {
 						temp.push_back(str[y]);
-							//numbers[i] = numbers[i] * 10 + std::stoi(temp);
-							numbers[i] = numbers[i] + std::stoi(temp);
-							cout << "part b: ";
-							cout << numbers[i] << endl;
+						if (numbers[i] == 0) numbers[i] = std::stoi(temp) / 10;
+						else numbers[i] = numbers[i] * 10 + std::stoi(temp);
+						//numbers[i] = numbers[i] + std::stoi(temp);
+						//cout << "part b: ";
+						//cout << numbers[i] << endl;
 					}
 					x = y;
 				}
@@ -205,8 +205,10 @@ void SceneSerializer::deserialize(const std::string& filepath)
 	size_t pos = 0;
 	int l;
 	double* numbers;
-	double* values;
+	double* aux = new double[16];
+	//double* values;
 	Matrix4 invViewMatrix;
+
 	while (std::getline(file, line))
 	{
 		std::istringstream iss(line);
@@ -264,29 +266,28 @@ void SceneSerializer::deserialize(const std::string& filepath)
 			std::getline(file, matrix);
 			l = 0;
 			if (matrix == "- InvView Matrix: ") {
+				int j = 0;
 				while (l < 4) {
 					std::getline(file, matrix);
-					values = extractNumbers(matrix);
+					double* values = extractNumbers(matrix);
+					aux[j] = numbers[0];
+					aux[j+1] = numbers[1];
+					aux[j+2] = numbers[2];
+					aux[j+3] = numbers[3];
 					l++;
+					j += 4;
+					cout << aux[0] << endl;
 				}
-				Matrix4 invViewMatrix(values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15]);
-				cout << invViewMatrix.toString();
 			}
-			//Matrix4 invViewMatrix(values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15]);
 			
+			Matrix4 invViewMatrix(aux[0], aux[1], aux[2], aux[3], aux[4], aux[5], aux[6], aux[7], aux[8], aux[9], aux[10], aux[11], aux[12], aux[13], aux[14], aux[15]);
+			cout << invViewMatrix.toString();
 
+			//Camera creation
 			Camera cam = Camera(eye, center, up);
-			if (type == "Parallel") {
-				cam.projType = CameraProj::Parallel;
-
-			}
-			else if (type == "Perspective") {
-				cam.projType = CameraProj::Perspective;
-
-			}
-			if (workingState == "On") {
-				cam.state = Working::On;
-			}
+			if (type == "Parallel") cam.projType = CameraProj::Parallel;
+			else if (type == "Perspective") cam.projType = CameraProj::Perspective;
+			if (workingState == "On") cam.state = Working::On;
 			
 		}
 		else if (line == "Manager:") {

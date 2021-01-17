@@ -245,11 +245,89 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 			save_img = true;
 			break;
 		case GLFW_KEY_M:
-			add_mesh = true;
+			choosing_object = !choosing_object;
+			break;
+		case GLFW_KEY_1:
+			if (choosing_object)
+			{
+				add_mesh = true;
+				mesh_indicator = 1;
+			}
+			break;
+		case GLFW_KEY_2:
+			if (choosing_object)
+			{
+				add_mesh = true;
+				mesh_indicator = 2;
+			}
+			break;
+		case GLFW_KEY_3:
+			if (choosing_object)
+			{
+				add_mesh = true;
+				mesh_indicator = 3;
+			}
+			break;
+		case GLFW_KEY_4:
+			if (choosing_object)
+			{
+				add_mesh = true;
+				mesh_indicator = 4;
+			}
+			break;
+		case GLFW_KEY_5:
+			if (choosing_object)
+			{
+				add_mesh = true;
+				mesh_indicator = 5;
+			}
+			break;
+		case GLFW_KEY_6:
+			if (choosing_object)
+			{
+				add_mesh = true;
+				mesh_indicator = 6;
+			}
+			break;
+		case GLFW_KEY_7:
+			if (choosing_object)
+			{
+				add_mesh = true;
+				mesh_indicator = 7;
+			}
+			break;
+		case GLFW_KEY_8:
+			if (choosing_object)
+			{
+				add_mesh = true;
+				mesh_indicator = 8;
+			}
+			break;
+		case GLFW_KEY_9:
+			if (choosing_object)
+			{
+				add_mesh = true;
+				mesh_indicator = 9;
+			}
+			break;
+		case GLFW_KEY_0:
+			if (choosing_object)
+			{
+				add_mesh = true;
+				mesh_indicator = 10;
+			}
 			break;
 		case GLFW_KEY_N:
-			new_mat = true;
+			if (choosing_object)
+			{
+				add_mesh = true;
+				mesh_indicator = 11;
+			}
+			else
+				new_mat = true;
 			break;
+		case GLFW_KEY_ENTER:
+			enter_command = true;
 		}
 	}
 	else if (action == GLFW_PRESS) {
@@ -369,18 +447,6 @@ void myApp::update(GLFWwindow *win, double elapsed)
 		save(win);
 		save_img = false;
 	}
-	if (add_mesh) {
-		Manager* h = Manager::getInstance();
-		Mesh* mesh = h->addMesh("new_mesh", new Mesh("res/meshes/bunny_smooth.obj"));
-		mesh->init();
-
-		Material* material = h->getMaterial("blinnphong_mat");
-
-		graph.setCurrToRoot();
-		graph.addChild(material, mesh, "new_guy");
-		graph.setTransforms("new_guy", { MxFactory::translate(Vector3D(0,5,0)) });
-		add_mesh = false;
-	}
 	if (new_mat) {
 		Manager* h = Manager::getInstance();
 		SceneNode* node = graph.getNode("cube");
@@ -397,4 +463,188 @@ void myApp::update(GLFWwindow *win, double elapsed)
 		node->material = test_mat_b;
 		new_mat = false;
 	}
+	if (add_mesh && mesh_indicator ==1) { 
+		loadObject("cube");
+	}
+	if (add_mesh && mesh_indicator == 2) {
+		loadObject("cylinder");
+	}
+	if (add_mesh && mesh_indicator == 3) { 
+		loadObject("frame");
+	}
+	if (add_mesh && mesh_indicator == 4) { 
+		loadObject("plane");
+	}
+	if (add_mesh && mesh_indicator == 5) { 
+		loadObject("hand");
+	}
+	if (add_mesh && mesh_indicator == 6) { 
+		loadObject("teapot");
+	}
+	if (add_mesh && mesh_indicator == 7) { 
+		loadObject("torus");
+	}
+	if (add_mesh && mesh_indicator == 8) { 
+		loadObject("backpiece");
+	}
+	if (add_mesh && mesh_indicator == 9) { 
+		loadObject("suzanne");
+	}
+	if (add_mesh && mesh_indicator == 10) { 
+		loadObject("bunny");
+	}
+	if (add_mesh && mesh_indicator == 11) {
+		
+		std::string meshname;
+		cout << "Please enter the name of your .obj file after the '>'. Make sure the file is present in the res/meshes folder\n >";
+		cin >> meshname;
+		cout << meshname + "should be loading now :^)\n"; 
+		
+		loadObject(meshname);
+		graph.describe(); //debug
+	}
+	if (enter_command) {
+		enterCommand();
+	}
+}
+
+void myApp::enterCommand() {
+	std::string command;
+	cout << "Howdy! Please enter your command!\n";
+	cin >> command;
+	cout << "Thanks!\n";
+
+	//init components
+	vector <string> tokens;
+	stringstream parsable(command);
+	string current;
+	size_t pos = 0;
+
+
+	//
+	while ( getline(parsable, current, ',' )) {
+		tokens.push_back(current);
+	}
+
+	//print to terminal - debug
+	for (int i = 0; i < tokens.size(); i++) {
+		cout << tokens[i] << '\n';
+	}
+	
+	if (tokens[0] == "LoadObject") {
+		loadObject(tokens[1]);
+	}
+	if (tokens[0] == "ImportMesh") {
+		importMesh(tokens[1]);
+	}
+	
+	if (tokens[0] == "ImportShader") {
+		importShader(tokens[1]);
+	}
+	if (tokens[0] == "ImportTexture") {
+		importTexture(tokens[1]);
+	}
+	if (tokens[0] == "CreateMaterial") {
+		createMaterial(tokens[1], tokens[2]);
+	}
+	if (tokens[0] == "CreateObject") {
+		createObject(tokens[1], tokens[2], tokens[3]);
+	}
+	if (tokens[0] == "DestroyObject") {
+		destroyObject(tokens[1]);
+	}
+	if (tokens[0] == "DescribeScene") {
+		graph.describe();
+	}
+	if (tokens[0] == "ObjectSetMaterial") {
+		objectSetMaterial(tokens[1], tokens[2]);
+	}
+	if (tokens[0] == "MaterialSetUniform") {
+		materialSetUniform(tokens[1], tokens[2], tokens[3], tokens[4]);
+	}
+	if (tokens[0] == "ObjectSetParent") {
+		objectSetParent(tokens[1], tokens[2]);
+	}
+	enter_command = false;
+}
+
+void myApp::importMesh(string meshname) {
+	Manager* h = Manager::getInstance();
+	string meshlocation = "res/meshes/" + meshname + ".obj";
+	Mesh* mesh = h->addMesh(meshname, new Mesh(meshlocation));
+}
+
+void myApp::importShader(string shadername) {
+	Manager* h = Manager::getInstance();
+	string shaderFragment = "res/shaders/" + shadername + "_fs.glsl";
+	string shaderVertex = "res/shaders/" + shadername + "_vs.glsl";
+	Shader* shader = h->addShader(shadername, new Shader(shaderFragment, shaderVertex));
+	shader->addUniformBlock("Matrices", 0);
+}
+
+void myApp::importTexture(string texturename) {
+	Manager* h = Manager::getInstance();
+	string texturelocation = "res/textures/" + texturename + ".png";
+	Texture* texture = h->addTexture(texturename, new Texture(texturelocation));
+}
+
+void myApp::loadObject(string objecttype) {
+	Manager* h = Manager::getInstance();
+	std::string id = std::to_string(object_id);
+	string meshname = objecttype;
+	string objectname = objecttype + id;
+	importMesh(meshname);
+	Mesh* mesh = h->getMesh(meshname);
+	mesh->init();
+	Material* material = h->getMaterial("blinnphong_mat");
+
+	graph.setCurrToRoot();
+	graph.addChild(material, mesh, objectname, MxFactory::translation4(Vector3D(1, 1, 1)));
+	object_id++;
+	add_mesh = false;
+	mesh_indicator = 0;
+}
+
+void myApp::createObject(string objecttype, string meshname, string materialname) {
+	Manager* h = Manager::getInstance();
+	std::string id = std::to_string(object_id);
+	string objectname = objecttype + id;
+	importMesh(meshname);
+	Mesh* mesh = h->getMesh(meshname);
+	mesh->init();
+	Material* material = h->getMaterial(materialname);
+
+	graph.setCurrToRoot();
+	graph.addChild(material, mesh, objectname, MxFactory::translation4(Vector3D(1, 1, 1)));
+	object_id++;
+	add_mesh = false;
+	mesh_indicator = 0;
+}
+
+void::myApp::destroyObject(string objname) {
+	//graph.removeChild(objname);
+}
+
+void myApp::createMaterial(string materialname, string shadername) {
+	Manager* h = Manager::getInstance();
+	Shader* shader = h->getShader(shadername);
+	Material* material = new Material(shader); 
+	h->addMaterial(materialname, material);
+}
+
+void myApp::objectSetMaterial(string objname, string materialname) {
+	Manager* h = Manager::getInstance();
+	Material* material = h->getMaterial(materialname);
+	graph.changeMaterial(objname, material);
+
+}
+
+void myApp::materialSetUniform(string materialname, string uniformname, string uniformtype, string uniform_value) {
+	Manager* h = Manager::getInstance();
+	Material* material = h->getMaterial(materialname);
+	//do stuff
+}
+
+void myApp::objectSetParent(string objname, string parentname) {
+	graph.changeParent(objname, parentname);
 }

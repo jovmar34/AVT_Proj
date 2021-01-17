@@ -367,3 +367,7 @@ void SceneGraph::changeParent(std::string node, std::string newParent)
 
 	changed->parentInfo = newParentInfo;
 }
+void SceneGraph::changeMaterial(std::string objname, Material* material) {
+	SceneNode* object = nameMap[objname];
+	object->material = material;
+}

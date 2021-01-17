@@ -15,6 +15,11 @@ private:
 	bool save_img = false;
 	bool add_mesh = false;
 	bool new_mat = false;
+	bool new_obj = false;
+	bool enter_command = false;
+	int mesh_indicator = 0;
+	int object_id = 0;
+	bool choosing_object = false;
 
 	double old_x = 0, old_y = 0;
 	double angle_x = M_PI_2 / 50, angle_y = M_PI / 50;
@@ -42,4 +47,15 @@ public:
 	void mouseCallback(GLFWwindow* win, double xpos, double ypos) { }
 	void mouseButtonCallback(GLFWwindow* win, int button, int action, int mods);
 	void update(GLFWwindow* win, double elapsed);
+	void loadObject(string objecttype);
+	void enterCommand();
+	void importMesh(string meshname);
+	void importShader(string shadername);
+	void importTexture(string texturename);
+	void createMaterial(string materialname, string shadername);
+	void createObject(string objname, string meshname, string materialname);
+	void destroyObject(string objname);
+	void objectSetMaterial(string objname, string materialname);
+	void materialSetUniform(string materialname, string uniformname, string uniformtype, string uniform_value);
+	void objectSetParent(string objname, string parentname);
 };

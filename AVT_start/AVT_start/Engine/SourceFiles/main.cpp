@@ -99,7 +99,6 @@ void window_close_callback(GLFWwindow* win)
 
 void window_size_callback(GLFWwindow* win, int winx, int winy)
 {
-	std::cout << "size: " << winx << " " << winy << std::endl;
 	glViewport(0, 0, winx, winy);
 }
 
@@ -125,7 +124,6 @@ void scroll_callback(GLFWwindow* win, double xoffset, double yoffset)
 
 void joystick_callback(int jid, int event)
 {
-	std::cout << "joystick: " << jid << " " << event << std::endl;
 }
 
 ///////////////////////////////////////////////////////////////////////// SETUP
@@ -138,6 +136,8 @@ void glfw_error_callback(int error, const char* description)
 GLFWwindow* setupWindow(int winx, int winy, const char* title,
 	int is_fullscreen, int is_vsync)
 {
+	glfwWindowHint(GLFW_SAMPLES, 4);
+
 	GLFWmonitor* monitor = is_fullscreen ? glfwGetPrimaryMonitor() : 0;
 	GLFWwindow* win = glfwCreateWindow(winx, winy, title, monitor, 0);
 	if (!win)
@@ -153,8 +153,8 @@ GLFWwindow* setupWindow(int winx, int winy, const char* title,
 void setupCallbacks(GLFWwindow* win)
 {
 	glfwSetKeyCallback(win, key_callback);
-	glfwSetCursorPosCallback(win, mouse_callback);
 	glfwSetMouseButtonCallback(win, mouse_button_callback);
+	glfwSetCursorPosCallback(win, mouse_callback);
 	glfwSetScrollCallback(win, scroll_callback);
 	//glfwSetJoystickCallback(joystick_callback);
 	glfwSetWindowCloseCallback(win, window_close_callback);
@@ -213,7 +213,9 @@ void setupOpenGL(int winx, int winy)
 #if _DEBUG
 	checkOpenGLInfo();
 #endif
-	glClearColor(0.1f, 0.1f, 0.3f, 1.0f);
+	glClearColor(0.235f, 0.235f, 0.235f, 1.0f);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
@@ -263,7 +265,7 @@ void updateFPS(GLFWwindow* win, double elapsed_sec)
 
 void display_callback(GLFWwindow* win, double elapsed_sec)
 {
-	updateFPS(win, elapsed_sec);
+	//updateFPS(win, elapsed_sec);
 	drawScene(win, elapsed_sec);
 }
 
@@ -299,7 +301,7 @@ int main(int argc, char* argv[])
 	int is_fullscreen = 0;
 	int is_vsync = 1;
 	GLFWwindow* win = setup(gl_major, gl_minor,
-		1920, 1080, "Hello Modern 2D World", is_fullscreen, is_vsync);
+		1280, 720, "AVTblender", is_fullscreen, is_vsync);
 
 	run(win);
 	/**/

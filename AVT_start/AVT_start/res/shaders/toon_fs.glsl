@@ -3,19 +3,20 @@
 in vec3 exPosition;
 in vec2 exTexcoord;
 in vec3 exNormal;
-
 in vec3 view_pos;
-
-out vec4 FragmentColor;
+in vec3 light_pos;
 
 uniform vec3 u_AlbedoColor;
 uniform sampler2D u_Texture;
 
+out vec4 FragmentColor;
+
 void main(void)
 {
-    //light properties
-    vec3 light_pos      = vec3(5,5,5);
-    vec3 light_dir      = normalize(light_pos - exPosition);
+
+    // light properties
+	vec3 light_dir = normalize(light_pos - exPosition);
+
     float light_intensity = 0.7;
 
     //diffuse component
@@ -23,7 +24,7 @@ void main(void)
     float diffuse       = max(dot(light_dir, normal), 0.0) * light_intensity;
 
     //specular
-    vec3 view_dir       = normalize(view_pos - exPosition);
+    vec3 view_dir       = normalize(-exPosition);
     vec3 halfway_dir    = normalize(light_dir + view_dir);  
     float specular      = pow(max(dot(normal, halfway_dir), 0.0), 32.0) * light_intensity;
 

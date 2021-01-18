@@ -10,20 +10,33 @@ private:
 	double speed = 10;
 	bool animate_frame = false;
 	bool animate_cubes = false;
-	bool set_child = false;
 	double t_frame = 0.0f;
 	bool reset_cam = false;
 	bool save_img = false;
 	bool add_mesh = false;
 	bool new_mat = false;
 	bool move_obj = false;
+	bool new_obj = false;
+	bool enter_command = false;
+	int mesh_indicator = 0;
+	bool choosing_object = false;
 
 	float xDelta, yDelta;
 	double old_x = 0, old_y = 0;
 	double angle_x = M_PI_2 / 50, angle_y = M_PI / 50;
 
+	// gizmo manipulation
+	Vector4D worldDir;
+	Vector3D pos;
+	Vector2D screenDir;
+	bool gizmoActive = false;
+	double gizmo_x, gizmo_y, scale;
+	TransformInfo fullTransform,
+		localTransform;
+
 
 	void processInput(GLFWwindow* win, double elapsed);
+	void manipulateGizmo(GLFWwindow* win, double elapsed);
 	void animate(GLFWwindow* win, double elapsed);
 	void look(GLFWwindow* win, double elapsed);
 	void walk(GLFWwindow* win, double elapsed);
@@ -36,4 +49,25 @@ public:
 	void mouseButtonCallback(GLFWwindow* win, int button, int action, int mods);
 	void scrollCallback(GLFWwindow* win, double xoffset, double yoffset);
 	void update(GLFWwindow* win, double elapsed);
+	
+	void enterCommand();
+	
+	// Import Commands
+	void importMesh(string meshname); //x
+	void importShader(string shadername); //x
+	void importTexture(string texturename, string format); //x
+	
+	// Object Commands
+	void loadObject(string objecttype);
+	void createObject(string objname, string meshname, string materialname);
+
+	void removeObject(string objname); //x
+	void objectSetMaterial(string objname, string materialname); //x
+	void objectSetParent(string objname, string parentname); //x
+	
+	
+	void createMaterial(string materialname, string shadername); //x
+	void materialSetUniform(string materialname, string uniformname, string uniformtype, string uniform_value); //x
+	
+
 };

@@ -16,6 +16,7 @@ protected:
 	std::unordered_map<std::string, Mesh*> meshes;
 	std::unordered_map<std::string, Texture*> textures;
 	std::unordered_map<std::string, Material*> materials;
+	unsigned int counter = 1;
 
 	~Manager() {
 		shaders.clear();
@@ -108,5 +109,15 @@ public:
 		for (auto mesh_entry : meshes) {
 			mesh_entry.second->init();
 		}
+	}
+
+	unsigned int getCounter() {
+		return counter; //removed ++ otherwise new obj would increase +2
+	}
+	void incCounter() {
+		counter++; 
+	}
+	bool hasMesh(string meshname) {
+		return meshes.find(meshname) != meshes.end();
 	}
 };

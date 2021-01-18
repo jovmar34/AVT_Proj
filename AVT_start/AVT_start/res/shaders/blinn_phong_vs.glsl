@@ -7,10 +7,11 @@ layout(location=2) in vec3 inNormal;
 out vec3 exPosition;
 out vec2 exTexcoord;
 out vec3 exNormal;
-
 out vec3 view_pos;
+out vec3 light_pos;
 
 uniform mat4 ModelMatrix;
+uniform mat3 NormalMatrix;
 layout(std140) uniform Matrices{
 	mat4 ViewMatrix;
 	mat4 ProjectionMatrix;
@@ -18,15 +19,17 @@ layout(std140) uniform Matrices{
 
 void main(void)
 {
-	exPosition = inPosition;
-	exTexcoord = inTexcoord;
-	exNormal = inNormal;
-
-	//camera position
+	// camera position
 	mat4 view = inverse(ViewMatrix);
 	view_pos.x = view[3][0];
 	view_pos.y = view[3][1];
 	view_pos.z = view[3][2];
+	
+	// vertex info
+	exPosition = vec4(ViewMatrix * ModelMatrix * vec4(inPosition,1)).xyz;
+	exTexcoord = inTexcoord;
+	exNormal = NormalMatrix * inNormal;
+	light_pos = vec4(ViewMatrix * vec4(5,5,5,1)).xyz;
 
 	vec4 MCPosition = vec4(inPosition, 1.0);
 	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * MCPosition;

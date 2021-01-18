@@ -5,6 +5,15 @@
 #include "matrix.h"
 #include <cmath>
 
+struct TransformInfo {
+	Matrix4 transform;
+	Matrix4 inverse;
+
+	TransformInfo invert() {
+		return { inverse, transform };
+	}
+};
+
 class MxFactory {
 public:
 	// Matrix2: identity
@@ -25,4 +34,9 @@ public:
 	static Matrix4 invtranslation4(Vector3D translateVec);
 	static Matrix4 invrotation4(Vector3D axis, double theta);
 	static Matrix3 invrotation3(Vector3D axis, double theta);
+
+	// Transforms: useful for NormalMatrix
+	static TransformInfo scale(Vector3D scaleVec);
+	static TransformInfo translate(Vector3D translateVec);
+	static TransformInfo rotate(Vector3D axis, double theta);
 };

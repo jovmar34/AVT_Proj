@@ -10,9 +10,13 @@ struct SceneNode {
 	std::vector<SceneNode*> children;
 	Mesh* mesh = nullptr;
 	Matrix4 transform = MxFactory::identity4();
+	Matrix4 inverse = MxFactory::identity4();
 	Material* material = nullptr;
 	Material* outline = nullptr;
 	bool selected = true;
+	unsigned int id = -1;
+
+	TransformInfo parentInfo = { MxFactory::identity4(), MxFactory::identity4() };
 
 	//Debug thingies
 	std::string name;
@@ -27,5 +31,7 @@ struct SceneNode {
 
 	std::string getName();
 	Matrix4 getTransform();
+	TransformInfo getTransformInfo();
+	Matrix3 getNormal();
 	void init();
 };

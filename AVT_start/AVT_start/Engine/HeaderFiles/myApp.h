@@ -51,19 +51,19 @@ public:
 	
 	
 	// Import Commands
-	void importMesh(string meshname); //x
-	void importShader(string shadername); //x
+	void importMesh(string meshname);
+	void importShader(string shadername);
 	void importTexture(string texturename);
 	
 	// Object Commands
-	void loadObject(string objecttype); //x
+	void loadObject(string objecttype);
 	void createObject(string objname, string meshname, string materialname);
 	void destroyObject(string objname);
-	void objectSetMaterial(string objname, string materialname); //x
-	void objectSetParent(string objname, string parentname); //x
+	void objectSetMaterial(string objname, string materialname);
+	void objectSetParent(string objname, string parentname);
 	
 	
-	void createMaterial(string materialname, string shadername); //x
+	void createMaterial(string materialname, string shadername);
 	void materialSetUniform(string materialname, string uniformname, string uniformtype, string uniform_value);
 	
 };

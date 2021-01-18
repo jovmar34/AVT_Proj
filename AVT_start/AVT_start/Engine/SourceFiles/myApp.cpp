@@ -632,9 +632,7 @@ void myApp::createObject(string objecttype, string meshname, string materialname
 }
 
 void::myApp::destroyObject(string objname) {
-	//graph.removeChild(objname);
-	SceneNode* node = graph.getNode(objname);
-	SceneNode* parent = node->parent;
+	graph.removeObject(objname);
 }
 
 void myApp::createMaterial(string materialname, string shadername) {
@@ -654,7 +652,17 @@ void myApp::objectSetMaterial(string objname, string materialname) {
 void myApp::materialSetUniform(string materialname, string uniformname, string uniformtype, string uniform_value) {
 	Manager* h = Manager::getInstance();
 	Material* material = h->getMaterial(materialname);
-	//do stuff
+	
+	if (uniformtype == "float") {
+		material->setUniform1float(uniformname, std::stof(uniform_value));
+	}
+	else if (uniformtype == "int") {
+		material->setUniform1int(uniformname, std::stoi(uniform_value));
+	}
+	else if (uniformtype == "texture") {
+		Texture * tex = h->getTexture(uniform_value);
+		material->setTexture(tex);
+	}
 }
 
 void myApp::objectSetParent(string objname, string parentname) {

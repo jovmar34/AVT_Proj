@@ -373,3 +373,21 @@ void SceneGraph::changeMaterial(std::string objname, Material* material) {
 	SceneNode* object = nameMap[objname];
 	object->material = material;
 }
+
+void SceneGraph::removeObject(std::string objName)
+{
+	SceneNode* node = nameMap[objName];
+	for (auto child : node->children) {
+		changeParent(child->name, "root");
+	}
+
+	SceneNode* parent = node->parent;
+	parent->children.erase(std::remove(parent->children.begin(), parent->children.end(), node), parent->children.end());
+
+	node->children = std::vector<SceneNode*>();
+	node->parent = nullptr;
+	node->material = nullptr;
+	node->outline = nullptr;
+	delete node;
+	selected = 0;
+}

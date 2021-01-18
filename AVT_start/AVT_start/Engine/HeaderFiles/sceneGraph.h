@@ -74,6 +74,8 @@ public:
 	void changeParent(std::string node, std::string newParent);
 	void changeMaterial(std::string objname, Material* material);
 
+	void removeObject(std::string objname);
+
 	// Debug
 	void describe();
 

@@ -246,6 +246,11 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 		case GLFW_KEY_M:
 			choosing_object = !choosing_object;
 			break;
+		case GLFW_KEY_DELETE:
+			if (graph.getSelected()) {
+				graph.removeObject(graph.getSelected()->name);
+			}
+			break;
 		case GLFW_KEY_1:
 			if (choosing_object)
 			{

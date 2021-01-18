@@ -99,7 +99,6 @@ void window_close_callback(GLFWwindow* win)
 
 void window_size_callback(GLFWwindow* win, int winx, int winy)
 {
-	std::cout << "size: " << winx << " " << winy << std::endl;
 	glViewport(0, 0, winx, winy);
 }
 
@@ -120,12 +119,10 @@ void mouse_button_callback(GLFWwindow* win, int button, int action, int mods)
 
 void scroll_callback(GLFWwindow* win, double xoffset, double yoffset)
 {
-	std::cout << "scroll: " << xoffset << " " << yoffset << std::endl;
 }
 
 void joystick_callback(int jid, int event)
 {
-	std::cout << "joystick: " << jid << " " << event << std::endl;
 }
 
 ///////////////////////////////////////////////////////////////////////// SETUP

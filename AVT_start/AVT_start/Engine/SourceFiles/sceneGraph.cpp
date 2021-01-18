@@ -272,10 +272,15 @@ void SceneGraph::draw()
 
 
 	// draw grid
+	glDisable(GL_CULL_FACE);
+
 	grid->material->bind();
 	grid->material->update(grid->transform, invTransView * grid->inverse.transpose().decrease());
 	grid->mesh->draw();
 	grid->material->unbind();
+
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 }
 
 void SceneGraph::setTransform(std::string node, Matrix4 transform)

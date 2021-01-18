@@ -30,7 +30,7 @@ void main()
     // angle alpha falloff
     vec3 normal = normalize(exNormal);
     vec3 view_dir = normalize(-exPosition);
-    float angleAlpha = pow(max(dot(normal, view_dir), 0.0), alphaFalloff);
+    float angleAlpha = pow(max(abs(dot(normal, view_dir)), 0.1), alphaFalloff);
     float gridAlpha = gridAlpha * angleAlpha;
     float axisAlpha = axisAlpha * angleAlpha;
 

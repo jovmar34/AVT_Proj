@@ -1,4 +1,5 @@
 #include "..\HeaderFiles\camera.h"
+#include "../HeaderFiles/mxfactory.h"
 
 Camera::Camera(Vector3D _eye, Vector3D _center, Vector3D _up) : eye(_eye), center(_center), up(_up)
 {
@@ -58,17 +59,12 @@ void Camera::look(double angle_h, double angle_v)
 {
 	if (state == Working::Off) return;
 
-	Vector3D dir = center - eye;
-	double len = dir.length();
+	Matrix4 transform = MxFactory::translation4(center) *
+		MxFactory::rotation4(s, angle_v) * 
+		MxFactory::rotation4(Vector3D(0,1,0), angle_h) *
+		MxFactory::translation4(eye - center);
 
-	double sin1 = sin(angle_h), cos1 = cos(angle_h);
-	double sin2 = sin(angle_v), cos2 = cos(angle_v);
-
-	Vector3D rot = len * cos1 * cos2 * v +
-		-len * sin2 * u +
-		len * sin1 * cos2 * s;
-
-	center = eye + rot;
+	eye = (transform * Vector4D(0, 0, 0, 1)).to3D();
 
 	updateView();
 }

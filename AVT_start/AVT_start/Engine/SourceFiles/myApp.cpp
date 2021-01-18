@@ -80,6 +80,8 @@ void myApp::animate(GLFWwindow* win, double elapsed)
 
 void myApp::look(GLFWwindow* win, double elapsed)
 {
+	if (!move_camera) return;
+
 	Camera* cam = graph.getCam();
 
 	double x, y;
@@ -92,7 +94,7 @@ void myApp::look(GLFWwindow* win, double elapsed)
 	double move_y = (y - old_y);
 
 	if (move_x != 0 || move_y != 0)
-		cam->look(angle_x * move_x * elapsed, angle_y * move_y * elapsed);
+		cam->look(3 * move_x * elapsed, 3 * move_y * elapsed);
 
 	old_x = x;
 	old_y = y;
@@ -186,11 +188,10 @@ void myApp::populateScene()
 	graph.getNode("torus")->shaderName = "blinn_phong_shader";
 	graph.getNode("torus")->vertexShaderFile = "res/shaders/blinn_phong_vs.glsl";
 	graph.getNode("torus")->fragmentShaderFile = "res/shaders/blinn_phong_fs.glsl";
+
+
 	Material* gooch_mat = h->addMaterial("gooch_mat", new Material(gooch_shader));
 	gooch_mat->setUniformVec3("u_AlbedoColor", Vector3D(0.8f, 0.8f, 0.8f));
-
-	//cube
-	graph.addChild(gooch_mat, cube_mesh, "cube");
 
 	//torus
 	graph.addChild(blinnphong_mat, torus_mesh, "torus");
@@ -231,20 +232,8 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 				cam->parallelProjection(-10, 10, -10, 10, 1, 50);
 			}
 			break;
-		case GLFW_KEY_ESCAPE:
-			if (cam->state == Working::On) {
-				glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			}
-			else {
-				glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-			}
-			cam->toggle();
-			break;
 		case GLFW_KEY_LEFT_SHIFT:
 			sprint_factor = 1;
-			break;
-		case GLFW_KEY_F:
-			animate_frame = true;
 			break;
 		case GLFW_KEY_R:
 			if (!gizmoActive)
@@ -415,34 +404,6 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 			graph.applyTransform("root", rot);
 		}
 	}
-	else if (key == GLFW_KEY_A) //a key (left)- camera movement
-	{
-		cam->toggle();
-		Vector3D axis(1, 0, 0);
-		cam->move(axis, -0.2);
-		cam->toggle();
-	}
-	else if (key == GLFW_KEY_D) //d key (right)- camera movement
-	{
-		cam->toggle();
-		Vector3D axis(1, 0, 0);
-		cam->move(axis, 0.2);
-		cam->toggle();
-	}
-	else if (key == GLFW_KEY_S)//s key (down) - camera movement
-	{
-		cam->toggle();
-		Vector3D axis(0, 0, -1);
-		cam->move(axis, 0.2);
-		cam->toggle();
-	}
-	else if (key == GLFW_KEY_W)//w key (up) - camera movement
-	{
-		cam->toggle();
-		Vector3D axis(0, 0, 1);
-		cam->move(axis, 0.2);
-		cam->toggle();
-	}
 }
 
 void myApp::mouseCallback(GLFWwindow* win, double xpos, double ypos) {
@@ -467,8 +428,9 @@ void myApp::mouseCallback(GLFWwindow* win, double xpos, double ypos) {
 
 
 void myApp::scrollCallback(GLFWwindow* win, double xoffset, double yoffset) {
+	/** /
 	Camera* cam = graph.getCam();
-	cam->toggle();
+	//cam->toggle();
 	if (yoffset == 1) {
 		cout << "up\n";
 		Vector3D dir(0, 0, 1);
@@ -479,11 +441,31 @@ void myApp::scrollCallback(GLFWwindow* win, double xoffset, double yoffset) {
 		Vector3D dir(0, 0, 1);
 		cam->move(dir, -1);
 	}
-	cam->toggle();
+	//cam->toggle();
+	/**/
 }
 
 void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mods)
 {
+	if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
+		if (action == GLFW_PRESS) {
+			glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			
+			double x, y;
+			glfwGetCursorPos(win, &x, &y);
+
+			old_x = x; old_y = y;
+
+			move_camera = true;
+		}
+		else if (action == GLFW_RELEASE) {
+			glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			move_camera = false;
+		}
+	}
+
+	if (move_camera) return;
+
 	if (button == GLFW_MOUSE_BUTTON_LEFT) {
 		double xpos, ypos;
 		int height, width;
@@ -575,22 +557,6 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 				}
 			}
 		}
-	}
-
-	Camera* cam = graph.getCam();
-	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) { //object movement
-		move_obj = true;
-	}
-	else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) { //object movement
-		move_obj = false;
-	}
-	else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) { //camera movement
-		cam->toggle();
-	}
-	else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) { //camera movement
-		cam->toggle();
-	}
-	else if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS) { //not sure if we'll need this
 	}
 }
 

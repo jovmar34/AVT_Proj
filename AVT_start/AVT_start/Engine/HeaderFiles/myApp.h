@@ -6,11 +6,9 @@
 
 class myApp : IApp {
 private:
+	bool move_camera = false;
 	double sprint_factor = 1;
 	double speed = 10;
-	bool animate_frame = false;
-	bool animate_cubes = false;
-	double t_frame = 0.0f;
 	bool reset_cam = false;
 	bool save_img = false;
 	bool add_mesh = false;

@@ -46,15 +46,22 @@ public:
 	void mouseCallback(GLFWwindow* win, double xpos, double ypos) { }
 	void mouseButtonCallback(GLFWwindow* win, int button, int action, int mods);
 	void update(GLFWwindow* win, double elapsed);
-	void loadObject(string objecttype);
+	
 	void enterCommand();
-	void importMesh(string meshname);
+	
+	void loadObject(string objecttype); //x
+	
+	void importMesh(string meshname); //x
 	void importShader(string shadername);
 	void importTexture(string texturename);
+	
 	void createMaterial(string materialname, string shadername);
 	void createObject(string objname, string meshname, string materialname);
+	
 	void destroyObject(string objname);
-	void objectSetMaterial(string objname, string materialname);
+	
+	void objectSetMaterial(string objname, string materialname); //x
+	void objectSetParent(string objname, string parentname); //x
+	
 	void materialSetUniform(string materialname, string uniformname, string uniformtype, string uniform_value);
-	void objectSetParent(string objname, string parentname);
 };

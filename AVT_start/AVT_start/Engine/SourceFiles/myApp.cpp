@@ -518,7 +518,7 @@ void myApp::enterCommand() {
 
 
 	//
-	while ( getline(parsable, current, ' ' )) {
+	while ( getline(parsable, current, ',' )) {
 		tokens.push_back(current);
 	}
 
@@ -527,10 +527,11 @@ void myApp::enterCommand() {
 		cout << tokens[i] << '\n';
 	}
 	
+	
 	if (tokens[0] == "LoadObject") {
 		loadObject(tokens[1]);
 	}
-	if (tokens[0] == "ImportMesh") {
+	if (tokens[0] == "ImportMesh") { 
 		importMesh(tokens[1]);
 	}
 	
@@ -619,6 +620,9 @@ void myApp::createObject(string objecttype, string meshname, string materialname
 
 void::myApp::destroyObject(string objname) {
 	//graph.removeChild(objname);
+	SceneNode* node = graph.getNode(objname);
+	SceneNode* parent = node->parent;
+
 }
 
 void myApp::createMaterial(string materialname, string shadername) {

@@ -266,7 +266,7 @@ void updateFPS(GLFWwindow* win, double elapsed_sec)
 
 void display_callback(GLFWwindow* win, double elapsed_sec)
 {
-	updateFPS(win, elapsed_sec);
+	//updateFPS(win, elapsed_sec);
 	drawScene(win, elapsed_sec);
 }
 
@@ -302,7 +302,7 @@ int main(int argc, char* argv[])
 	int is_fullscreen = 0;
 	int is_vsync = 1;
 	GLFWwindow* win = setup(gl_major, gl_minor,
-		1920, 1080, "Hello Modern 2D World", is_fullscreen, is_vsync);
+		1280, 720, "AVTblender", is_fullscreen, is_vsync);
 
 	run(win);
 	/**/

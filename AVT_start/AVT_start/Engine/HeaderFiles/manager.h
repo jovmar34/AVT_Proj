@@ -85,4 +85,7 @@ public:
 	void incCounter() {
 		counter++; 
 	}
+	bool hasMesh(string meshname) {
+		return meshes.find(meshname) != meshes.end();
+	}
 };

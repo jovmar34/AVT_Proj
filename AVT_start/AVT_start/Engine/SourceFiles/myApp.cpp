@@ -349,7 +349,7 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 				new_mat = true;
 			break;
 		case GLFW_KEY_C:
-			enter_command = true;
+			enter_command = !enter_command;
 		}
 	}
 	else if (action == GLFW_PRESS) {
@@ -602,17 +602,6 @@ void myApp::update(GLFWwindow *win, double elapsed)
 		save(win);
 		save_img = false;
 	}
-	if (add_mesh) {
-		Manager* h = Manager::getInstance();
-		Mesh* mesh = h->addMesh("new_mesh", new Mesh("new_mesh", "res/meshes/smooth.obj"));
-		mesh->init();
-
-		Material* material = h->getMaterial("test_mat_g");
-
-		graph.setCurrToRoot();
-		graph.addChild(material, mesh, "new_guy", MxFactory::translation4(Vector3D(0,5,0)));
-		add_mesh = false;
-	}
 	if (new_mat) {
 		Manager* h = Manager::getInstance();
 		SceneNode* node = graph.getNode("cube");
@@ -678,7 +667,7 @@ void myApp::update(GLFWwindow *win, double elapsed)
 
 void myApp::enterCommand() {
 	std::string command;
-	cout << "Howdy! Please enter your command! (Enter 'Help' to see command list)\n";
+	cout << "\nPlease enter your commands! When you are finished type 'Done' (Enter 'Help' to see command list)\n";
 	cin >> command;
 
 	//init components
@@ -740,30 +729,32 @@ void myApp::enterCommand() {
 	}
 
 	else if (tokens[0] == "Help") {
-		cout << "-------------------------------------------------\n"
-			<< "\nHere is a list of our commands in the format they should be written:\n"
-			<< "-----Import instructions-----\n"
-			<< "ImportMesh,meshname\n"
-			<< "ImportShader,shadername\n"
-			<< "ImportTexture,texturename,format\n"
-			<< "\n-----Object Creation-----\n"
-			<< "LoadObject,objectname\n"
-			<< "CreateObject,objectname,meshname,materialname\n"
-			<< "RemoveObject,objectname\n"
-			<< "\n-----Materials-----\n"
-			<< "CreateMaterial,materialname,shadername\n"
-			<< "ObjectSetMaterial,objectname,materialname\n"
-			<< "MaterialSetUniform,materialname,uniformname,uniformtype,uniformvalue\n"
-			<< "\n-----Scene-----\n"
-			<< "SaveScene //WIP\n"
-			<< "LoadScene //WIP\n"
-			<< "\nFor more information please refer to the manual\n"
-			<< "-------------------------------------------------\n";
+		cout << "-------------------------------------------------------------------------\n\n"
+			 << "|Here is a list of our commands in the format they should be written:    |\n"
+			 << "|                   -----Import instructions-----                        |\n"
+			 << "| o ImportMesh,meshname                                                  |\n" 
+			 << "| o ImportShader,shadername                                              |\n"
+			 << "| o ImportTexture,texturename,format                                     |\n\n"
+			 << "|                    -----Object Creation-----                           |\n"
+			 << "| o LoadObject,objectname                                                |\n"
+			 << "| o CreateObject,objectname,meshname,materialname                        |\n"
+			 << "| o RemoveObject,objectname                                              |\n\n"
+			 << "|                       -----Materials-----                              |\n"
+			 << "| o CreateMaterial,materialname,shadername                               |\n"
+			 << "| o ObjectSetMaterial,objectname,materialname                            |\n"
+			 << "| o MaterialSetUniform,materialname,uniformname,uniformtype,uniformvalue |\n\n"
+			 << "|                        -----Scene-----                                 |\n"
+			 << "| o SaveScene //WIP                                                      |\n"
+			 << "| o LoadScene //WIP                                                      |\n"
+			 << "\n| For more information please refer to the manual                      |\n"
+			 << "-------------------------------------------------------------------------\n";
+	}
+	else if (tokens[0] == "Done") {
+		enter_command = false;
 	}
 	else
 		cout << "Sorry but that command does not exist!\n";
 	
-	enter_command = false;
 }
 
 void myApp::importMesh(string meshname) {
@@ -802,6 +793,7 @@ void myApp::loadObject(string objecttype) {
 	graph.setTransforms(objectname, { MxFactory::translate(Vector3D(1,1,1)) });
 	add_mesh = false;
 	mesh_indicator = 0;
+	choosing_object = false;
 }
 
 void myApp::createObject(string objecttype, string meshname, string materialname) {

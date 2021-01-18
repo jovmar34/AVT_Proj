@@ -9,6 +9,7 @@
 #include <stack>
 #include <cmath>
 #include <unordered_map>
+#include <stdio.h>
 #include "matrix.h"
 #include "camera.h"
 #include "mxfactory.h"

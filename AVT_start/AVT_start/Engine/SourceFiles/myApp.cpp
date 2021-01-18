@@ -338,7 +338,7 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 				new_mat = true;
 			break;
 		case GLFW_KEY_C:
-			enter_command = true;
+			enter_command = !enter_command;
 		}
 	}
 	else if (action == GLFW_PRESS) {
@@ -633,7 +633,7 @@ void myApp::update(GLFWwindow *win, double elapsed)
 
 void myApp::enterCommand() {
 	std::string command;
-	cout << "Howdy! Please enter your command! (Enter 'Help' to see command list)\n";
+	cout << "\nPlease enter your commands! When you are finished type 'Done' (Enter 'Help' to see command list)\n";
 	cin >> command;
 
 	//init components
@@ -693,44 +693,67 @@ void myApp::enterCommand() {
 	else if (tokens[0] == "SaveScene") {
 		//
 	}
-
+	else if (tokens[0] == "SeeAssets") {
+		seeAssets();
+	}
 	else if (tokens[0] == "Help") {
-		cout << "-------------------------------------------------\n"
-			<< "\nHere is a list of our commands in the format they should be written:\n"
-			<< "-----Import instructions-----\n"
-			<< "ImportMesh,meshname\n"
-			<< "ImportShader,shadername\n"
-			<< "ImportTexture,texturename,format\n"
-			<< "\n-----Object Creation-----\n"
-			<< "LoadObject,objectname\n"
-			<< "CreateObject,objectname,meshname,materialname\n"
-			<< "RemoveObject,objectname\n"
-			<< "\n-----Materials-----\n"
-			<< "CreateMaterial,materialname,shadername\n"
-			<< "ObjectSetMaterial,objectname,materialname\n"
-			<< "MaterialSetUniform,materialname,uniformname,uniformtype,uniformvalue\n"
-			<< "\n-----Scene-----\n"
-			<< "SaveScene //WIP\n"
-			<< "LoadScene //WIP\n"
-			<< "\nFor more information please refer to the manual\n"
-			<< "-------------------------------------------------\n";
+		cout << "-------------------------------------------------------------------------\n\n"
+			 << "|Here is a list of our commands in the format they should be written:    |\n"
+			 << "|                   -----Import instructions-----                        |\n"
+			 << "| o ImportMesh,meshname                                                  |\n" 
+			 << "| o ImportShader,shadername                                              |\n"
+			 << "| o ImportTexture,texturename,format                                     |\n\n"
+			 << "|                       -----Objects-----                                |\n"
+			 << "| o LoadObject,objectname                                                |\n"
+			 << "| o CreateObject,objectname,meshname,materialname                        |\n"
+			 << "| o RemoveObject,objectname                                              |\n"
+			 << "| o ObjectSetParent,objectname,parentname                                |\n\n"
+			 << "|                       -----Materials-----                              |\n"
+			 << "| o CreateMaterial,materialname,shadername                               |\n"
+			 << "| o ObjectSetMaterial,objectname,materialname                            |\n"
+			 << "| o MaterialSetUniform,materialname,uniformname,uniformtype,uniformvalue |\n\n"
+			 << "|                        -----Scene-----                                 |\n"
+		     << "| o SeeAssets                                                            |\n"
+			 << "| o DescribeScene                                                        |\n"
+			 << "| o SaveScene //WIP                                                      |\n"
+			 << "| o LoadScene //WIP                                                      |\n"
+			 << "| For more detailed information please refer to the manual               |\n"
+			 << "-------------------------------------------------------------------------\n";
+	}
+	else if (tokens[0] == "Done") {
+		enter_command = false;
 	}
 	else
 		cout << "Sorry but that command does not exist!\n";
 	
-	enter_command = false;
 }
 
+bool myApp::checkFile(string filename) {
+	FILE* file;
+	const char* filenameChar = filename.c_str();
+	if (errno_t err = fopen_s(&file, filenameChar, "r") != 0) {
+		
+		cout << "No such file exists";
+		return false;
+	}
+	else {
+		return true;
+	}
+}
 void myApp::importMesh(string meshname) {
 	Manager* h = Manager::getInstance();
 	string meshlocation = "res/meshes/" + meshname + ".obj";
+	checkFile(meshlocation);
 	Mesh* mesh = h->addMesh(meshname, new Mesh(meshname, meshlocation));
+	
 }
 
 void myApp::importShader(string shadername) {
 	Manager* h = Manager::getInstance();
 	string shaderFragment = "res/shaders/" + shadername + "_fs.glsl";
 	string shaderVertex = "res/shaders/" + shadername + "_vs.glsl";
+	checkFile(shaderFragment);
+	checkFile(shaderVertex);
 	Shader* shader = h->addShader(shadername, new Shader(shadername, shaderVertex, shaderFragment));
 	shader->addUniformBlock("Matrices", 0);
 }
@@ -738,6 +761,7 @@ void myApp::importShader(string shadername) {
 void myApp::importTexture(string texturename, string format) {
 	Manager* h = Manager::getInstance();
 	string texturelocation = "res/textures/" + texturename + "." + format;
+	checkFile(texturelocation);
 	Texture* texture = h->addTexture(texturename, new Texture(texturename, texturelocation));
 }
 
@@ -757,6 +781,7 @@ void myApp::loadObject(string objecttype) {
 	graph.setTransforms(objectname, { MxFactory::translate(Vector3D(1,1,1)) });
 	add_mesh = false;
 	mesh_indicator = 0;
+	choosing_object = false;
 }
 
 void myApp::createObject(string objecttype, string meshname, string materialname) {
@@ -812,4 +837,28 @@ void myApp::materialSetUniform(string materialname, string uniformname, string u
 
 void myApp::objectSetParent(string objname, string parentname) {
 	graph.changeParent(objname, parentname);
+}
+
+void myApp::seeAssets() {
+	Manager* h = Manager::getInstance();
+	std::unordered_map<std::string, Shader*> shaders = h->getShaders();
+	std::unordered_map<std::string, Mesh*> meshes = h->getMeshes();
+	std::unordered_map<std::string, Texture*> textures = h->getTextures();
+	std::unordered_map<std::string, Material*> materials = h->getMaterials();
+	cout << "\nShaders:\n";
+	for (auto i : shaders) {
+		cout << " - " + i.first + "\n";
+	}
+	cout << "Meshes:\n";
+	for (auto i : meshes) {
+		cout << " - " + i.first + "\n";
+	}
+	cout << "Textures:\n";
+	for (auto i : textures) {
+		cout << " - " + i.first + "\n";
+	}
+	cout << "\Materials:\n";
+	for (auto i : materials) {
+		cout << " - " + i.first + "\n";
+	}
 }

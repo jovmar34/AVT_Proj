@@ -518,7 +518,7 @@ void myApp::enterCommand() {
 
 
 	//
-	while ( getline(parsable, current, '/' )) {
+	while ( getline(parsable, current, ',' )) {
 		tokens.push_back(current);
 	}
 

@@ -415,6 +415,34 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 			graph.applyTransform("root", rot);
 		}
 	}
+	else if (key == GLFW_KEY_A) //a key (left)- camera movement
+	{
+		cam->toggle();
+		Vector3D axis(1, 0, 0);
+		cam->move(axis, -0.2);
+		cam->toggle();
+	}
+	else if (key == GLFW_KEY_D) //d key (right)- camera movement
+	{
+		cam->toggle();
+		Vector3D axis(1, 0, 0);
+		cam->move(axis, 0.2);
+		cam->toggle();
+	}
+	else if (key == GLFW_KEY_S)//s key (down) - camera movement
+	{
+		cam->toggle();
+		Vector3D axis(0, 0, -1);
+		cam->move(axis, 0.2);
+		cam->toggle();
+	}
+	else if (key == GLFW_KEY_W)//w key (up) - camera movement
+	{
+		cam->toggle();
+		Vector3D axis(0, 0, 1);
+		cam->move(axis, 0.2);
+		cam->toggle();
+	}
 }
 
 void myApp::mouseCallback(GLFWwindow* win, double xpos, double ypos) {
@@ -547,6 +575,22 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 				}
 			}
 		}
+	}
+
+	Camera* cam = graph.getCam();
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) { //object movement
+		move_obj = true;
+	}
+	else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) { //object movement
+		move_obj = false;
+	}
+	else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) { //camera movement
+		cam->toggle();
+	}
+	else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) { //camera movement
+		cam->toggle();
+	}
+	else if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS) { //not sure if we'll need this
 	}
 }
 

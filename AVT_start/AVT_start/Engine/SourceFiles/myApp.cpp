@@ -508,7 +508,6 @@ void myApp::enterCommand() {
 	std::string command;
 	cout << "Howdy! Please enter your command!\n";
 	cin >> command;
-	cout << "Thanks!\n";
 
 	//init components
 	vector <string> tokens;
@@ -527,48 +526,50 @@ void myApp::enterCommand() {
 		cout << tokens[i] << '\n';
 	}
 	
-	
+
 	if (tokens[0] == "LoadObject") {
 		loadObject(tokens[1]);
 	}
-	if (tokens[0] == "ImportMesh") { 
+	else if (tokens[0] == "ImportMesh") { 
 		importMesh(tokens[1]);
 	}
-	if (tokens[0] == "ImportShader") {
+	else if (tokens[0] == "ImportShader") {
 		importShader(tokens[1]);
 	}
-	if (tokens[0] == "ImportTexture") {
+	else if (tokens[0] == "ImportTexture") {
 		importTexture(tokens[1]);
 	}
-	if (tokens[0] == "CreateMaterial") {
+	else if (tokens[0] == "CreateMaterial") {
 		createMaterial(tokens[1], tokens[2]);
 	}
-	if (tokens[0] == "CreateObject") {
+	else if (tokens[0] == "CreateObject") {
 		createObject(tokens[1], tokens[2], tokens[3]);
 	}
-	if (tokens[0] == "DestroyObject") {
+	else if (tokens[0] == "DestroyObject") {
 		destroyObject(tokens[1]);
 	}
-	if (tokens[0] == "DescribeScene") {
+	else if (tokens[0] == "DescribeScene") {
 		graph.describe();
 	}
-	if (tokens[0] == "ObjectSetMaterial") {
+	else if (tokens[0] == "ObjectSetMaterial") {
 		objectSetMaterial(tokens[1], tokens[2]);
 	}
-	if (tokens[0] == "MaterialSetUniform") {
+	else if (tokens[0] == "MaterialSetUniform") {
 		materialSetUniform(tokens[1], tokens[2], tokens[3], tokens[4]);
 	}
-	if (tokens[0] == "ObjectSetParent") {
+	else if (tokens[0] == "ObjectSetParent") {
 		objectSetParent(tokens[1], tokens[2]);
 	}
-	if (tokens[0] == "LoadScene") {
+	else if (tokens[0] == "LoadScene") {
 		//
 	}
-	if (tokens[0] == "SaveScene") {
+	else if (tokens[0] == "SaveScene") {
 		//
 	}
-	else
+	else 
+	{
 		cout << "Sorry but that command does not exist!\n";
+	}
 	enter_command = false;
 }
 
@@ -582,7 +583,7 @@ void myApp::importShader(string shadername) {
 	Manager* h = Manager::getInstance();
 	string shaderFragment = "res/shaders/" + shadername + "_fs.glsl";
 	string shaderVertex = "res/shaders/" + shadername + "_vs.glsl";
-	Shader* shader = h->addShader(shadername, new Shader(shaderFragment, shaderVertex));
+	Shader* shader = h->addShader(shadername, new Shader(shaderVertex, shaderFragment));
 	shader->addUniformBlock("Matrices", 0);
 }
 
@@ -629,7 +630,6 @@ void::myApp::destroyObject(string objname) {
 	//graph.removeChild(objname);
 	SceneNode* node = graph.getNode(objname);
 	SceneNode* parent = node->parent;
-
 }
 
 void myApp::createMaterial(string materialname, string shadername) {

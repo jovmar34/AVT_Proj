@@ -1,4 +1,5 @@
 #include "..\HeaderFiles\serializer.h"
+#include <algorithm>
 
 SceneSerializer::SceneSerializer(Camera* cam, Manager* man, SceneNode* par) {
 	_camera = cam;
@@ -161,35 +162,59 @@ void SceneSerializer::serialize(const std::string& filepath)
 	file.close();
 }
 
-double* extractNumbers(std::string str)
+//Auxiliar functions
+double* extractVectorValues(std::string str)
 {
-	int i = 0;
-	double* numbers = new double[9];
-	std::fill_n(numbers, 9, 0);
-
+	double* numbers = new double[16];
+	std::fill_n(numbers, 16, 0);
 	std::string temp;
-	for (int x = 0; x < str.length(); x++ ) {
-		if (isdigit(str[x])) {
-			temp.push_back(str[x]);
-			numbers[i] = std::stoi(temp);
+	int j = 0;
 
-			for (int y = x + 1; y < str.length(); y++) {
-				if (y >= str.length()) break;
-				else if (isdigit(str[y])) {
-					temp.push_back(str[y]);
-					if (numbers[i] == 0 && str[y-1] == '.') numbers[i] = std::stoi(temp) / 10;
-					else numbers[i] = numbers[i] * 10 + std::stoi(temp);
-					x = y;
-				}
-				else break;
+	//Delete (, ) and ,
+	str.erase(std::remove(str.begin(), str.end(), '('), str.end());
+	str.erase(std::remove(str.begin(), str.end(), ')'), str.end());
+	std::replace(str.begin(), str.end(), ',', ' ');
+	for (int i = 0; i < str.length(); i++) {
+		if (str[i] != ' ') {
+			temp.push_back(str[i]);
+		}
+		else {
+			if (str[i] == ' ' && str[i + 1] != ' ') {
+				double number = std::stod(temp);
+				numbers[j++] = number;
+				temp.clear();
 			}
-			temp.clear();
-			i++;
 		}
 	}
 
 	return numbers;
 }
+
+double* extractMatrixValues(std::string str)
+{
+	double* numbers = new double[16];
+	std::fill_n(numbers, 16, 0);
+	std::string temp;
+	int j = 0;
+
+	//Delete [ and ] 
+	str.erase(std::remove(str.begin(), str.end(), '['), str.end());
+	str.erase(std::remove(str.begin(), str.end(), ']'), str.end());
+	
+	for (int i = 0; i < str.length(); i++) {
+		if (str[i] != ' ') {
+			temp.push_back(str[i]);
+		}
+		else {
+			double number = std::stod(temp);
+			numbers[j++] = number;
+			temp.clear();
+		}
+	}
+
+	return numbers;
+}
+
 
 void SceneSerializer::deserialize(const std::string& filepath)
 {
@@ -198,7 +223,7 @@ void SceneSerializer::deserialize(const std::string& filepath)
 	std::string shader_name, shaderV_path, shaderF_path, mesh_name, mesh_filepath, texture_name, texture_filepath, material_name;
 	std::string vector_name, matrix_name, int_name, float_name, node_name;
 	size_t pos = 0;
-	int l, children;
+	int l, ind, children;
 	double* numbers;
 	double* aux = new double[16];
 	Matrix4 invViewMatrix;
@@ -226,7 +251,7 @@ void SceneSerializer::deserialize(const std::string& filepath)
 			pos = ecu.find(delimiter);
 			ecu.erase(0, pos + delimiter.length());
 			//ecu = "(x, x, x), (y, y, y), (z, z, z)
-			numbers = extractNumbers(ecu);
+			numbers = extractVectorValues(ecu);
 			Vector3D eye(numbers[0], numbers[1], numbers[2]);
 			Vector3D center(numbers[3], numbers[4], numbers[5]);
 			Vector3D up(numbers[6], numbers[7], numbers[8]);
@@ -240,27 +265,41 @@ void SceneSerializer::deserialize(const std::string& filepath)
 			//View Matrix
 			std::getline(file, matrix);
 			l = 0;
+			ind = 0;
 			if (matrix == "- View Matrix: ") {
+				int j = 0;
 				while (l < 4) {
 					std::getline(file, matrix);
-					numbers = extractNumbers(matrix);
+					numbers = extractMatrixValues(matrix);
+					aux[j] = numbers[0];
+					aux[j + 1] = numbers[1];
+					aux[j + 2] = numbers[2];
+					aux[j + 3] = numbers[3];
 					l++;
+					j += 4;
 				}
 			}
-			Matrix4 viewMatrix(numbers[0], numbers[1], numbers[2], numbers[3], numbers[4], numbers[5], numbers[6], numbers[7], numbers[8], numbers[9], numbers[10], numbers[11], numbers[12], numbers[13], numbers[14], numbers[15]);
+			Matrix4 viewMatrix(aux[0], aux[1], aux[2], aux[3], aux[4], aux[5], aux[6], aux[7], aux[8], aux[9], aux[10], aux[11], aux[12], aux[13], aux[14], aux[15]);
 			std::getline(file, matrix);
 
 			//Projection Matrix
 			std::getline(file, matrix);
 			l = 0;
+			ind = 0;
 			if (matrix == "- Projection Matrix: ") {
+				int j = 0;
 				while (l < 4) {
 					std::getline(file, matrix);
-					numbers = extractNumbers(matrix);
+					numbers = extractMatrixValues(matrix);
+					aux[j] = numbers[0];
+					aux[j + 1] = numbers[1];
+					aux[j + 2] = numbers[2];
+					aux[j + 3] = numbers[3];
 					l++;
+					j += 4;
 				}
 			}
-			Matrix4 projMatrix(numbers[0], numbers[1], numbers[2], numbers[3], numbers[4], numbers[5], numbers[6], numbers[7], numbers[8], numbers[9], numbers[10], numbers[11], numbers[12], numbers[13], numbers[14], numbers[15]);
+			Matrix4 projMatrix(aux[0], aux[1], aux[2], aux[3], aux[4], aux[5], aux[6], aux[7], aux[8], aux[9], aux[10], aux[11], aux[12], aux[13], aux[14], aux[15]);
 			std::getline(file, matrix);
 
 			//InvView Matrix
@@ -270,19 +309,17 @@ void SceneSerializer::deserialize(const std::string& filepath)
 				int j = 0;
 				while (l < 4) {
 					std::getline(file, matrix);
-					numbers = extractNumbers(matrix);
+					numbers = extractMatrixValues(matrix);
 					aux[j] = numbers[0];
 					aux[j+1] = numbers[1];
 					aux[j+2] = numbers[2];
 					aux[j+3] = numbers[3];
 					l++;
 					j += 4;
-					//cout << aux[0] << endl;
 				}
 			}
 			
 			Matrix4 invViewMatrix(aux[0], aux[1], aux[2], aux[3], aux[4], aux[5], aux[6], aux[7], aux[8], aux[9], aux[10], aux[11], aux[12], aux[13], aux[14], aux[15]);
-			//cout << invViewMatrix.toString();
 
 			//Camera creation
 			Camera cam = Camera(eye, center, up);
@@ -387,7 +424,7 @@ void SceneSerializer::deserialize(const std::string& filepath)
 					pos = line.find(delimiter);
 					line.erase(0, pos + delimiter.length());
 					//line = "(x, x, x, x)"
-					numbers = extractNumbers(line);
+					numbers = extractVectorValues(line);
 					Vector4D vec4(numbers[0], numbers[1], numbers[2], numbers[3]);
 					vals_Vec4[vector_name] = vec4;
 
@@ -407,7 +444,7 @@ void SceneSerializer::deserialize(const std::string& filepath)
 					pos = line.find(delimiter);
 					line.erase(0, pos + delimiter.length());
 					//line = "(x, x, x)"
-					numbers = extractNumbers(line);
+					numbers = extractVectorValues(line);
 
 					Vector3D vec3(numbers[0], numbers[1], numbers[2]);
 					cout << vec3.toString();
@@ -429,7 +466,7 @@ void SceneSerializer::deserialize(const std::string& filepath)
 					pos = line.find(delimiter);
 					line.erase(0, pos + delimiter.length());
 					//line = "(x, x)"
-					numbers = extractNumbers(line);
+					numbers = extractVectorValues(line);
 					Vector2D vec2(numbers[0], numbers[1]);
 					vals_Vec2[vector_name] = vec2;
 

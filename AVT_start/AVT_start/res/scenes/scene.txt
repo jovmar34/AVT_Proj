@@ -113,7 +113,7 @@ Node:
 - Name: root::cube
 - Children: 0
 - Material:
-	- Name: test_mat_g
+	- Name: blinnphong_mat
 - Texture:
 	- Name: None
 - Shaders:
@@ -130,7 +130,7 @@ Node:
 - Name: root::torus
 - Children: 0
 - Material:
-	- Name: test_mat_g
+	- Name: blinnphong_mat
 - Texture:
 	- Name: None
 - Shaders:

@@ -408,7 +408,9 @@ void SceneSerializer::deserialize(const std::string& filepath)
 					line.erase(0, pos + delimiter.length());
 					//line = "(x, x, x)"
 					numbers = extractNumbers(line);
+
 					Vector3D vec3(numbers[0], numbers[1], numbers[2]);
+					cout << vec3.toString();
 					vals_Vec3[vector_name] = vec3;
 
 					std::getline(file, line);
@@ -553,6 +555,8 @@ void SceneSerializer::deserialize(const std::string& filepath)
 		}
 
 	}
+
+	//chamar funçao desenho com as cenas criadas
 
 	file.close();
 }

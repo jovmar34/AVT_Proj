@@ -522,7 +522,7 @@ void myApp::enterCommand() {
 
 
 	//
-	while ( getline(parsable, current, ' ' )) {
+	while ( getline(parsable, current, '/' )) {
 		tokens.push_back(current);
 	}
 
@@ -537,7 +537,6 @@ void myApp::enterCommand() {
 	if (tokens[0] == "ImportMesh") {
 		importMesh(tokens[1]);
 	}
-	
 	if (tokens[0] == "ImportShader") {
 		importShader(tokens[1]);
 	}
@@ -565,6 +564,14 @@ void myApp::enterCommand() {
 	if (tokens[0] == "ObjectSetParent") {
 		objectSetParent(tokens[1], tokens[2]);
 	}
+	if (tokens[0] == "LoadScene") {
+		//
+	}
+	if (tokens[0] == "SaveScene") {
+		//
+	}
+	else
+		cout << "Sorry but that command does not exist!\n";
 	enter_command = false;
 }
 

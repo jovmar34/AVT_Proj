@@ -121,7 +121,7 @@ void SceneSerializer::serializeManager(std::ofstream& out)
 		out << "\t\t - 1float:\n";
 		for (itUniformsF1 = vals_1float.begin(); itUniformsF1 != vals_1float.end(); itUniformsF1++)
 		{
-			out << "\t\t\t- Name: " << itUniformsF1->first << "\n\t\t\t- Int: " << itUniformsF1->second << std::endl;
+			out << "\t\t\t- Name: " << itUniformsF1->first << "\n\t\t\t- Float: " << itUniformsF1->second << std::endl;
 		}
 	}
 
@@ -129,11 +129,10 @@ void SceneSerializer::serializeManager(std::ofstream& out)
 
 void SceneSerializer::serializeNode(SceneNode* node, std::ofstream& out)
 {
-	out << "Node:\n" << "- Name: " << node->getName() << "\n- Children: " << node->children.size() 
-		<< "\n- Material:" << "\n\t- Name: " << node->materialName << "\n\t- Texture:\n\t\t- Name: " << node->textureName << "\n\t\t- FilePath: " << node->textureFile
-		<< "\n\t- Shaders:\n\t\t- Name: " << node->shaderName << "\n\t\t- Vertex Shader Filepath: " << node->vertexShaderFile << "\n\t\t- Fragment Shader Filepath: " << node->fragmentShaderFile
-		<< "\n\t- Outline: " << node->outline
-		<< "\n- Mesh: \n\t- Name: "<< node->meshName <<"\n\t- Filepath: " << node->meshFile 
+	out << "Node:\n" << "- Name: " << node->getName() << "\n- Children: " << node->children.size()
+		<< "\n- Material:" << "\n\t- Name: " << node->materialName << "\n- Texture:\n\t- Name: " << node->textureName
+		<< "\n- Shaders:\n\t- Name: " << node->shaderName
+		<< "\n- Mesh: \n\t- Name: " << node->meshName
 		<< "\n- Transformation: " << node->getTransform().toString() << std::endl;
 	SceneNode* n;
 	for (int i = 0; i < node->children.size(); i++) {
@@ -150,10 +149,9 @@ void SceneSerializer::serialize(const std::string& filepath)
 	serializeManager(file);
 	file << "--- Graph ---\n";
 	file << "Node:\n" << "- Name: " << _parent->getName() << "\n- Children: " << _parent->children.size() 
-		<< "\n- Material:" << "\n\t- Name: " << _parent->materialName << "\n\t- Texture:\n\t\t- Name: " << _parent->textureName << "\n\t\t- FilePath: " << _parent->textureFile
-		<< "\n\t- Shaders:\n\t\t- Name: " << _parent->shaderName << "\n\t\t- Vertex Shader Filepath: " << _parent->vertexShaderFile << "\n\t\t- Fragment Shader Filepath: " << _parent->fragmentShaderFile
-		<< "\n\t- Outline: " << _parent->outline
-		<< "\n- Mesh: \n\t- Name: " << _parent->meshName << "\n\t- Filepath: " << _parent->meshFile 
+		<< "\n- Material:" << "\n\t- Name: " << _parent->materialName << "\n- Texture:\n\t Name: " << _parent->textureName 
+		<< "\n- Shaders:\n\t- Name: " << _parent->shaderName
+		<< "\n- Mesh: \n\t- Name: " << _parent->meshName
 		<< "\n- Transformation: " << _parent->getTransform().toString() << std::endl;
 
 	for (int i = 0; i < _parent->children.size(); i++) {
@@ -198,13 +196,19 @@ void SceneSerializer::deserialize(const std::string& filepath)
 	std::ifstream file(filepath, ios::in);
 	std::string line, delimiter, type, ecu, workingState, matrix;
 	std::string shader_name, shaderV_path, shaderF_path, mesh_name, mesh_filepath, texture_name, texture_filepath, material_name;
-	std::string node_name;
+	std::string vector_name, matrix_name, int_name, float_name, node_name;
 	size_t pos = 0;
 	int l, children;
 	double* numbers;
 	double* aux = new double[16];
-	//double* values;
 	Matrix4 invViewMatrix;
+
+	unordered_map<std::string, Vector4D>	vals_Vec4;
+	unordered_map<std::string, Vector3D>	vals_Vec3;
+	unordered_map<std::string, Vector2D>	vals_Vec2;
+	unordered_map<std::string, Matrix4>		vals_Mat4;
+	unordered_map<std::string, int>			vals_1int;
+	unordered_map<std::string, float>		vals_1float;
 
 	while (std::getline(file, line))
 	{
@@ -366,8 +370,123 @@ void SceneSerializer::deserialize(const std::string& filepath)
 				line.erase(0, pos + delimiter.length());
 				material_name = line;
 
-				//TODO RESTO
+				//Uniforms
+				std::getline(file, line); //uniforms line
+				std::getline(file, line);
+				while (line == "- Vector4D:") {
+					std::getline(file, line);
+					//Name
+					delimiter = "- Name: ";
+					pos = line.find(delimiter);
+					line.erase(0, pos + delimiter.length());
+					vector_name = line;
 
+					//Values
+					std::getline(file, line);
+					delimiter = "- Values: ";
+					pos = line.find(delimiter);
+					line.erase(0, pos + delimiter.length());
+					//line = "(x, x, x, x)"
+					numbers = extractNumbers(line);
+					Vector4D vec4(numbers[0], numbers[1], numbers[2], numbers[3]);
+					vals_Vec4[vector_name] = vec4;
+
+					std::getline(file, line);
+				}
+				while (line == "- Vector3D:") {
+					std::getline(file, line);
+					//Name
+					delimiter = "- Name: ";
+					pos = line.find(delimiter);
+					line.erase(0, pos + delimiter.length());
+					vector_name = line;
+
+					//Values
+					std::getline(file, line);
+					delimiter = "- Values: ";
+					pos = line.find(delimiter);
+					line.erase(0, pos + delimiter.length());
+					//line = "(x, x, x)"
+					numbers = extractNumbers(line);
+					Vector3D vec3(numbers[0], numbers[1], numbers[2]);
+					vals_Vec3[vector_name] = vec3;
+
+					std::getline(file, line);
+				}
+				while (line == "- Vector2D:") {
+					std::getline(file, line);
+					//Name
+					delimiter = "- Name: ";
+					pos = line.find(delimiter);
+					line.erase(0, pos + delimiter.length());
+					vector_name = line;
+
+					//Values
+					std::getline(file, line);
+					delimiter = "- Values: ";
+					pos = line.find(delimiter);
+					line.erase(0, pos + delimiter.length());
+					//line = "(x, x)"
+					numbers = extractNumbers(line);
+					Vector2D vec2(numbers[0], numbers[1]);
+					vals_Vec2[vector_name] = vec2;
+
+					std::getline(file, line);
+				}
+				while (line == "- Matrix4:") {
+					std::getline(file, line);
+					//Name
+					delimiter = "- Name: ";
+					pos = line.find(delimiter);
+					line.erase(0, pos + delimiter.length());
+					matrix_name = line;
+
+					//Values
+					std::getline(file, line);
+					delimiter = "- Matrix: ";
+					pos = line.find(delimiter);
+					line.erase(0, pos + delimiter.length());
+					//fix matrices bug + complete this part
+					//numbers = extractNumbers(line);
+					//Matrix4 mat(numbers[0], numbers[1], numbers[2], numbers[3], numbers[4], numbers[5], numbers[6], numbers[7], numbers[8], numbers[9], numbers[10], numbers[11], numbers[12], numbers[13], numbers[14], numbers[15]);
+					//vals_Mat4[matrix_name] = mat;
+
+					std::getline(file, line);
+				}
+				while (line == "- 1int:") {
+					std::getline(file, line);
+					//Name
+					delimiter = "- Name: ";
+					pos = line.find(delimiter);
+					line.erase(0, pos + delimiter.length());
+					int_name = line;
+
+					//Values
+					std::getline(file, line);
+					delimiter = "- Int: ";
+					pos = line.find(delimiter);
+					line.erase(0, pos + delimiter.length());
+					vals_1int[int_name] = std::stoi(line);
+
+					std::getline(file, line);
+				}
+				while (line == "- 1float:") {
+					std::getline(file, line);
+					//Name
+					delimiter = "- Name: ";
+					pos = line.find(delimiter);
+					line.erase(0, pos + delimiter.length());
+					float_name = line;
+
+					//Values
+					std::getline(file, line);
+					delimiter = "- Float: ";
+					pos = line.find(delimiter);
+					line.erase(0, pos + delimiter.length());
+					vals_1float[float_name] = std::stoi(line);
+
+					std::getline(file, line);
+				}
 				std::getline(file, line);
 			}
 		}
@@ -386,14 +505,47 @@ void SceneSerializer::deserialize(const std::string& filepath)
 				delimiter = "- Children: ";
 				pos = line.find(delimiter);
 				line.erase(0, pos + delimiter.length());
-				//children = std::stoi(line);
-				cout << line << endl;
+				children = std::stoi(line);
 
-				//TODO RESTO
-				//material
-				//texture
-				//mesh
-				//transformation matrix
+				//Material
+				std::getline(file, line);
+				std::getline(file, line);
+				delimiter = "- Name: ";
+				pos = line.find(delimiter);
+				line.erase(0, pos + delimiter.length());
+				material_name = line;
+
+				//Texture
+				std::getline(file, line);
+				std::getline(file, line);
+				delimiter = "- Name: ";
+				pos = line.find(delimiter);
+				line.erase(0, pos + delimiter.length());
+				texture_name = line;
+
+				//Shaders
+				std::getline(file, line);
+				std::getline(file, line);
+				delimiter = "- Name: ";
+				pos = line.find(delimiter);
+				line.erase(0, pos + delimiter.length());
+				shader_name = line;
+
+				//Mesh
+				std::getline(file, line);
+				std::getline(file, line);
+				delimiter = "- Name: ";
+				pos = line.find(delimiter);
+				line.erase(0, pos + delimiter.length());
+				mesh_name = line;
+
+				//Transformation Matrix
+				std::getline(file, line);
+				std::getline(file, line);
+				//todo matrix without bug
+				//numbers = extractNumbers(line);
+				
+				//dps criar o node e adicionar ao grafo
 
 				//graph.addChild(test_mat_g, cube_mesh, "cube");
 				std::getline(file, line);

@@ -1,9 +1,0 @@
-pra dar load
-ler linha a linha e verificar se uma linha é = a "camera:", "manager:" ou "node:"
-se Camara:
-ler proxs linhas e se a frase começar com "- " (com espaço), ir pela ordem que nos ja sabemos que existe, ou seja,
-primeiro type, dps eye, center e up, etc.
-
-se manager, etc
-
-se node, etc

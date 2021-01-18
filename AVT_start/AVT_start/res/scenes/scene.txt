@@ -51,17 +51,12 @@ Node:
 - Children: 2
 - Material:
 	- Name: None
-	- Texture:
-		- Name: None
-		- FilePath: None
-	- Shaders:
-		- Name: None
-		- Vertex Shader Filepath: None
-		- Fragment Shader Filepath: None
-	- Outline: 0000000000000000
+- Texture:
+	 Name: None
+- Shaders:
+	- Name: None
 - Mesh: 
 	- Name: None
-	- Filepath: None
 - Transformation: 
 [1. 0. 0. 0.]
 [0. 1. 0. 0.]
@@ -73,21 +68,16 @@ Node:
 - Children: 0
 - Material:
 	- Name: test_mat_g
-	- Texture:
-		- Name: None
-		- FilePath: None
-	- Shaders:
-		- Name: blinn_phong_shader
-		- Vertex Shader Filepath: res/shaders/blinn_phong_vs.glsl
-		- Fragment Shader Filepath: res/shaders/blinn_phong_fs.glsl
-	- Outline: 0000000000000000
+- Texture:
+	- Name: None
+- Shaders:
+	- Name: blinn_phong_shader
 - Mesh: 
 	- Name: cube_mesh
-	- Filepath: res/meshes/bunny_smooth.obj
 - Transformation: 
-[-0.23 0. -0.97 0.]
+[0.03 0. -0.99 0.]
 [0. 1. 0. 0.]
-[0.97 0. -0.23 0.]
+[0.99 0. 0.03 0.]
 [0. 0. 0. 1.]
 
 Node:
@@ -95,17 +85,12 @@ Node:
 - Children: 0
 - Material:
 	- Name: test_mat_g
-	- Texture:
-		- Name: None
-		- FilePath: None
-	- Shaders:
-		- Name: blinn_phong_shader
-		- Vertex Shader Filepath: res/shaders/blinn_phong_vs.glsl
-		- Fragment Shader Filepath: res/shaders/blinn_phong_fs.glsl
-	- Outline: 0000000000000000
+- Texture:
+	- Name: None
+- Shaders:
+	- Name: blinn_phong_shader
 - Mesh: 
 	- Name: torus_mesh
-	- Filepath: res/meshes/torus.obj
 - Transformation: 
 [1. 0. 0. 0.]
 [0. 1. 0. 0.]

@@ -602,17 +602,6 @@ void myApp::update(GLFWwindow *win, double elapsed)
 		save(win);
 		save_img = false;
 	}
-	if (add_mesh) {
-		Manager* h = Manager::getInstance();
-		Mesh* mesh = h->addMesh("new_mesh", new Mesh("new_mesh", "res/meshes/smooth.obj"));
-		mesh->init();
-
-		Material* material = h->getMaterial("test_mat_g");
-
-		graph.setCurrToRoot();
-		graph.addChild(material, mesh, "new_guy", MxFactory::translation4(Vector3D(0,5,0)));
-		add_mesh = false;
-	}
 	if (new_mat) {
 		Manager* h = Manager::getInstance();
 		SceneNode* node = graph.getNode("cube");

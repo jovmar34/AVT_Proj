@@ -511,7 +511,7 @@ void myApp::update(GLFWwindow *win, double elapsed)
 
 void myApp::enterCommand() {
 	std::string command;
-	cout << "Howdy! Please enter your command!\n";
+	cout << "Howdy! Please enter your command! (Enter 'Help' to see command list)\n";
 	cin >> command;
 
 	//init components
@@ -527,9 +527,9 @@ void myApp::enterCommand() {
 	}
 
 	//print to terminal - debug
-	for (int i = 0; i < tokens.size(); i++) {
-		cout << tokens[i] << '\n';
-	}
+	//for (int i = 0; i < tokens.size(); i++) {
+	//	cout << tokens[i] << '\n';
+	//}
 	
 
 	if (tokens[0] == "LoadObject") {
@@ -542,7 +542,7 @@ void myApp::enterCommand() {
 		importShader(tokens[1]);
 	}
 	else if (tokens[0] == "ImportTexture") {
-		importTexture(tokens[1]);
+		importTexture(tokens[1], tokens[2]);
 	}
 	else if (tokens[0] == "CreateMaterial") {
 		createMaterial(tokens[1], tokens[2]);
@@ -550,8 +550,8 @@ void myApp::enterCommand() {
 	else if (tokens[0] == "CreateObject") {
 		createObject(tokens[1], tokens[2], tokens[3]);
 	}
-	else if (tokens[0] == "DestroyObject") {
-		destroyObject(tokens[1]);
+	else if (tokens[0] == "RemoveObject") {
+		removeObject(tokens[1]);
 	}
 	else if (tokens[0] == "DescribeScene") {
 		graph.describe();
@@ -571,10 +571,31 @@ void myApp::enterCommand() {
 	else if (tokens[0] == "SaveScene") {
 		//
 	}
-	else 
-	{
-		cout << "Sorry but that command does not exist!\n";
+
+	else if (tokens[0] == "Help") {
+		cout << "-------------------------------------------------\n"
+			<< "\nHere is a list of our commands in the format they should be written:\n"
+			<< "-----Import instructions-----\n"
+			<< "ImportMesh,meshname\n"
+			<< "ImportShader,shadername\n"
+			<< "ImportTexture,texturename,format\n"
+			<< "\n-----Object Creation-----\n"
+			<< "LoadObject,objectname\n"
+			<< "CreateObject,objectname,meshname,materialname\n"
+			<< "RemoveObject,objectname\n"
+			<< "\n-----Materials-----\n"
+			<< "CreateMaterial,materialname,shadername\n"
+			<< "ObjectSetMaterial,objectname,materialname\n"
+			<< "MaterialSetUniform,materialname,uniformname,uniformtype,uniformvalue\n"
+			<< "\n-----Scene-----\n"
+			<< "SaveScene //WIP\n"
+			<< "LoadScene //WIP\n"
+			<< "\nFor more information please refer to the manual\n"
+			<< "-------------------------------------------------\n";
 	}
+	else
+		cout << "Sorry but that command does not exist!\n";
+	
 	enter_command = false;
 }
 
@@ -592,9 +613,9 @@ void myApp::importShader(string shadername) {
 	shader->addUniformBlock("Matrices", 0);
 }
 
-void myApp::importTexture(string texturename) {
+void myApp::importTexture(string texturename, string format) {
 	Manager* h = Manager::getInstance();
-	string texturelocation = "res/textures/" + texturename + ".png";
+	string texturelocation = "res/textures/" + texturename + "." + format;
 	Texture* texture = h->addTexture(texturename, new Texture(texturelocation));
 }
 
@@ -603,7 +624,8 @@ void myApp::loadObject(string objecttype) {
 	std::string id = std::to_string(h->getCounter());
 	string meshname = objecttype;
 	string objectname = objecttype + id;
-	importMesh(meshname);
+	if(!h->hasMesh(meshname)) 
+		importMesh(meshname);
 	Mesh* mesh = h->getMesh(meshname);
 	mesh->init();
 	Material* material = h->getMaterial("blinnphong_mat");
@@ -619,7 +641,8 @@ void myApp::createObject(string objecttype, string meshname, string materialname
 	Manager* h = Manager::getInstance();
 	std::string id = std::to_string(h->getCounter());
 	string objectname = objecttype + id;
-	importMesh(meshname);
+	if (!h->hasMesh(meshname))
+		importMesh(meshname);
 	Mesh* mesh = h->getMesh(meshname);
 	mesh->init();
 	Material* material = h->getMaterial(materialname);
@@ -631,7 +654,7 @@ void myApp::createObject(string objecttype, string meshname, string materialname
 	mesh_indicator = 0;
 }
 
-void::myApp::destroyObject(string objname) {
+void::myApp::removeObject(string objname) {
 	//graph.removeChild(objname);
 	SceneNode* node = graph.getNode(objname);
 	SceneNode* parent = node->parent;
@@ -651,7 +674,7 @@ void myApp::objectSetMaterial(string objname, string materialname) {
 
 }
 
-void myApp::materialSetUniform(string materialname, string uniformname, string uniformtype, string uniform_value) {
+void myApp::materialSetUniform(string materialname, string uniformname, string uniformtype, string uniformvalue) {
 	Manager* h = Manager::getInstance();
 	Material* material = h->getMaterial(materialname);
 	//do stuff

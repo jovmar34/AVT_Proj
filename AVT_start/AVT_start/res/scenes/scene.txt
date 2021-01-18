@@ -59,6 +59,7 @@ Manager:
 	- Filepath: res/meshes/Gizmos/AltRotationGizmo.obj
 - Material:
 	- Name: blinnphong_mat
+	- Shader: blinn_phong_shader
 	- Uniforms:
 		- Vector4D:
 
@@ -71,6 +72,7 @@ Manager:
 		 - 1float:
 - Material:
 	- Name: gooch_mat
+	- Shader: gooch_shader
 	- Uniforms:
 		- Vector4D:
 
@@ -83,6 +85,7 @@ Manager:
 		 - 1float:
 - Material:
 	- Name: grid_mat
+	- Shader: grid_shader
 	- Uniforms:
 		- Vector4D:
 

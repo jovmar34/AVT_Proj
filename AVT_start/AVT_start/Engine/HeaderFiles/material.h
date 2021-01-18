@@ -9,8 +9,7 @@
 
 class Material {
 private:
-	
-	Shader* shader;
+
 	std::map<int, Texture*> textures;
 	
 	unordered_map<std::string, Vector4D>	vals_Vec4;
@@ -22,8 +21,10 @@ private:
 	unordered_map<std::string, float>		vals_1float;
 
 public:
+	Shader* shader;
 	bool outline;
 
+	Material(){};
 	Material(Shader* _shader) : shader(_shader), outline(false) {};
 	Material(Shader* _shader, bool _outline) : shader(_shader), outline(_outline){};
 

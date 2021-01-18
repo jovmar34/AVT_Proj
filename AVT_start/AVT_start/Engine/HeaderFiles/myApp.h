@@ -19,6 +19,7 @@ private:
 	bool enter_command = false;
 	int mesh_indicator = 0;
 	bool choosing_object = false;
+	bool animate_frame = false;
 
 	float xDelta, yDelta;
 	double old_x = 0, old_y = 0;

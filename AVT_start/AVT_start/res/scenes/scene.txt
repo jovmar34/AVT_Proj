@@ -2,7 +2,7 @@
 Camera:
 - Type: Perspective
 - Eye, Center, Up: (8,8,8), (0,0,0), (0,1,0)
-- Working State: Off
+- Working State: On
 - View Matrix: 
 [0.7 -0.4 0.57 0.]
 [0. 0.81 0.57 0.]
@@ -97,7 +97,7 @@ Manager:
 --- Graph ---
 Node:
 - Name: root
-- Children: 4
+- Children: 3
 - Material:
 	- Name: None
 - Texture:
@@ -145,23 +145,6 @@ Node:
 [0. 1. 0. 0.]
 [0. 0. 1. 0.]
 [0. 0. -5. 1.]
-
-Node:
-- Name: root::cube
-- Children: 0
-- Material:
-	- Name: None
-- Texture:
-	- Name: None
-- Shaders:
-	- Name: None
-- Mesh: 
-	- Name: None
-- Transformation: 
-[1. 0. 0. 0.]
-[0. 1. 0. 0.]
-[0. 0. 1. 0.]
-[0. 0. 0. 1.]
 
 Node:
 - Name: root::torus

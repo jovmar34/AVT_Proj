@@ -356,8 +356,8 @@ void SceneSerializer::deserialize(const std::string& filepath)
 				line.erase(0, pos + delimiter.length());
 				shaderF_path = line;
 
-				Shader* s = new Shader(shader_name, shaderV_path, shaderV_path); //n esquecer destruir isto no fim
-				man->addShader(shader_name, s);
+				Shader* s = man->addShader(shader_name, new Shader(shader_name, shaderV_path, shaderF_path));
+				s->addUniformBlock("Matrices", 0);
 
 				std::getline(file, line);
 
@@ -380,8 +380,7 @@ void SceneSerializer::deserialize(const std::string& filepath)
 				line.erase(0, pos + delimiter.length());
 				mesh_filepath = line;
 
-				Mesh* m = new Mesh(mesh_name, mesh_filepath); //n esquecer destruir isto no fim
-				man->addMesh(shader_name, m);
+				Mesh* m = man->addMesh(mesh_name, new Mesh(mesh_name, mesh_filepath));
 
 				std::getline(file, line);
 			}
@@ -403,9 +402,7 @@ void SceneSerializer::deserialize(const std::string& filepath)
 				line.erase(0, pos + delimiter.length());
 				texture_filepath = line;
 
-				Texture* t = new Texture(texture_name, texture_filepath); //n esquecer destruir isto no fim
-				man->addTexture(texture_name, t);
-
+				Texture* t = man->addTexture(texture_name, new Texture(texture_name, texture_filepath));
 				std::getline(file, line);
 			}
 
@@ -558,9 +555,9 @@ void SceneSerializer::deserialize(const std::string& filepath)
 					std::getline(file, line);
 				}
 				std::getline(file, line);
+				man->addMaterial(material_name, mt);
 			}
 
-			man->addMaterial(material_name, mt);
 
 		}
 		else if (line == "Node:") {

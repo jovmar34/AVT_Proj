@@ -4,6 +4,7 @@
 #include "manager.h"
 #include "FreeImage.h"
 
+
 class myApp : IApp {
 private:
 	double sprint_factor = 1;
@@ -69,5 +70,6 @@ public:
 	void createMaterial(string materialname, string shadername); //x
 	void materialSetUniform(string materialname, string uniformname, string uniformtype, string uniform_value); //x
 	
-
+	void seeAssets();
+	bool checkFile(string filename);
 };

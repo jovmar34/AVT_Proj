@@ -10,7 +10,7 @@ Camera:
 [0. 0. -13.85 1.]
 
 - Projection Matrix: 
-[1.29 0. 0. 0.]
+[0.97 0. 0. 0.]
 [0. 1.73 0. 0.]
 [0. 0. -1.01 -1.]
 [0. 0. -2.01 0.]
@@ -27,20 +27,66 @@ Manager:
 	- Name: blinn_phong_shader
 	- Vertex Shader Filepath: res/shaders/blinn_phong_vs.glsl
 	- Fragment Shader Filepath: res/shaders/blinn_phong_fs.glsl
+- Shader:
+	- Name: gooch_shader
+	- Vertex Shader Filepath: res/shaders/gooch_vs.glsl
+	- Fragment Shader Filepath: res/shaders/gooch_fs.glsl
+- Shader:
+	- Name: grid_shader
+	- Vertex Shader Filepath: res/shaders/grid_vs.glsl
+	- Fragment Shader Filepath: res/shaders/grid_fs.glsl
+- Shader:
+	- Name: gizmo_shader
+	- Vertex Shader Filepath: res/shaders/gizmo_vs.glsl
+	- Fragment Shader Filepath: res/shaders/gizmo_fs.glsl
 - Mesh:
 	- Name: cube_mesh
 	- Filepath: res/meshes/bunny_smooth.obj
 - Mesh:
 	- Name: torus_mesh
 	- Filepath: res/meshes/torus.obj
+- Mesh:
+	- Name: plane_mesh
+	- Filepath: res/meshes/plane.obj
+- Mesh:
+	- Name: translation_gizmo
+	- Filepath: res/meshes/Gizmos/TranslationGizmo.obj
+- Mesh:
+	- Name: scale_gizmo
+	- Filepath: res/meshes/Gizmos/ScaleGizmo.obj
+- Mesh:
+	- Name: rotation_gizmo
+	- Filepath: res/meshes/Gizmos/AltRotationGizmo.obj
 - Material:
-	- Name: test_mat_g
+	- Name: blinnphong_mat
 	- Uniforms:
 		- Vector4D:
 
 		 - Vector3D:
 			- Name: u_AlbedoColor
-			- Values: (0., 1., 0.)
+			- Values: (0.8, 0.8, 0.8)
+		 - Vector2D:
+		 - Matrix4:
+		 - 1int:
+		 - 1float:
+- Material:
+	- Name: gooch_mat
+	- Uniforms:
+		- Vector4D:
+
+		 - Vector3D:
+			- Name: u_AlbedoColor
+			- Values: (0.8, 0.8, 0.8)
+		 - Vector2D:
+		 - Matrix4:
+		 - 1int:
+		 - 1float:
+- Material:
+	- Name: grid_mat
+	- Uniforms:
+		- Vector4D:
+
+		 - Vector3D:
 		 - Vector2D:
 		 - Matrix4:
 		 - 1int:
@@ -48,7 +94,7 @@ Manager:
 --- Graph ---
 Node:
 - Name: root
-- Children: 2
+- Children: 4
 - Material:
 	- Name: None
 - Texture:
@@ -75,9 +121,9 @@ Node:
 - Mesh: 
 	- Name: cube_mesh
 - Transformation: 
-[0.03 0. -0.99 0.]
+[1. 0. 0. 0.]
 [0. 1. 0. 0.]
-[0.99 0. 0.03 0.]
+[0. 0. 1. 0.]
 [0. 0. 0. 1.]
 
 Node:
@@ -91,6 +137,40 @@ Node:
 	- Name: blinn_phong_shader
 - Mesh: 
 	- Name: torus_mesh
+- Transformation: 
+[1. 0. 0. 0.]
+[0. 1. 0. 0.]
+[0. 0. 1. 0.]
+[0. 0. -5. 1.]
+
+Node:
+- Name: root::cube
+- Children: 0
+- Material:
+	- Name: None
+- Texture:
+	- Name: None
+- Shaders:
+	- Name: None
+- Mesh: 
+	- Name: None
+- Transformation: 
+[1. 0. 0. 0.]
+[0. 1. 0. 0.]
+[0. 0. 1. 0.]
+[0. 0. 0. 1.]
+
+Node:
+- Name: root::torus
+- Children: 0
+- Material:
+	- Name: None
+- Texture:
+	- Name: None
+- Shaders:
+	- Name: None
+- Mesh: 
+	- Name: None
 - Transformation: 
 [1. 0. 0. 0.]
 [0. 1. 0. 0.]

@@ -173,7 +173,7 @@ void myApp::populateScene()
 	graph.addChild(blinnphong_mat, cube_mesh, "cube");
 	graph.getNode("cube")->meshName = "cube_mesh";
 	graph.getNode("cube")->meshFile = "res/meshes/bunny_smooth.obj";
-	graph.getNode("cube")->materialName = "test_mat_g";
+	graph.getNode("cube")->materialName = "blinnphong_mat";
 	graph.getNode("cube")->shaderName = "blinn_phong_shader";
 	graph.getNode("cube")->vertexShaderFile = "res/shaders/blinn_phong_vs.glsl";
 	graph.getNode("cube")->fragmentShaderFile = "res/shaders/blinn_phong_fs.glsl";
@@ -182,7 +182,7 @@ void myApp::populateScene()
 	graph.addChild(blinnphong_mat, torus_mesh, "torus", MxFactory::translation4(Vector3D(0,0,-5)));
 	graph.getNode("torus")->meshName = "torus_mesh";
 	graph.getNode("torus")->meshFile = "res/meshes/torus.obj";
-	graph.getNode("torus")->materialName = "test_mat_g";
+	graph.getNode("torus")->materialName = "blinnphong_mat";
 	graph.getNode("torus")->shaderName = "blinn_phong_shader";
 	graph.getNode("torus")->vertexShaderFile = "res/shaders/blinn_phong_vs.glsl";
 	graph.getNode("torus")->fragmentShaderFile = "res/shaders/blinn_phong_fs.glsl";
@@ -348,7 +348,7 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 			else
 				new_mat = true;
 			break;
-		case GLFW_KEY_ENTER:
+		case GLFW_KEY_C:
 			enter_command = true;
 		}
 	}
@@ -378,18 +378,9 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 		Vector3D axis(0, 1, 0);
 		Matrix4 rot = m.rotation4(axis, 1);
 		SceneNode* root = graph.getNode("root");
-		SceneNode* n;
 		if (root->selected) {
 			graph.applyTransform("root", rot);
 		}
-		/*for (int i = 0; i < root->children.size(); i++) {
-			n = root->children[i];
-			if (n->selected) {
-				string name = n->getName();
-				graph.applyTransform(name, rot);
-			}
-		}*/
-		//rotateAroundAxis(axis, angle)
 	}
 
 	else if (key == GLFW_KEY_RIGHT) //right arrow - object movement
@@ -398,7 +389,6 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 		Vector3D axis(0, 1, 0);
 		Matrix4 rot = m.rotation4(axis, -1);
 		SceneNode* root = graph.getNode("root");
-		SceneNode* n;
 		if (root->selected) {
 			graph.applyTransform("root", rot);
 		}
@@ -410,7 +400,6 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 		Vector3D axis(1, 0, 0);
 		Matrix4 rot = m.rotation4(axis, 1);
 		SceneNode* root = graph.getNode("root");
-		SceneNode* n;
 		if (root->selected) {
 			graph.applyTransform("root", rot);
 		}
@@ -422,7 +411,6 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 		Vector3D axis(1, 0, 0);
 		Matrix4 rot = m.rotation4(axis, -1);
 		SceneNode* root = graph.getNode("root");
-		SceneNode* n;
 		if (root->selected) {
 			graph.applyTransform("root", rot);
 		}

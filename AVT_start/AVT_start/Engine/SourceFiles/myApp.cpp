@@ -203,7 +203,6 @@ void myApp::populateScene()
 void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int mods)
 {
 	Camera* cam = graph.getCam();
-	std::cout << "key: " << key << " " << scancode << " " << action << " " << mods << std::endl;
 	if (action == GLFW_RELEASE) {
 		switch (key) {
 		case GLFW_KEY_P:
@@ -358,8 +357,6 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 			if (index >= 0xFD) {
 				gizmoActive = true;
 				graph.gizmoActive = true;
-				std::cout << "activate" << std::endl;
-
 
 				if (index == 0xFF) {
 					worldDir = Vector4D(1, 0, 0, 1);
@@ -423,7 +420,6 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 		}
 		if (action == GLFW_RELEASE) {
 			if (gizmoActive) {
-				std::cout << "deactivate" << std::endl;
 				gizmoActive = false;
 				graph.gizmoActive = false;
 			}

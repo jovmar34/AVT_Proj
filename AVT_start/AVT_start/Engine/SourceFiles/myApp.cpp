@@ -623,6 +623,9 @@ void myApp::executeCommand(std::string command)
 	else if (tokens[0] == "SaveScene") {
 		//
 	}
+	else if (tokens[0] == "SeeAssets") {
+		seeAssets();
+	}
 
 	else if (tokens[0] == "Help") {
 		cout << "--------------------------------------------------------------------------\n"
@@ -633,10 +636,11 @@ void myApp::executeCommand(std::string command)
 			 << "| * ImportShader,shadername                                              |\n"
 			 << "| * ImportTexture,texturename,format                                     |\n"
 			 << "|                                                                        |\n"
-			 << "|                    -----Object Creation-----                           |\n"
+			 << "|                         -----Objects-----                              |\n"
 			 << "| * LoadObject,objectname                                                |\n"
 			 << "| * CreateObject,objectname,meshname,materialname                        |\n"
 			 << "| * RemoveObject,objectname                                              |\n"
+			 << "| * ObjectSetParent,objectname,parentname                                |\n"
 			 << "|                                                                        |\n"
 			 << "|                       -----Materials-----                              |\n"
 			 << "| * CreateMaterial,materialname,shadername                               |\n"
@@ -644,10 +648,12 @@ void myApp::executeCommand(std::string command)
 			 << "| * MaterialSetUniform,materialname,uniformname,uniformtype,uniformvalue |\n"
 			 << "|                                                                        |\n"
 			 << "|                        -----Scene-----                                 |\n"
+	   		 << "| * SeeAssets                                                            |\n"
+			 << "| * DescribeScene                                                        |\n"
 			 << "| * SaveScene //WIP                                                      |\n"
 			 << "| * LoadScene //WIP                                                      |\n"
 			 << "|                                                                        |\n" 
-			 << "| For more information please refer to the manual                        |\n"
+			 << "| For more detailed information please refer to the manual               |\n"
 			 << "-------------------------------------------------------------------------\n";
 	}
 	else
@@ -655,24 +661,49 @@ void myApp::executeCommand(std::string command)
 	
 }
 
-void myApp::importMesh(string meshname) {
-	Manager* h = Manager::getInstance();
-	string meshlocation = "res/meshes/" + meshname + ".obj";
-	Mesh* mesh = h->addMesh(meshname, new Mesh(meshname, meshlocation));
+bool myApp::checkFile(string filename) {
+	FILE* file;
+	const char* filenameChar = filename.c_str();
+	if (errno_t err = fopen_s(&file, filenameChar, "r") != 0) {
+		cout << "No such file exists\n";
+		return false;
+	}
+	else {
+		true;
+	}
+
 }
 
-void myApp::importShader(string shadername) {
+bool myApp::importMesh(string meshname) {
+	Manager* h = Manager::getInstance();
+	string meshlocation = "res/meshes/" + meshname + ".obj";
+	if (checkFile(meshlocation)) {
+		Mesh* mesh = h->addMesh(meshname, new Mesh(meshname, meshlocation));
+		return true;
+	}
+	return false;
+}
+
+bool myApp::importShader(string shadername) {
 	Manager* h = Manager::getInstance();
 	string shaderFragment = "res/shaders/" + shadername + "_fs.glsl";
 	string shaderVertex = "res/shaders/" + shadername + "_vs.glsl";
-	Shader* shader = h->addShader(shadername, new Shader(shadername, shaderVertex, shaderFragment));
-	shader->addUniformBlock("Matrices", 0);
+	if (checkFile(shaderFragment) && checkFile(shaderVertex)) {
+		Shader* shader = h->addShader(shadername, new Shader(shadername, shaderVertex, shaderFragment));
+		shader->addUniformBlock("Matrices", 0);
+		return true;
+	}
+	return false;
 }
 
-void myApp::importTexture(string texturename, string format) {
+bool myApp::importTexture(string texturename, string format) {
 	Manager* h = Manager::getInstance();
 	string texturelocation = "res/textures/" + texturename + "." + format;
-	Texture* texture = h->addTexture(texturename, new Texture(texturename, texturelocation));
+	if (checkFile(texturelocation)) {
+		Texture* texture = h->addTexture(texturename, new Texture(texturename, texturelocation));
+		return true;
+	}
+	return false;
 }
 
 void myApp::loadObject(string objecttype) {
@@ -680,15 +711,17 @@ void myApp::loadObject(string objecttype) {
 	std::string id = std::to_string(h->getCounter());
 	string meshname = objecttype;
 	string objectname = objecttype + id;
-	if(!h->hasMesh(meshname)) 
-		importMesh(meshname);
-	Mesh* mesh = h->getMesh(meshname);
-	mesh->init();
-	Material* material = h->getMaterial("blinnphong_mat");
+	if (!h->hasMesh(meshname)) {
+		if (importMesh(meshname)) {
+			Mesh* mesh = h->getMesh(meshname);
+			mesh->init();
+			Material* material = h->getMaterial("blinnphong_mat");
 
-	graph.setCurrToRoot();
-	graph.addChild(material, mesh, objectname);
-	graph.setTransforms(objectname, { MxFactory::translate(Vector3D(1,1,1)) });
+			graph.setCurrToRoot();
+			graph.addChild(material, mesh, objectname);
+			graph.setTransforms(objectname, { MxFactory::translate(Vector3D(1,1,1)) });
+		}
+	}
 	add_mesh = false;
 	mesh_indicator = 0;
 	choosing_object = false;
@@ -699,14 +732,15 @@ void myApp::createObject(string objecttype, string meshname, string materialname
 	std::string id = std::to_string(h->getCounter());
 	string objectname = objecttype + id;
 	if (!h->hasMesh(meshname))
-		importMesh(meshname);
-	Mesh* mesh = h->getMesh(meshname);
-	mesh->init();
-	Material* material = h->getMaterial(materialname);
+		if (importMesh(meshname)) {
+			Mesh* mesh = h->getMesh(meshname);
+			mesh->init();
+			Material* material = h->getMaterial(materialname);
 
-	graph.setCurrToRoot();
-	graph.addChild(material, mesh, objectname);
-	graph.setTransforms(objectname, { MxFactory::translate(Vector3D(1,1,1)) });
+			graph.setCurrToRoot();
+			graph.addChild(material, mesh, objectname);
+			graph.setTransforms(objectname, { MxFactory::translate(Vector3D(1,1,1)) });
+		}
 	add_mesh = false;
 	mesh_indicator = 0;
 }
@@ -747,4 +781,28 @@ void myApp::materialSetUniform(string materialname, string uniformname, string u
 
 void myApp::objectSetParent(string objname, string parentname) {
 	graph.changeParent(objname, parentname);
+}
+
+void myApp::seeAssets() {
+	Manager* h = Manager::getInstance();
+	std::unordered_map<std::string, Shader*> shaders = h->getShaders();
+	std::unordered_map<std::string, Mesh*> meshes = h->getMeshes();
+	std::unordered_map<std::string, Texture*> textures = h->getTextures();
+	std::unordered_map<std::string, Material*> materials = h->getMaterials();
+	cout << "\nShaders:\n";
+	for (auto i : shaders) {
+		cout << " - " + i.first + "\n";
+	}
+	cout << "Meshes:\n";
+	for (auto i : meshes) {
+		cout << " - " + i.first + "\n";
+	}
+	cout << "Textures:\n";
+	for (auto i : textures) {
+		cout << " - " + i.first + "\n";
+	}
+	cout << "\Materials:\n";
+	for (auto i : materials) {
+		cout << " - " + i.first + "\n";
+	}
 }

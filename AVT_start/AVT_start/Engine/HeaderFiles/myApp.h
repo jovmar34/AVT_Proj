@@ -55,9 +55,9 @@ public:
 	void executeCommand(std::string command);
 	
 	// Import Commands
-	void importMesh(string meshname); //x
-	void importShader(string shadername); //x
-	void importTexture(string texturename, string format); //x
+	bool importMesh(string meshname); //x
+	bool importShader(string shadername); //x
+	bool importTexture(string texturename, string format); //x
 	
 	// Object Commands
 	void loadObject(string objecttype);

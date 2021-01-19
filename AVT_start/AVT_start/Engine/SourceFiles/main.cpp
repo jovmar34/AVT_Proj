@@ -27,6 +27,9 @@
 #include <cmath>
 #include <time.h>
 
+#include <atomic>
+#include <thread>
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "FreeImage.h"
@@ -39,6 +42,8 @@ bool save_img = false;
 
 SceneGraph graph;
 myApp app;
+
+queue<std::string> commandQueue;
 
 void createShaderProgram()
 {
@@ -81,6 +86,7 @@ void destroyBufferObjects()
 void drawScene(GLFWwindow* win, double elapsed)
 {
 	app.update(win, elapsed);
+	app.processCommands(commandQueue);
 
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not draw scene.");
@@ -269,27 +275,49 @@ void display_callback(GLFWwindow* win, double elapsed_sec)
 	drawScene(win, elapsed_sec);
 }
 
+void readCin(std::atomic<bool>& run)
+{
+	std::string buffer;
+
+	while (run.load())
+	{
+		std::cin >> buffer;
+		
+		commandQueue.push(buffer);
+
+		std::cout << buffer;
+	}
+}
+
 void run(GLFWwindow* win)
 {
 	double last_time = glfwGetTime();
 	
+	//create thread
+	std::atomic<bool> run(true);
+	std::thread cinThread(readCin, std::ref(run));
+
 	while (!glfwWindowShouldClose(win))
 	{
 		double time = glfwGetTime();
 		double elapsed_time = time - last_time;
 		last_time = time;
 
-
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		display_callback(win, elapsed_time);
 		glfwSwapBuffers(win);
 		glfwPollEvents();
-
 		//checkOpenGLError("ERROR: MAIN/RUN");
 	}
+
+	// destroy thread
+	run.store(false);
+	cinThread.join();
+
 	glfwDestroyWindow(win);
 	glfwTerminate();
 }
+
 
 ////////////////////////////////////////////////////////////////////////// MAIN
 

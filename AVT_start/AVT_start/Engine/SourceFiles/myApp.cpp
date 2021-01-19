@@ -465,7 +465,6 @@ void myApp::mouseCallback(GLFWwindow* win, double xpos, double ypos) {
 	}
 }
 
-
 void myApp::scrollCallback(GLFWwindow* win, double xoffset, double yoffset) {
 	Camera* cam = graph.getCam();
 	cam->toggle();
@@ -594,9 +593,11 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 	}
 }
 
+
 void myApp::update(GLFWwindow *win, double elapsed)
 {
 	processInput(win, elapsed);
+
 	graph.draw();
 	if (save_img) {
 		save(win);
@@ -660,16 +661,21 @@ void myApp::update(GLFWwindow *win, double elapsed)
 		loadObject(meshname);
 		graph.describe(); //debug
 	}
-	if (enter_command) {
-		enterCommand();
+}
+
+void myApp::processCommands(queue<std::string> &commands)
+{
+	std::string command;
+	while (!commands.empty()) 
+	{
+		command = commands.front();
+		this->executeCommand(command);
+		commands.pop();
 	}
 }
 
-void myApp::enterCommand() {
-	std::string command;
-	cout << "\nPlease enter your commands! When you are finished type 'Done' (Enter 'Help' to see command list)\n";
-	cin >> command;
-
+void myApp::executeCommand(std::string command)
+{
 	//init components
 	vector <string> tokens;
 	stringstream parsable(command);
@@ -677,7 +683,7 @@ void myApp::enterCommand() {
 	size_t pos = 0;
 
 
-	//
+	// tokenise
 	while ( getline(parsable, current, ',' )) {
 		tokens.push_back(current);
 	}
@@ -687,7 +693,6 @@ void myApp::enterCommand() {
 	//	cout << tokens[i] << '\n';
 	//}
 	
-
 	if (tokens[0] == "LoadObject") {
 		loadObject(tokens[1]);
 	}

@@ -48,9 +48,12 @@ public:
 	void mouseCallback(GLFWwindow* win, double xpos, double ypos);
 	void mouseButtonCallback(GLFWwindow* win, int button, int action, int mods);
 	void scrollCallback(GLFWwindow* win, double xoffset, double yoffset);
-	void update(GLFWwindow* win, double elapsed);
 	
-	void enterCommand();
+	void update(GLFWwindow* win, double elapsed);
+
+	// Command Processing
+	void processCommands(queue<std::string> &commands);
+	void executeCommand(std::string command);
 	
 	// Import Commands
 	void importMesh(string meshname); //x

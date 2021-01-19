@@ -13,8 +13,9 @@ void myApp::processInput(GLFWwindow* win, double elapsed)
 		reset_cam = false;
 	}
 	else {
-		walk(win, elapsed);
-		look(win, elapsed);
+		if (move_camera) {
+			camera_movement(win, elapsed);
+		}
 	}
 
 	if (gizmoActive) {
@@ -78,43 +79,31 @@ void myApp::animate(GLFWwindow* win, double elapsed)
 	/**/
 }
 
-void myApp::look(GLFWwindow* win, double elapsed)
+void myApp::camera_movement(GLFWwindow* win, double elapsed)
 {
 	Camera* cam = graph.getCam();
 
 	double x, y;
 	glfwGetCursorPos(win, &x, &y);
 
-	int w, h;
-	glfwGetWindowSize(win, &w, &h);
-
 	double move_x = (x - old_x);
 	double move_y = (y - old_y);
 
+	double x_percent = fabs(move_x) / (double) w;
+	double y_percent = fabs(move_y) / (double) y;
+
 	if (move_x != 0 || move_y != 0)
-		cam->look(angle_x * move_x * elapsed, angle_y * move_y * elapsed);
+		if (glfwGetKey(win, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+			Vector3D dir = Vector3D(x_percent * -move_x, y_percent * move_y, 0);
+			
+			cam->move(dir, 1);
+		}
+		else {
+			cam->look(- move_x * 0.5, -move_y * 0.5);
+		}
 
 	old_x = x;
 	old_y = y;
-}
-
-void myApp::walk(GLFWwindow* win, double elapsed)
-{
-	Camera* cam = graph.getCam();
-	int r = (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS),
-		l = (glfwGetKey(win, GLFW_KEY_A) == GLFW_PRESS),
-		d = (glfwGetKey(win, GLFW_KEY_S) == GLFW_PRESS),
-		u = (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS);
-
-	double xaxis = (double) r - l,
-		yaxis = (double) d - u;
-
-	if (xaxis != 0 || yaxis != 0) {
-		Vector3D dir = Vector3D(xaxis, 0, yaxis);
-		dir.normalize();
-
-		cam->move(dir, sprint_factor * speed * elapsed);
-	}
 }
 
 void myApp::save(GLFWwindow* win)
@@ -236,7 +225,7 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 				glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 			}
 			else {
-				glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+				
 			}
 			cam->toggle();
 			break;
@@ -372,118 +361,41 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 			break;
 		}
 	}
-	if (key == GLFW_KEY_LEFT) //left arrow - object movement
-	{
-		MxFactory m = MxFactory();
-		Vector3D axis(0, 1, 0);
-		Matrix4 rot = m.rotation4(axis, 1);
-		SceneNode* root = graph.getNode("root");
-		if (root->selected) {
-			graph.applyTransform("root", rot);
-		}
-	}
-
-	else if (key == GLFW_KEY_RIGHT) //right arrow - object movement
-	{
-		MxFactory m = MxFactory();
-		Vector3D axis(0, 1, 0);
-		Matrix4 rot = m.rotation4(axis, -1);
-		SceneNode* root = graph.getNode("root");
-		if (root->selected) {
-			graph.applyTransform("root", rot);
-		}
-	}
-
-	else if (key == GLFW_KEY_UP) //up arrow - object movement
-	{
-		MxFactory m = MxFactory();
-		Vector3D axis(1, 0, 0);
-		Matrix4 rot = m.rotation4(axis, 1);
-		SceneNode* root = graph.getNode("root");
-		if (root->selected) {
-			graph.applyTransform("root", rot);
-		}
-	}
-
-	else if (key == GLFW_KEY_DOWN) //down arrow - object movement
-	{
-		MxFactory m = MxFactory();
-		Vector3D axis(1, 0, 0);
-		Matrix4 rot = m.rotation4(axis, -1);
-		SceneNode* root = graph.getNode("root");
-		if (root->selected) {
-			graph.applyTransform("root", rot);
-		}
-	}
-	else if (key == GLFW_KEY_A) //a key (left)- camera movement
-	{
-		cam->toggle();
-		Vector3D axis(1, 0, 0);
-		cam->move(axis, -0.2);
-		cam->toggle();
-	}
-	else if (key == GLFW_KEY_D) //d key (right)- camera movement
-	{
-		cam->toggle();
-		Vector3D axis(1, 0, 0);
-		cam->move(axis, 0.2);
-		cam->toggle();
-	}
-	else if (key == GLFW_KEY_S)//s key (down) - camera movement
-	{
-		cam->toggle();
-		Vector3D axis(0, 0, -1);
-		cam->move(axis, 0.2);
-		cam->toggle();
-	}
-	else if (key == GLFW_KEY_W)//w key (up) - camera movement
-	{
-		cam->toggle();
-		Vector3D axis(0, 0, 1);
-		cam->move(axis, 0.2);
-		cam->toggle();
-	}
 }
 
 void myApp::mouseCallback(GLFWwindow* win, double xpos, double ypos) {
-	if (move_obj) {
-		float oldXPos = (float)xpos, oldYPos = (float)ypos;
-		glfwGetCursorPos(win, &xpos, &ypos);
-		xDelta = ((float)xpos - oldXPos) * 5;
-		yDelta = ((float)ypos - oldYPos) * 5;
-
-		MxFactory m = MxFactory();
-		Vector3D axisX(xDelta, 1, 1);
-		Vector3D axisY(1, yDelta, 1);
-		Matrix4 rotX = m.rotation4(axisX, 1);
-		Matrix4 rotY = m.rotation4(axisY, 1);
-		Matrix4 totalRot = rotX * rotY;
-		SceneNode* root = graph.getNode("root");
-		if (root->selected) {
-			graph.applyTransform("root", totalRot);
-		}
-	}
+	
 }
 
 
 void myApp::scrollCallback(GLFWwindow* win, double xoffset, double yoffset) {
 	Camera* cam = graph.getCam();
-	cam->toggle();
-	if (yoffset == 1) {
-		cout << "up\n";
-		Vector3D dir(0, 0, 1);
-		cam->move(dir, 1);
-	}
-	else {
-		cout << "down\n";
-		Vector3D dir(0, 0, 1);
-		cam->move(dir, -1);
-	}
-	cam->toggle();
+
+	cam->zoom(yoffset);
 }
 
 void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mods)
 {
+	if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
+		if (action == GLFW_PRESS) {
+			//glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			move_camera = true;
+			
+			double x, y;
+			glfwGetCursorPos(win, &x, &y);
+
+			glfwGetWindowSize(win, &w, &h);
+
+			old_x = x; old_y = y;
+		}
+		else if (action == GLFW_RELEASE) {
+			//glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			move_camera = false;
+		}
+	}
+
+	if (move_camera) return;
+
 	if (button == GLFW_MOUSE_BUTTON_LEFT) {
 		double xpos, ypos;
 		int height, width;
@@ -575,22 +487,6 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 				}
 			}
 		}
-	}
-
-	Camera* cam = graph.getCam();
-	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) { //object movement
-		move_obj = true;
-	}
-	else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) { //object movement
-		move_obj = false;
-	}
-	else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) { //camera movement
-		cam->toggle();
-	}
-	else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) { //camera movement
-		cam->toggle();
-	}
-	else if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS) { //not sure if we'll need this
 	}
 }
 

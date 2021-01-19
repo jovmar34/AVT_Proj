@@ -23,7 +23,7 @@ private:
 
 	float xDelta, yDelta;
 	double old_x = 0, old_y = 0;
-	double angle_x = M_PI_2 / 50, angle_y = M_PI / 50;
+	int w, h;
 
 	// gizmo manipulation
 	Vector4D worldDir;
@@ -38,8 +38,7 @@ private:
 	void processInput(GLFWwindow* win, double elapsed);
 	void manipulateGizmo(GLFWwindow* win, double elapsed);
 	void animate(GLFWwindow* win, double elapsed);
-	void look(GLFWwindow* win, double elapsed);
-	void walk(GLFWwindow* win, double elapsed);
+	void camera_movement(GLFWwindow* win, double elapsed);
 	void save(GLFWwindow* win);
 
 public:

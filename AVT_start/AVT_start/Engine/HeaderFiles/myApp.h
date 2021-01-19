@@ -8,7 +8,7 @@
 class myApp : IApp {
 private:
 	bool move_camera = false;
-	bool first_person = true;
+	bool first_person = false;
 
 	bool reset_cam = false;
 	bool save_img = false;
@@ -38,8 +38,8 @@ private:
 	void manipulateGizmo(GLFWwindow* win, double elapsed);
 	void animate(GLFWwindow* win, double elapsed);
 	void cleanScene();
-	void look(GLFWwindow* win, double elapsed);
 	void walk(GLFWwindow* win, double elapsed);
+	void fps_look(GLFWwindow* win, double elapsed);
 	void camera_movement(GLFWwindow* win, double elapsed);
 	void save(GLFWwindow* win);
 

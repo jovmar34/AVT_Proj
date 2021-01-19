@@ -13,7 +13,11 @@ void myApp::processInput(GLFWwindow* win, double elapsed)
 		reset_cam = false;
 	}
 	else {
-		if (move_camera) {
+		if (first_person) {
+			walk(win, elapsed);
+			fps_look(win, elapsed);
+		}
+		else if (move_camera) {
 			camera_movement(win, elapsed);
 		}
 	}
@@ -77,6 +81,44 @@ void myApp::animate(GLFWwindow* win, double elapsed)
 
 	graph.setTransforms("cube", { MxFactory::scale(Vector3D(2, 1, 1)), MxFactory::rotate(Vector3D(0,1,0), t_frame * 90) });
 	/**/
+}
+
+void myApp::walk(GLFWwindow* win, double elapsed)
+{
+	Camera* cam = graph.getCam();
+	int r = (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS),
+		l = (glfwGetKey(win, GLFW_KEY_A) == GLFW_PRESS),
+		d = (glfwGetKey(win, GLFW_KEY_S) == GLFW_PRESS),
+		u = (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS);
+
+	double xaxis = (double)r - l,
+		yaxis = (double)d - u;
+
+	if (xaxis != 0 || yaxis != 0) {
+		Vector3D dir = Vector3D(xaxis, 0, -yaxis);
+		dir.normalize();
+
+		cam->move(dir, 10 * elapsed);
+	}
+}
+
+void myApp::fps_look(GLFWwindow* win, double elapsed) {
+	Camera* cam = graph.getCam();
+
+	double x, y;
+	glfwGetCursorPos(win, &x, &y);
+
+	double move_x = (x - old_x);
+	double move_y = (y - old_y);
+
+	double percent_x = fabs(M_PI_2 * move_x) / w;
+	double percent_y = fabs(M_PI_2 * move_y) / h;
+
+	if (move_x != 0 || move_y != 0)
+		cam->fpslook(percent_x * move_x * elapsed, percent_y * move_y * elapsed);
+
+	old_x = x;
+	old_y = y;
 }
 
 void myApp::camera_movement(GLFWwindow* win, double elapsed)
@@ -380,6 +422,7 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 {
 	if (button == GLFW_MOUSE_BUTTON_RIGHT) {
 		if (action == GLFW_PRESS) {
+			glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 			first_person = true;
 
 			double x, y;
@@ -389,6 +432,7 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 			old_x = x; old_y = y;
 		}
 		else if (action == GLFW_RELEASE) {
+			glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 			first_person = false;
 		}
 	}

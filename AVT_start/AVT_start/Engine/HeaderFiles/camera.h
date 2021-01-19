@@ -33,6 +33,7 @@ public:
 	void perspectiveProjection(double fovy, double aspect, double near, double far);
 	void move(Vector3D dir, double speed);
 	void look(double angle_h, double angle_v);
+	void fpslook(double angle_h, double angle_v);
 	void zoom(double zoom_val);
 	void updateView();
 	void toggle();

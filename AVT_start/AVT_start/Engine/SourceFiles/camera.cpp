@@ -69,6 +69,25 @@ void Camera::look(double angle_h, double angle_v)
 	updateView();
 }
 
+void Camera::fpslook(double angle_h, double angle_v)
+{
+	if (state == Working::Off) return;
+
+	Vector3D dir = center - eye;
+	double len = dir.length();
+
+	double sin1 = sin(angle_h), cos1 = cos(angle_h);
+	double sin2 = sin(angle_v), cos2 = cos(angle_v);
+
+	Vector3D rot = len * cos1 * cos2 * v +
+		-len * sin2 * u +
+		len * sin1 * cos2 * s;
+
+	center = eye + rot;
+
+	updateView();
+}
+
 void Camera::zoom(double zoom_val)
 {
 	Vector3D new_eye = eye + v * zoom_val;

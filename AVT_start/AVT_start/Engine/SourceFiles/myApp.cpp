@@ -20,6 +20,7 @@ void myApp::processInput(GLFWwindow* win, double elapsed)
 		else if (move_camera) {
 			camera_movement(win, elapsed);
 		}
+		obj_arrows(win, elapsed);
 	}
 
 	if (gizmoActive) {
@@ -441,7 +442,7 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 
 	if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
 		if (action == GLFW_PRESS) {
-			first_person = true;
+			move_camera = true;
 			
 			double x, y;
 			glfwGetCursorPos(win, &x, &y);
@@ -548,6 +549,50 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 			}
 		}
 	}
+}
+
+void myApp::obj_arrows(GLFWwindow* win, double elapsed)
+{
+	int r = (glfwGetKey(win, GLFW_KEY_RIGHT) == GLFW_PRESS),
+		l = (glfwGetKey(win, GLFW_KEY_LEFT) == GLFW_PRESS),
+		d = (glfwGetKey(win, GLFW_KEY_DOWN) == GLFW_PRESS),
+		u = (glfwGetKey(win, GLFW_KEY_UP) == GLFW_PRESS);
+
+	double move_v = (double)u - d,
+		move_h = (double)r - l;
+
+	if (move_v == 0 && move_h == 0) return;
+
+	SceneNode* selected = graph.getSelected();
+	if (!selected) return;
+
+	Vector4D pos = selected->getTransformInfo().transform * Vector4D(0, 0, 0, 1);
+	TransformInfo parent = selected->parent->getTransformInfo(),
+		translate = MxFactory::translate(pos.to3D()),
+		localTransform = { selected->transform, selected->inverse },
+		extraTransform;
+
+	Camera* cam = graph.getCam();
+
+	if (graph.getGizmoType() == GizmoType::Translation) {
+		Vector3D translationDir = cam->u * move_v + cam->s * move_h;
+		translationDir.normalize();
+		extraTransform = MxFactory::translate(3 * translationDir * elapsed);
+	} 
+	else if (graph.getGizmoType() == GizmoType::Scaling) {
+		Vector3D scaleDir = cam->u * move_v + cam->s * move_h;
+		scaleDir.normalize();
+		extraTransform = MxFactory::scale(Vector3D(1, 1, 1) + (scaleDir * elapsed));
+	}
+	else if (graph.getGizmoType() == GizmoType::Rotation) {
+		Vector3D rotateDir = cam->s * -move_v + cam->v * move_h;
+		rotateDir.normalize();
+		extraTransform = MxFactory::rotate(rotateDir, 1);
+	}
+
+	graph.setTransforms(selected->name, 
+		{ localTransform, parent, translate.invert(), extraTransform, translate, parent.invert() });
+
 }
 
 

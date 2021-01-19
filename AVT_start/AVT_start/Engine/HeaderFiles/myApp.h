@@ -38,9 +38,13 @@ private:
 	void manipulateGizmo(GLFWwindow* win, double elapsed);
 	void animate(GLFWwindow* win, double elapsed);
 	void cleanScene();
+
 	void walk(GLFWwindow* win, double elapsed);
 	void fps_look(GLFWwindow* win, double elapsed);
 	void camera_movement(GLFWwindow* win, double elapsed);
+
+	void obj_arrows(GLFWwindow* win, double elapsed);
+
 	void save(GLFWwindow* win);
 
 public:

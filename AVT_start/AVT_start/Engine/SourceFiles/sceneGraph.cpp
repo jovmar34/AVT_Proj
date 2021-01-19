@@ -108,11 +108,11 @@ void SceneGraph::drawGizmos()
 			color = Vector3D(1, 0, 0);
 			break;
 		case 1:
-			color = Vector3D(0, 1, 0);
+			color = Vector3D(0, 0, 1);
 			rotate = MxFactory::rotation4(Vector3D(0, 0, 1), 90.0f * sign) * rotate;
 			break;
 		case 2:
-			color = Vector3D(0, 0, 1);
+			color = Vector3D(0, 1, 0);
 			rotate = MxFactory::rotation4(Vector3D(1, 0, 0), 90.0f * sign) * rotate;
 			break;
 		}

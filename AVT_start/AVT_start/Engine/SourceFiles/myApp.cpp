@@ -326,13 +326,13 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 			}
 			break;
 		case GLFW_KEY_N:
-			if (choosing_object)
+			/*if (choosing_object)
 			{
 				add_mesh = true;
 				mesh_indicator = 11;
 			}
-			else
-				new_mat = true;
+			else*/
+			new_mat = true;
 			break;
 		}
 	}
@@ -540,16 +540,16 @@ void myApp::update(GLFWwindow *win, double elapsed)
 	if (add_mesh && mesh_indicator == 10) { 
 		loadObject("bunny");
 	}
-	if (add_mesh && mesh_indicator == 11) {
+	/*if (add_mesh && mesh_indicator == 11) {
 		
 		std::string meshname;
-		cout << "Please enter the name of your .obj file after the '>'. Make sure the file is present in the res/meshes folder\n >";
+		cout << "Please enter the name of your .obj file after the '>'\n >";
 		cin >> meshname;
 		cout << meshname + "should be loading now :^)\n"; 
 		
 		loadObject(meshname);
 		graph.describe(); //debug
-	}
+	}*/
 }
 
 void myApp::processCommands(queue<std::string> &commands)

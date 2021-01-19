@@ -729,24 +729,29 @@ void myApp::enterCommand() {
 	}
 
 	else if (tokens[0] == "Help") {
-		cout << "-------------------------------------------------------------------------\n\n"
+		cout << "--------------------------------------------------------------------------\n"
 			 << "|Here is a list of our commands in the format they should be written:    |\n"
+			 << "|                                                                        |\n"
 			 << "|                   -----Import instructions-----                        |\n"
 			 << "| o ImportMesh,meshname                                                  |\n" 
 			 << "| o ImportShader,shadername                                              |\n"
-			 << "| o ImportTexture,texturename,format                                     |\n\n"
+			 << "| o ImportTexture,texturename,format                                     |\n"
+			 << "|                                                                        |\n"
 			 << "|                    -----Object Creation-----                           |\n"
 			 << "| o LoadObject,objectname                                                |\n"
 			 << "| o CreateObject,objectname,meshname,materialname                        |\n"
-			 << "| o RemoveObject,objectname                                              |\n\n"
+			 << "| o RemoveObject,objectname                                              |\n"
+			 << "|                                                                        |\n"
 			 << "|                       -----Materials-----                              |\n"
 			 << "| o CreateMaterial,materialname,shadername                               |\n"
 			 << "| o ObjectSetMaterial,objectname,materialname                            |\n"
-			 << "| o MaterialSetUniform,materialname,uniformname,uniformtype,uniformvalue |\n\n"
+			 << "| o MaterialSetUniform,materialname,uniformname,uniformtype,uniformvalue |\n"
+			 << "|                                                                        |\n"
 			 << "|                        -----Scene-----                                 |\n"
 			 << "| o SaveScene //WIP                                                      |\n"
 			 << "| o LoadScene //WIP                                                      |\n"
-			 << "\n| For more information please refer to the manual                      |\n"
+			 << "|                                                                        |\n" 
+			 << "| For more information please refer to the manual                        |\n"
 			 << "-------------------------------------------------------------------------\n";
 	}
 	else if (tokens[0] == "Done") {

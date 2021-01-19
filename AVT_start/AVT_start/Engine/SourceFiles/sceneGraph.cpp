@@ -178,6 +178,14 @@ void SceneGraph::setGrid(Material* mat, Mesh* mesh, TransformInfo info)
 	grid->material = mat;
 }
 
+void SceneGraph::setHud(Material* mat, Mesh* mesh)
+{
+	hud = new SceneNode();
+	hud->name = "hud";
+	hud->mesh = mesh;
+	hud->material = mat;
+}
+
 void SceneGraph::setGizmo(Material* mat, Mesh* mesh)
 {
 	gizmo = new SceneNode();
@@ -278,6 +286,12 @@ void SceneGraph::draw()
 	grid->material->update(grid->transform, invTransView * grid->inverse.transpose().decrease());
 	grid->mesh->draw();
 	grid->material->unbind();
+
+	//draw HUD
+	glClear(GL_DEPTH_BUFFER_BIT);
+	hud->material->bind();
+	hud->mesh->draw();
+	hud->material->unbind();
 
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);

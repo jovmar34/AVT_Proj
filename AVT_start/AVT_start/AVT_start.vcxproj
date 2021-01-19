@@ -209,6 +209,8 @@
     <None Include="res\shaders\gouraud_vs.glsl" />
     <None Include="res\shaders\grid_fs.glsl" />
     <None Include="res\shaders\grid_vs.glsl" />
+    <None Include="res\shaders\hud_fs.glsl" />
+    <None Include="res\shaders\hud_vs.glsl" />
     <None Include="res\shaders\outline_vs.glsl" />
     <None Include="res\shaders\outline_fs.glsl" />
     <None Include="res\shaders\phong_fs.glsl" />

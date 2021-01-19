@@ -199,20 +199,21 @@ void myApp::populateScene()
 
 void cleanNode(SceneGraph graph, std::vector<SceneNode*> nodes) {
 	for (auto node : nodes) {
-		graph.removeObject(node->name);
 		if (node->children.size() != 0) {
 			cleanNode(graph, node->children);
 		}
+		graph.removeObject(node->name);
 	}
 }
 
 void myApp::cleanScene() {
 	SceneNode* root = graph.getNode("root");
+
 	for (auto node : root->children) {
-		graph.removeObject(node->name);
 		if (node->children.size() != 0) {
 			cleanNode(graph, node->children);
 		}
+		graph.removeObject(node->name);
 	}
 }
 
@@ -349,6 +350,7 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 		case GLFW_KEY_L: //load a saved scene
 			const std::string path = "res/scenes/scene.txt";
 			cleanScene();
+			Manager::getInstance()->destroy();
 			graph.loadScene(path);
 			cout << "Scene Loaded.\n";
 			break;

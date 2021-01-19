@@ -397,6 +397,7 @@ void SceneGraph::removeObject(std::string objName)
 	node->parent = nullptr;
 	node->material = nullptr;
 	node->outline = nullptr;
+
 	delete node;
 	selected = 0;
 }
@@ -408,5 +409,6 @@ void SceneGraph::serializeScene(Camera* cam, Manager* man, const std::string& fi
 
 void SceneGraph::loadScene(const std::string& filepath) {
 	SceneSerializer ss = SceneSerializer();
-	ss.deserialize(filepath);
+	SceneNode* new_root = ss.deserialize(filepath);
+	this->root = new_root;
 }

@@ -23,7 +23,10 @@ protected:
 		meshes.clear();
 		textures.clear();
 		materials.clear();
+		counter = 1;
+		instance = nullptr;
 	}
+
 
 public:
 	static Manager* getInstance() {

@@ -230,7 +230,7 @@ double* extractMatrixValues(std::string str)
 }
 
 
-void SceneSerializer::deserialize(const std::string& filepath)
+SceneNode* SceneSerializer::deserialize(const std::string& filepath)
 {
 	std::ifstream file(filepath, ios::in);
 	std::string line, delimiter, type, ecu, workingState, matrix;
@@ -395,6 +395,7 @@ void SceneSerializer::deserialize(const std::string& filepath)
 				mesh_filepath = line;
 
 				Mesh* m = man->addMesh(mesh_name, new Mesh(mesh_name, mesh_filepath));
+				m->init();
 
 				std::getline(file, line);
 			}
@@ -641,11 +642,10 @@ void SceneSerializer::deserialize(const std::string& filepath)
 				}
 				Matrix4 transformation_mat(aux[0], aux[1], aux[2], aux[3], aux[4], aux[5], aux[6], aux[7], aux[8], aux[9], aux[10], aux[11], aux[12], aux[13], aux[14], aux[15]);
 				
-				
-
-				graph.addChild(node_material, node_mesh, "eu nsei que nome dar aqui help");
+				graph.addChild(node_material, node_mesh, node_name);
+				//graph.setTransforms(node_name, { {transformation_mat, inverse_mat}};
 				std::getline(file, line);
-}
+			}
 		}
 
 	}
@@ -654,4 +654,6 @@ void SceneSerializer::deserialize(const std::string& filepath)
 	graph.removeObject(objname);*/
 
 	file.close();
+
+	return graph.getNode("root");
 }

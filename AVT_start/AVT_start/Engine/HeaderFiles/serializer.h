@@ -29,7 +29,7 @@ public:
 	void serializeManager(std::ofstream& out);
 	void serializeNode(SceneNode* node, std::ofstream& out);
 	void serialize(const std::string& filepath);
-	void deserialize(const std::string& filepath);
+	SceneNode* deserialize(const std::string& filepath);
 
 };
 

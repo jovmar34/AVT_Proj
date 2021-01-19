@@ -218,6 +218,14 @@ void myApp::populateScene()
 	gizmo_shader->addUniformBlock("Matrices", 0);
 }
 
+
+void myApp::cleanScene() {
+	//SceneNode* root = graph.getNode("root");
+	//for (int i = 0; i < root->children; i++) {
+		//graph.removeObject()
+	//}
+}
+
 void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int mods)
 {
 	Camera* cam = graph.getCam();
@@ -367,6 +375,7 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 		}
 		case GLFW_KEY_L: //load a saved scene
 			const std::string path = "res/scenes/scene.txt";
+			cleanScene();
 			graph.loadScene(path);
 			cout << "Scene Loaded.\n";
 			break;

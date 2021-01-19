@@ -38,6 +38,7 @@ private:
 	void processInput(GLFWwindow* win, double elapsed);
 	void manipulateGizmo(GLFWwindow* win, double elapsed);
 	void animate(GLFWwindow* win, double elapsed);
+	void cleanScene();
 	void look(GLFWwindow* win, double elapsed);
 	void walk(GLFWwindow* win, double elapsed);
 	void save(GLFWwindow* win);

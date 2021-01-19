@@ -19,7 +19,7 @@ Camera:
 [0.7 0. -0.7 0.]
 [-0.4 0.81 -0.4 0.]
 [0.57 0.57 0.57 0.]
-[8. 8. 8. 1.]
+[8. 7.99 7.99 1.]
 
 --- Manager ---
 Manager:
@@ -61,43 +61,24 @@ Manager:
 	- Name: blinnphong_mat
 	- Shader: blinn_phong_shader
 	- Uniforms:
-		- Vector4D:
-
 		 - Vector3D:
 			- Name: u_AlbedoColor
 			- Values: (0.8, 0.8, 0.8)
-		 - Vector2D:
-		 - Matrix4:
-		 - 1int:
-		 - 1float:
 - Material:
 	- Name: gooch_mat
 	- Shader: gooch_shader
 	- Uniforms:
-		- Vector4D:
-
 		 - Vector3D:
 			- Name: u_AlbedoColor
 			- Values: (0.8, 0.8, 0.8)
-		 - Vector2D:
-		 - Matrix4:
-		 - 1int:
-		 - 1float:
 - Material:
 	- Name: grid_mat
 	- Shader: grid_shader
 	- Uniforms:
-		- Vector4D:
-
-		 - Vector3D:
-		 - Vector2D:
-		 - Matrix4:
-		 - 1int:
-		 - 1float:
 --- Graph ---
 Node:
 - Name: root
-- Children: 3
+- Children: 4
 - Material:
 	- Name: None
 - Texture:
@@ -145,6 +126,23 @@ Node:
 [0. 1. 0. 0.]
 [0. 0. 1. 0.]
 [0. 0. -5. 1.]
+
+Node:
+- Name: root::cube
+- Children: 0
+- Material:
+	- Name: None
+- Texture:
+	- Name: None
+- Shaders:
+	- Name: None
+- Mesh: 
+	- Name: None
+- Transformation: 
+[1. 0. 0. 0.]
+[0. 1. 0. 0.]
+[0. 0. 1. 0.]
+[0. 0. 0. 1.]
 
 Node:
 - Name: root::torus

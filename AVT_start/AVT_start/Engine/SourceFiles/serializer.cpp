@@ -81,48 +81,62 @@ void SceneSerializer::serializeManager(std::ofstream& out)
 		std::unordered_map<std::string, float>::iterator itUniformsF1;
 
 		std::string name = itMaterials->first;
-		out << "- Material:\n\t- Name: " << name << "\n\t- Shader: " << itMaterials->second->shader->name << "\n\t- Uniforms:\n\t\t- Vector4D:\n" << std::endl;
+		out << "- Material:\n\t- Name: " << name << "\n\t- Shader: " << itMaterials->second->shader->name << "\n\t- Uniforms:" << std::endl;
 		//"\n\t- Filepath: " << _manager->getMaterial(name)
 
 		//Uniforms4D
-		for (itUniformsV4 = vals_Vec4.begin(); itUniformsV4 != vals_Vec4.end(); itUniformsV4++) 
-		{
-			out << "\t\t\t- Name: " << itUniformsV4->first << "\n\t\t\t- Values: " << itUniformsV4->second.toString() << std::endl;
+		if (itMaterials->second->getValsVec4().size() != 0) {
+			out << "\t\t - Vector4D:\n";
+			for (itUniformsV4 = vals_Vec4.begin(); itUniformsV4 != vals_Vec4.end(); itUniformsV4++)
+			{
+				out << "\t\t\t- Name: " << itUniformsV4->first << "\n\t\t\t- Values: " << itUniformsV4->second.toString() << std::endl;
+			}
 		}
 
 		//Uniforms3D
-		out << "\t\t - Vector3D:\n";
-		for (itUniformsV3 = vals_Vec3.begin(); itUniformsV3 != vals_Vec3.end(); itUniformsV3++)
-		{
-			out << "\t\t\t- Name: " << itUniformsV3->first << "\n\t\t\t- Values: " << itUniformsV3->second.toString() << std::endl;
+		if (itMaterials->second->getValsVec3().size() != 0) {
+			out << "\t\t - Vector3D:\n";
+			for (itUniformsV3 = vals_Vec3.begin(); itUniformsV3 != vals_Vec3.end(); itUniformsV3++)
+			{
+				out << "\t\t\t- Name: " << itUniformsV3->first << "\n\t\t\t- Values: " << itUniformsV3->second.toString() << std::endl;
+			}
 		}
 
 		//Uniforms2D
-		out << "\t\t - Vector2D:\n";
-		for (itUniformsV2 = vals_Vec2.begin(); itUniformsV2 != vals_Vec2.end(); itUniformsV2++)
-		{
-			out << "\t\t\t- Name: " << itUniformsV2->first << "\n\t\t\t- Values: " << itUniformsV2->second.toString() << std::endl;
+		if (itMaterials->second->getValsVec2().size() != 0) {
+			out << "\t\t - Vector2D:\n";
+			for (itUniformsV2 = vals_Vec2.begin(); itUniformsV2 != vals_Vec2.end(); itUniformsV2++)
+			{
+				out << "\t\t\t- Name: " << itUniformsV2->first << "\n\t\t\t- Values: " << itUniformsV2->second.toString() << std::endl;
+			}
 		}
 
 		//UniformsM4
-		out << "\t\t - Matrix4:\n";
-		for (itUniformsM4 = vals_Mat4.begin(); itUniformsM4!= vals_Mat4.end(); itUniformsM4++)
-		{
-			out << "\t\t\t- Name: " << itUniformsM4->first << "\n\t\t\t- Matrix: " << itUniformsM4->second.toString() << std::endl;
+		if (itMaterials->second->getValsMat4().size() != 0) {
+			out << "\t\t - Matrix4:\n";
+			for (itUniformsM4 = vals_Mat4.begin(); itUniformsM4 != vals_Mat4.end(); itUniformsM4++)
+			{
+				out << "\t\t\t- Name: " << itUniformsM4->first << "\n\t\t\t- Matrix: " << itUniformsM4->second.toString() << std::endl;
+			}
 		}
 
 		//Uniforms1int
-		out << "\t\t - 1int:\n";
-		for (itUniformsI1 = vals_1int.begin(); itUniformsI1 != vals_1int.end(); itUniformsI1++)
-		{
-			out << "\t\t\t- Name: " << itUniformsI1->first << "\n\t\t\t- Int: " << itUniformsI1->second << std::endl;
+		if (itMaterials->second->getVals1int().size() != 0) {
+			out << "\t\t - 1int:\n";
+			for (itUniformsI1 = vals_1int.begin(); itUniformsI1 != vals_1int.end(); itUniformsI1++)
+			{
+				out << "\t\t\t- Name: " << itUniformsI1->first << "\n\t\t\t- Int: " << itUniformsI1->second << std::endl;
+			}
+
 		}
 
 		//Uniforms1float
-		out << "\t\t - 1float:\n";
-		for (itUniformsF1 = vals_1float.begin(); itUniformsF1 != vals_1float.end(); itUniformsF1++)
-		{
-			out << "\t\t\t- Name: " << itUniformsF1->first << "\n\t\t\t- Float: " << itUniformsF1->second << std::endl;
+		if (itMaterials->second->getVals1float().size() != 0) {
+			out << "\t\t - 1float:\n";
+			for (itUniformsF1 = vals_1float.begin(); itUniformsF1 != vals_1float.end(); itUniformsF1++)
+			{
+				out << "\t\t\t- Name: " << itUniformsF1->first << "\n\t\t\t- Float: " << itUniformsF1->second << std::endl;
+			}
 		}
 	}
 

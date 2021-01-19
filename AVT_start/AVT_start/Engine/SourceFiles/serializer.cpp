@@ -21,10 +21,7 @@ SceneSerializer::SceneSerializer() {
 	_parent = nullptr;
 }
 
-SceneSerializer::~SceneSerializer()
-{
-//todo
-}
+SceneSerializer::~SceneSerializer(){}
 
 void SceneSerializer::serializeCamera(std::ofstream& out)
 {	
@@ -148,7 +145,7 @@ void SceneSerializer::serializeNode(SceneNode* node, std::ofstream& out)
 		<< "\n- Material:" << "\n\t- Name: " << node->materialName << "\n- Texture:\n\t- Name: " << node->textureName
 		<< "\n- Shaders:\n\t- Name: " << node->shaderName
 		<< "\n- Mesh: \n\t- Name: " << node->meshName
-		<< "\n- Transformation: " << node->getTransform().toString() << std::endl;
+		<< "\n- Transformation: " << node->getTransform().toString() << "\n- Inverse: " << _parent->getInverse().toString() << std::endl;
 	SceneNode* n;
 	for (int i = 0; i < node->children.size(); i++) {
 		n = node->children[i];
@@ -167,7 +164,7 @@ void SceneSerializer::serialize(const std::string& filepath)
 		<< "\n- Material:" << "\n\t- Name: " << _parent->materialName << "\n- Texture:\n\t Name: " << _parent->textureName 
 		<< "\n- Shaders:\n\t- Name: " << _parent->shaderName
 		<< "\n- Mesh: \n\t- Name: " << _parent->meshName
-		<< "\n- Transformation: " << _parent->getTransform().toString() << std::endl;
+		<< "\n- Transformation: " << _parent->getTransform().toString() << "\n- Inverse: " << _parent->getInverse().toString() << std::endl;
 
 	for (int i = 0; i < _parent->children.size(); i++) {
 		n = _parent->children[i];
@@ -641,6 +638,22 @@ SceneNode* SceneSerializer::deserialize(const std::string& filepath)
 					j += 4;
 				}
 				Matrix4 transformation_mat(aux[0], aux[1], aux[2], aux[3], aux[4], aux[5], aux[6], aux[7], aux[8], aux[9], aux[10], aux[11], aux[12], aux[13], aux[14], aux[15]);
+
+				//Inverse Matrix
+				std::getline(file, line);
+				std::getline(file, line);
+				j = 0;
+				while (l < 4) {
+					std::getline(file, matrix);
+					numbers = extractMatrixValues(matrix);
+					aux[j] = numbers[0];
+					aux[j + 1] = numbers[1];
+					aux[j + 2] = numbers[2];
+					aux[j + 3] = numbers[3];
+					l++;
+					j += 4;
+				}
+				Matrix4 inverse_mat(aux[0], aux[1], aux[2], aux[3], aux[4], aux[5], aux[6], aux[7], aux[8], aux[9], aux[10], aux[11], aux[12], aux[13], aux[14], aux[15]);
 				
 				graph.addChild(node_material, node_mesh, node_name);
 				std::string node_aux, name, parent = "root", temp;
@@ -667,8 +680,9 @@ SceneNode* SceneSerializer::deserialize(const std::string& filepath)
 				SceneNode* n = graph.getNode(node_name);
 				if (node_name == "root") n->parent = graph.getNode("root");
 				else n->parent = graph.getNode(parent);
-				n->transform = transformation_mat;
-				//graph.setTransforms(node_name, { {transformation_mat, inverse_mat}};
+				n->transform = transformation_mat.transpose();
+				n->inverse = inverse_mat.transpose();
+				graph.setTransforms(node_name, { {transformation_mat, inverse_mat} });
 				std::getline(file, line);
 			}
 		}

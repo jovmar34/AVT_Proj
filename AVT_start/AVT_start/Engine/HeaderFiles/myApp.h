@@ -8,22 +8,19 @@
 class myApp : IApp {
 private:
 	bool move_camera = false;
-	double sprint_factor = 1;
-	double speed = 10;
 	bool reset_cam = false;
 	bool save_img = false;
 	bool add_mesh = false;
 	bool new_mat = false;
 	bool move_obj = false;
 	bool new_obj = false;
-	bool enter_command = false;
 	int mesh_indicator = 0;
 	bool choosing_object = false;
 	bool animate_frame = false;
 
 	float xDelta, yDelta;
 	double old_x = 0, old_y = 0;
-	double angle_x = M_PI_2 / 50, angle_y = M_PI / 50;
+	int w, h;
 
 	// gizmo manipulation
 	Vector4D worldDir;
@@ -41,6 +38,7 @@ private:
 	void cleanScene();
 	void look(GLFWwindow* win, double elapsed);
 	void walk(GLFWwindow* win, double elapsed);
+	void camera_movement(GLFWwindow* win, double elapsed);
 	void save(GLFWwindow* win);
 
 public:
@@ -49,9 +47,12 @@ public:
 	void mouseCallback(GLFWwindow* win, double xpos, double ypos);
 	void mouseButtonCallback(GLFWwindow* win, int button, int action, int mods);
 	void scrollCallback(GLFWwindow* win, double xoffset, double yoffset);
-	void update(GLFWwindow* win, double elapsed);
 	
-	void enterCommand();
+	void update(GLFWwindow* win, double elapsed);
+
+	// Command Processing
+	void processCommands(queue<std::string> &commands);
+	void executeCommand(std::string command);
 	
 	// Import Commands
 	void importMesh(string meshname); //x

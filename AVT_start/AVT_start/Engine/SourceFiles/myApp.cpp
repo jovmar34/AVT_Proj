@@ -13,8 +13,9 @@ void myApp::processInput(GLFWwindow* win, double elapsed)
 		reset_cam = false;
 	}
 	else {
-		walk(win, elapsed);
-		look(win, elapsed);
+		if (move_camera) {
+			camera_movement(win, elapsed);
+		}
 	}
 
 	if (gizmoActive) {
@@ -78,43 +79,31 @@ void myApp::animate(GLFWwindow* win, double elapsed)
 	/**/
 }
 
-void myApp::look(GLFWwindow* win, double elapsed)
+void myApp::camera_movement(GLFWwindow* win, double elapsed)
 {
 	Camera* cam = graph.getCam();
 
 	double x, y;
 	glfwGetCursorPos(win, &x, &y);
 
-	int w, h;
-	glfwGetWindowSize(win, &w, &h);
-
 	double move_x = (x - old_x);
 	double move_y = (y - old_y);
 
+	double x_percent = fabs(move_x) / (double) w;
+	double y_percent = fabs(move_y) / (double) y;
+
 	if (move_x != 0 || move_y != 0)
-		cam->look(angle_x * move_x * elapsed, angle_y * move_y * elapsed);
+		if (glfwGetKey(win, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+			Vector3D dir = Vector3D(x_percent * -move_x, y_percent * move_y, 0);
+			
+			cam->move(dir, 1);
+		}
+		else {
+			cam->look(- move_x * 0.5, -move_y * 0.5);
+		}
 
 	old_x = x;
 	old_y = y;
-}
-
-void myApp::walk(GLFWwindow* win, double elapsed)
-{
-	Camera* cam = graph.getCam();
-	int r = (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS),
-		l = (glfwGetKey(win, GLFW_KEY_A) == GLFW_PRESS),
-		d = (glfwGetKey(win, GLFW_KEY_S) == GLFW_PRESS),
-		u = (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS);
-
-	double xaxis = (double) r - l,
-		yaxis = (double) d - u;
-
-	if (xaxis != 0 || yaxis != 0) {
-		Vector3D dir = Vector3D(xaxis, 0, yaxis);
-		dir.normalize();
-
-		cam->move(dir, sprint_factor * speed * elapsed);
-	}
 }
 
 void myApp::save(GLFWwindow* win)
@@ -164,16 +153,17 @@ void myApp::populateScene()
 	Shader* gooch_shader = h->addShader("gooch_shader", new Shader("gooch_shader", "res/shaders/gooch_vs.glsl", "res/shaders/gooch_fs.glsl"));
 	gooch_shader->addUniformBlock("Matrices", 0);
 
-
 	// Materials 
 	Material* blinnphong_mat = h->addMaterial("blinnphong_mat", new Material(blinn_phong_shader));
 	blinnphong_mat->setUniformVec3("u_AlbedoColor", Vector3D(0.8f, 0.8f, 0.8f));
+	Material* gooch_mat = h->addMaterial("gooch_mat", new Material(gooch_shader));
+	gooch_mat->setUniformVec3("u_AlbedoColor", Vector3D(0.8f, 0.8f, 0.8f));
 
 	//cube
-	graph.addChild(blinnphong_mat, cube_mesh, "cube");
+	graph.addChild(gooch_mat, cube_mesh, "cube");
 	graph.getNode("cube")->meshName = "cube_mesh";
 	graph.getNode("cube")->meshFile = "res/meshes/bunny_smooth.obj";
-	graph.getNode("cube")->materialName = "blinnphong_mat";
+	graph.getNode("cube")->materialName = "gooch_mat";
 	graph.getNode("cube")->shaderName = "blinn_phong_shader";
 	graph.getNode("cube")->vertexShaderFile = "res/shaders/blinn_phong_vs.glsl";
 	graph.getNode("cube")->fragmentShaderFile = "res/shaders/blinn_phong_fs.glsl";
@@ -186,21 +176,9 @@ void myApp::populateScene()
 	graph.getNode("torus")->shaderName = "blinn_phong_shader";
 	graph.getNode("torus")->vertexShaderFile = "res/shaders/blinn_phong_vs.glsl";
 	graph.getNode("torus")->fragmentShaderFile = "res/shaders/blinn_phong_fs.glsl";
-	Material* gooch_mat = h->addMaterial("gooch_mat", new Material(gooch_shader));
-	gooch_mat->setUniformVec3("u_AlbedoColor", Vector3D(0.8f, 0.8f, 0.8f));
-
-	//cube
-	graph.addChild(gooch_mat, cube_mesh, "cube");
-
-	//torus
-	graph.addChild(blinnphong_mat, torus_mesh, "torus");
 	graph.setTransforms("torus", { MxFactory::translate(Vector3D(0,0,-5)) });
 
-	/* 
-	IMPORTANT - This is a WIP. The grid needs to be the last thing drawn, always because it has transaparency
-				In the future we should probably either move this somewhere else or garantee that transparent 
-				objects are drawn after opaque objects. It also shouldn't be selectable...
-	*/
+	/* ----------------------------------------------------------------------------------------------------- */
 
 	//Grid
 	Mesh* plane_mesh = h->addMesh("plane_mesh", new Mesh("plane_mesh", "res/meshes/plane.obj"));
@@ -219,11 +197,23 @@ void myApp::populateScene()
 }
 
 
+void cleanNode(SceneGraph graph, std::vector<SceneNode*> nodes) {
+	for (auto node : nodes) {
+		graph.removeObject(node->name);
+		if (node->children.size() != 0) {
+			cleanNode(graph, node->children);
+		}
+	}
+}
+
 void myApp::cleanScene() {
-	//SceneNode* root = graph.getNode("root");
-	//for (int i = 0; i < root->children; i++) {
-		//graph.removeObject()
-	//}
+	SceneNode* root = graph.getNode("root");
+	for (auto node : root->children) {
+		graph.removeObject(node->name);
+		if (node->children.size() != 0) {
+			cleanNode(graph, node->children);
+		}
+	}
 }
 
 void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int mods)
@@ -238,18 +228,6 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 			else {
 				cam->parallelProjection(-10, 10, -10, 10, 1, 50);
 			}
-			break;
-		case GLFW_KEY_ESCAPE:
-			if (cam->state == Working::On) {
-				glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			}
-			else {
-				glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-			}
-			cam->toggle();
-			break;
-		case GLFW_KEY_LEFT_SHIFT:
-			sprint_factor = 1;
 			break;
 		case GLFW_KEY_F:
 			animate_frame = true;
@@ -356,16 +334,11 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 			else
 				new_mat = true;
 			break;
-		case GLFW_KEY_C:
-			enter_command = !enter_command;
 		}
 	}
 	else if (action == GLFW_PRESS) {
 		switch (key)
 		{
-		case GLFW_KEY_LEFT_SHIFT:
-			sprint_factor = 3;
-			break;
 		case GLFW_KEY_ENTER: { //save a scene
 			Manager* h = Manager::getInstance();
 			const std::string path = "res/scenes/scene.txt";
@@ -381,118 +354,40 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 			break;
 		}
 	}
-	if (key == GLFW_KEY_LEFT) //left arrow - object movement
-	{
-		MxFactory m = MxFactory();
-		Vector3D axis(0, 1, 0);
-		Matrix4 rot = m.rotation4(axis, 1);
-		SceneNode* root = graph.getNode("root");
-		if (root->selected) {
-			graph.applyTransform("root", rot);
-		}
-	}
-
-	else if (key == GLFW_KEY_RIGHT) //right arrow - object movement
-	{
-		MxFactory m = MxFactory();
-		Vector3D axis(0, 1, 0);
-		Matrix4 rot = m.rotation4(axis, -1);
-		SceneNode* root = graph.getNode("root");
-		if (root->selected) {
-			graph.applyTransform("root", rot);
-		}
-	}
-
-	else if (key == GLFW_KEY_UP) //up arrow - object movement
-	{
-		MxFactory m = MxFactory();
-		Vector3D axis(1, 0, 0);
-		Matrix4 rot = m.rotation4(axis, 1);
-		SceneNode* root = graph.getNode("root");
-		if (root->selected) {
-			graph.applyTransform("root", rot);
-		}
-	}
-
-	else if (key == GLFW_KEY_DOWN) //down arrow - object movement
-	{
-		MxFactory m = MxFactory();
-		Vector3D axis(1, 0, 0);
-		Matrix4 rot = m.rotation4(axis, -1);
-		SceneNode* root = graph.getNode("root");
-		if (root->selected) {
-			graph.applyTransform("root", rot);
-		}
-	}
-	else if (key == GLFW_KEY_A) //a key (left)- camera movement
-	{
-		cam->toggle();
-		Vector3D axis(1, 0, 0);
-		cam->move(axis, -0.2);
-		cam->toggle();
-	}
-	else if (key == GLFW_KEY_D) //d key (right)- camera movement
-	{
-		cam->toggle();
-		Vector3D axis(1, 0, 0);
-		cam->move(axis, 0.2);
-		cam->toggle();
-	}
-	else if (key == GLFW_KEY_S)//s key (down) - camera movement
-	{
-		cam->toggle();
-		Vector3D axis(0, 0, -1);
-		cam->move(axis, 0.2);
-		cam->toggle();
-	}
-	else if (key == GLFW_KEY_W)//w key (up) - camera movement
-	{
-		cam->toggle();
-		Vector3D axis(0, 0, 1);
-		cam->move(axis, 0.2);
-		cam->toggle();
-	}
 }
 
 void myApp::mouseCallback(GLFWwindow* win, double xpos, double ypos) {
-	if (move_obj) {
-		float oldXPos = (float)xpos, oldYPos = (float)ypos;
-		glfwGetCursorPos(win, &xpos, &ypos);
-		xDelta = ((float)xpos - oldXPos) * 5;
-		yDelta = ((float)ypos - oldYPos) * 5;
-
-		MxFactory m = MxFactory();
-		Vector3D axisX(xDelta, 1, 1);
-		Vector3D axisY(1, yDelta, 1);
-		Matrix4 rotX = m.rotation4(axisX, 1);
-		Matrix4 rotY = m.rotation4(axisY, 1);
-		Matrix4 totalRot = rotX * rotY;
-		SceneNode* root = graph.getNode("root");
-		if (root->selected) {
-			graph.applyTransform("root", totalRot);
-		}
-	}
+	
 }
-
 
 void myApp::scrollCallback(GLFWwindow* win, double xoffset, double yoffset) {
 	Camera* cam = graph.getCam();
-	cam->toggle();
-	if (yoffset == 1) {
-		cout << "up\n";
-		Vector3D dir(0, 0, 1);
-		cam->move(dir, 1);
-	}
-	else {
-		cout << "down\n";
-		Vector3D dir(0, 0, 1);
-		cam->move(dir, -1);
-	}
-	cam->toggle();
+
+	cam->zoom(yoffset);
 }
 
 void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mods)
 {
+	if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
+		if (action == GLFW_PRESS) {
+			//glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			move_camera = true;
+			
+			double x, y;
+			glfwGetCursorPos(win, &x, &y);
+
+			glfwGetWindowSize(win, &w, &h);
+
+			old_x = x; old_y = y;
+		}
+		else if (action == GLFW_RELEASE) {
+			//glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			move_camera = false;
+		}
+	}
+
+	if (move_camera) return;
+
 	if (button == GLFW_MOUSE_BUTTON_LEFT) {
 		double xpos, ypos;
 		int height, width;
@@ -585,27 +480,13 @@ void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
 			}
 		}
 	}
-
-	Camera* cam = graph.getCam();
-	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) { //object movement
-		move_obj = true;
-	}
-	else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) { //object movement
-		move_obj = false;
-	}
-	else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) { //camera movement
-		cam->toggle();
-	}
-	else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) { //camera movement
-		cam->toggle();
-	}
-	else if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS) { //not sure if we'll need this
-	}
 }
+
 
 void myApp::update(GLFWwindow *win, double elapsed)
 {
 	processInput(win, elapsed);
+
 	graph.draw();
 	if (save_img) {
 		save(win);
@@ -669,16 +550,23 @@ void myApp::update(GLFWwindow *win, double elapsed)
 		loadObject(meshname);
 		graph.describe(); //debug
 	}
-	if (enter_command) {
-		enterCommand();
+}
+
+void myApp::processCommands(queue<std::string> &commands)
+{
+	std::string command;
+	while (!commands.empty()) 
+	{
+		command = commands.front();
+		this->executeCommand(command);
+		commands.pop();
+
+		std::cout << "Enter command:";
 	}
 }
 
-void myApp::enterCommand() {
-	std::string command;
-	cout << "\nPlease enter your commands! When you are finished type 'Done' (Enter 'Help' to see command list)\n";
-	cin >> command;
-
+void myApp::executeCommand(std::string command)
+{
 	//init components
 	vector <string> tokens;
 	stringstream parsable(command);
@@ -686,7 +574,7 @@ void myApp::enterCommand() {
 	size_t pos = 0;
 
 
-	//
+	// tokenise
 	while ( getline(parsable, current, ',' )) {
 		tokens.push_back(current);
 	}
@@ -696,7 +584,6 @@ void myApp::enterCommand() {
 	//	cout << tokens[i] << '\n';
 	//}
 	
-
 	if (tokens[0] == "LoadObject") {
 		loadObject(tokens[1]);
 	}
@@ -738,28 +625,30 @@ void myApp::enterCommand() {
 	}
 
 	else if (tokens[0] == "Help") {
-		cout << "-------------------------------------------------------------------------\n\n"
-			 << "|Here is a list of our commands in the format they should be written:    |\n"
+		cout << "--------------------------------------------------------------------------\n"
+			 << "| Here is a list of our commands in the format they should be written:   |\n"
+			 << "|                                                                        |\n"
 			 << "|                   -----Import instructions-----                        |\n"
-			 << "| o ImportMesh,meshname                                                  |\n" 
-			 << "| o ImportShader,shadername                                              |\n"
-			 << "| o ImportTexture,texturename,format                                     |\n\n"
+			 << "| * ImportMesh,meshname                                                  |\n" 
+			 << "| * ImportShader,shadername                                              |\n"
+			 << "| * ImportTexture,texturename,format                                     |\n"
+			 << "|                                                                        |\n"
 			 << "|                    -----Object Creation-----                           |\n"
-			 << "| o LoadObject,objectname                                                |\n"
-			 << "| o CreateObject,objectname,meshname,materialname                        |\n"
-			 << "| o RemoveObject,objectname                                              |\n\n"
+			 << "| * LoadObject,objectname                                                |\n"
+			 << "| * CreateObject,objectname,meshname,materialname                        |\n"
+			 << "| * RemoveObject,objectname                                              |\n"
+			 << "|                                                                        |\n"
 			 << "|                       -----Materials-----                              |\n"
-			 << "| o CreateMaterial,materialname,shadername                               |\n"
-			 << "| o ObjectSetMaterial,objectname,materialname                            |\n"
-			 << "| o MaterialSetUniform,materialname,uniformname,uniformtype,uniformvalue |\n\n"
+			 << "| * CreateMaterial,materialname,shadername                               |\n"
+			 << "| * ObjectSetMaterial,objectname,materialname                            |\n"
+			 << "| * MaterialSetUniform,materialname,uniformname,uniformtype,uniformvalue |\n"
+			 << "|                                                                        |\n"
 			 << "|                        -----Scene-----                                 |\n"
-			 << "| o SaveScene //WIP                                                      |\n"
-			 << "| o LoadScene //WIP                                                      |\n"
-			 << "\n| For more information please refer to the manual                      |\n"
+			 << "| * SaveScene //WIP                                                      |\n"
+			 << "| * LoadScene //WIP                                                      |\n"
+			 << "|                                                                        |\n" 
+			 << "| For more information please refer to the manual                        |\n"
 			 << "-------------------------------------------------------------------------\n";
-	}
-	else if (tokens[0] == "Done") {
-		enter_command = false;
 	}
 	else
 		cout << "Sorry but that command does not exist!\n";

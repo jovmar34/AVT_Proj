@@ -650,7 +650,8 @@ void SceneSerializer::deserialize(const std::string& filepath)
 
 	}
 
-	//chamar funçao desenho com as cenas criadas
+	/*
+	graph.removeObject(objname);*/
 
 	file.close();
 }

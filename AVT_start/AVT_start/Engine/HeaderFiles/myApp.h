@@ -8,15 +8,12 @@
 class myApp : IApp {
 private:
 	bool move_camera = false;
-	double sprint_factor = 1;
-	double speed = 10;
 	bool reset_cam = false;
 	bool save_img = false;
 	bool add_mesh = false;
 	bool new_mat = false;
 	bool move_obj = false;
 	bool new_obj = false;
-	bool enter_command = false;
 	int mesh_indicator = 0;
 	bool choosing_object = false;
 	bool animate_frame = false;

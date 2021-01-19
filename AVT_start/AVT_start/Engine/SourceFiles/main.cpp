@@ -28,6 +28,7 @@
 #include <time.h>
 
 #include <atomic>
+#include <mutex>
 #include <thread>
 
 #include <GL/glew.h>
@@ -43,6 +44,7 @@ bool save_img = false;
 SceneGraph graph;
 myApp app;
 
+std::mutex queueLock;
 queue<std::string> commandQueue;
 
 void createShaderProgram()
@@ -86,7 +88,10 @@ void destroyBufferObjects()
 void drawScene(GLFWwindow* win, double elapsed)
 {
 	app.update(win, elapsed);
+
+	queueLock.lock();
 	app.processCommands(commandQueue);
+	queueLock.unlock();
 
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not draw scene.");
@@ -278,14 +283,16 @@ void display_callback(GLFWwindow* win, double elapsed_sec)
 void readCin(std::atomic<bool>& run)
 {
 	std::string buffer;
-
+	
+	std::cout	<< "Type \"Help\" to see the list of commands.\n"  
+				<< "Enter command: ";
 	while (run.load())
 	{
 		std::cin >> buffer;
 		
+		queueLock.lock();
 		commandQueue.push(buffer);
-
-		std::cout << buffer;
+		queueLock.unlock();
 	}
 }
 
@@ -312,7 +319,7 @@ void run(GLFWwindow* win)
 
 	// destroy thread
 	run.store(false);
-	cinThread.join();
+	cinThread.detach();
 
 	glfwDestroyWindow(win);
 	glfwTerminate();

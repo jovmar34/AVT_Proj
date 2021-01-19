@@ -153,16 +153,17 @@ void myApp::populateScene()
 	Shader* gooch_shader = h->addShader("gooch_shader", new Shader("gooch_shader", "res/shaders/gooch_vs.glsl", "res/shaders/gooch_fs.glsl"));
 	gooch_shader->addUniformBlock("Matrices", 0);
 
-
 	// Materials 
 	Material* blinnphong_mat = h->addMaterial("blinnphong_mat", new Material(blinn_phong_shader));
 	blinnphong_mat->setUniformVec3("u_AlbedoColor", Vector3D(0.8f, 0.8f, 0.8f));
+	Material* gooch_mat = h->addMaterial("gooch_mat", new Material(gooch_shader));
+	gooch_mat->setUniformVec3("u_AlbedoColor", Vector3D(0.8f, 0.8f, 0.8f));
 
 	//cube
-	graph.addChild(blinnphong_mat, cube_mesh, "cube");
+	graph.addChild(gooch_mat, cube_mesh, "cube");
 	graph.getNode("cube")->meshName = "cube_mesh";
 	graph.getNode("cube")->meshFile = "res/meshes/bunny_smooth.obj";
-	graph.getNode("cube")->materialName = "blinnphong_mat";
+	graph.getNode("cube")->materialName = "gooch_mat";
 	graph.getNode("cube")->shaderName = "blinn_phong_shader";
 	graph.getNode("cube")->vertexShaderFile = "res/shaders/blinn_phong_vs.glsl";
 	graph.getNode("cube")->fragmentShaderFile = "res/shaders/blinn_phong_fs.glsl";
@@ -175,21 +176,9 @@ void myApp::populateScene()
 	graph.getNode("torus")->shaderName = "blinn_phong_shader";
 	graph.getNode("torus")->vertexShaderFile = "res/shaders/blinn_phong_vs.glsl";
 	graph.getNode("torus")->fragmentShaderFile = "res/shaders/blinn_phong_fs.glsl";
-	Material* gooch_mat = h->addMaterial("gooch_mat", new Material(gooch_shader));
-	gooch_mat->setUniformVec3("u_AlbedoColor", Vector3D(0.8f, 0.8f, 0.8f));
-
-	//cube
-	graph.addChild(gooch_mat, cube_mesh, "cube");
-
-	//torus
-	graph.addChild(blinnphong_mat, torus_mesh, "torus");
 	graph.setTransforms("torus", { MxFactory::translate(Vector3D(0,0,-5)) });
 
-	/* 
-	IMPORTANT - This is a WIP. The grid needs to be the last thing drawn, always because it has transaparency
-				In the future we should probably either move this somewhere else or garantee that transparent 
-				objects are drawn after opaque objects. It also shouldn't be selectable...
-	*/
+	/* ----------------------------------------------------------------------------------------------------- */
 
 	//Grid
 	Mesh* plane_mesh = h->addMesh("plane_mesh", new Mesh("plane_mesh", "res/meshes/plane.obj"));
@@ -219,18 +208,6 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 			else {
 				cam->parallelProjection(-10, 10, -10, 10, 1, 50);
 			}
-			break;
-		case GLFW_KEY_ESCAPE:
-			if (cam->state == Working::On) {
-				glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			}
-			else {
-				
-			}
-			cam->toggle();
-			break;
-		case GLFW_KEY_LEFT_SHIFT:
-			sprint_factor = 1;
 			break;
 		case GLFW_KEY_F:
 			animate_frame = true;
@@ -337,16 +314,11 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 			else
 				new_mat = true;
 			break;
-		case GLFW_KEY_C:
-			enter_command = !enter_command;
 		}
 	}
 	else if (action == GLFW_PRESS) {
 		switch (key)
 		{
-		case GLFW_KEY_LEFT_SHIFT:
-			sprint_factor = 3;
-			break;
 		case GLFW_KEY_ENTER: { //save a scene
 			Manager* h = Manager::getInstance();
 			const std::string path = "res/scenes/scene.txt";
@@ -567,6 +539,8 @@ void myApp::processCommands(queue<std::string> &commands)
 		command = commands.front();
 		this->executeCommand(command);
 		commands.pop();
+
+		std::cout << "Enter command:";
 	}
 }
 
@@ -654,9 +628,6 @@ void myApp::executeCommand(std::string command)
 			 << "|                                                                        |\n" 
 			 << "| For more information please refer to the manual                        |\n"
 			 << "-------------------------------------------------------------------------\n";
-	}
-	else if (tokens[0] == "Done") {
-		enter_command = false;
 	}
 	else
 		cout << "Sorry but that command does not exist!\n";

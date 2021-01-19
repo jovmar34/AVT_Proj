@@ -31,6 +31,7 @@ struct SceneNode {
 
 	std::string getName();
 	Matrix4 getTransform();
+	Matrix4 getInverse();
 	TransformInfo getTransformInfo();
 	Matrix3 getNormal();
 	void init();

@@ -1,10 +1,10 @@
 --- Camera ---
 Camera:
 - Type: Perspective
-- Eye, Center, Up: (8.04926,7.95738,7.99309), (0,0,0), (0,1,0)
-- Working State: Off
+- Eye, Center, Up: (8,8,8), (0,0,0), (0,1,0)
+- Working State: On
 - View Matrix: 
-[0.7 -0.4 0.58 0.]
+[0.7 -0.4 0.57 0.]
 [0. 0.81 0.57 0.]
 [-0.7 -0.4 0.57 0.]
 [0. 0. -13.85 1.]
@@ -18,8 +18,8 @@ Camera:
 - InvView Matrix: 
 [0.7 0. -0.7 0.]
 [-0.4 0.81 -0.4 0.]
-[0.58 0.57 0.57 0.]
-[8.04 7.95 7.99 1.]
+[0.57 0.57 0.57 0.]
+[8. 8. 8. 1.]
 
 --- Manager ---
 Manager:
@@ -78,7 +78,7 @@ Manager:
 --- Graph ---
 Node:
 - Name: root
-- Children: 4
+- Children: 2
 - Material:
 	- Name: None
 - Texture:
@@ -88,16 +88,22 @@ Node:
 - Mesh: 
 	- Name: None
 - Transformation: 
-[-0.52 -0.11 0.84 0.]
-[0.76 -0.48 0.41 0.]
-[0.36 0.86 0.34 0.]
+[1. 0. 0. 0.]
+[0. 1. 0. 0.]
+[0. 0. 1. 0.]
+[0. 0. 0. 1.]
+
+- Inverse: 
+[1. 0. 0. 0.]
+[0. 1. 0. 0.]
+[0. 0. 1. 0.]
 [0. 0. 0. 1.]
 
 Node:
 - Name: root::cube
 - Children: 0
 - Material:
-	- Name: blinnphong_mat
+	- Name: gooch_mat
 - Texture:
 	- Name: None
 - Shaders:
@@ -105,9 +111,15 @@ Node:
 - Mesh: 
 	- Name: cube_mesh
 - Transformation: 
-[-0.52 -0.11 0.84 0.]
-[0.76 -0.48 0.41 0.]
-[0.36 0.86 0.34 0.]
+[1. 0. 0. 0.]
+[0. 1. 0. 0.]
+[0. 0. 1. 0.]
+[0. 0. 0. 1.]
+
+- Inverse: 
+[1. 0. 0. 0.]
+[0. 1. 0. 0.]
+[0. 0. 1. 0.]
 [0. 0. 0. 1.]
 
 Node:
@@ -122,42 +134,14 @@ Node:
 - Mesh: 
 	- Name: torus_mesh
 - Transformation: 
-[-0.52 -0.11 0.84 0.]
-[0.76 -0.48 0.41 0.]
-[0.36 0.86 0.34 0.]
-[-1.82 -4.32 -1.71 1.]
+[1. 0. 0. 0.]
+[0. 1. 0. 0.]
+[0. 0. 1. 0.]
+[0. 0. -5. 1.]
 
-Node:
-- Name: root::cube
-- Children: 0
-- Material:
-	- Name: None
-- Texture:
-	- Name: None
-- Shaders:
-	- Name: None
-- Mesh: 
-	- Name: None
-- Transformation: 
-[0.86 0.47 -0.17 0.]
-[-0.42 0.86 0.28 0.]
-[0.28 -0.17 0.94 0.]
-[-1.46 -0.3 2.34 1.]
-
-Node:
-- Name: root::torus
-- Children: 0
-- Material:
-	- Name: None
-- Texture:
-	- Name: None
-- Shaders:
-	- Name: None
-- Mesh: 
-	- Name: None
-- Transformation: 
-[-0.52 -0.11 0.84 0.]
-[0.76 -0.48 0.41 0.]
-[0.36 0.86 0.34 0.]
-[-1.82 -4.32 -1.71 1.]
+- Inverse: 
+[1. 0. 0. 0.]
+[0. 1. 0. 0.]
+[0. 0. 1. 0.]
+[0. 0. 0. 1.]
 

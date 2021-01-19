@@ -19,6 +19,15 @@ Matrix4 SceneNode::getTransform()
 	}
 }
 
+Matrix4 SceneNode::getInverse()
+{
+	if (parent == nullptr)
+		return inverse;
+	else {
+		return parent->getInverse() * inverse;
+	}
+}
+
 Matrix3 SceneNode::getNormal()
 {
 	Matrix4 transf4 = getTransform();

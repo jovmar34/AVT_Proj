@@ -57,6 +57,7 @@ public:
 	void setDist(double val) { dist = val; }
 	void setGizmoType(GizmoType type) { gizmoType = type; }
 	void setSelected(unsigned int selected);
+	void setRoot(SceneNode* node);
 
 	Camera* getCam();
 	GizmoType getGizmoType() { return gizmoType; }
@@ -83,7 +84,7 @@ public:
 	void describe();
 
 	void serializeScene(Camera* cam, Manager* man, const std::string& filepath);
-	void loadScene(const std::string& filepath);
+	SceneNode* loadScene(const std::string& filepath);
 
 	// specifics
 	void drawGizmos();

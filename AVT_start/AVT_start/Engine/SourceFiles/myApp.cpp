@@ -349,9 +349,16 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 		}
 		case GLFW_KEY_L: //load a saved scene
 			const std::string path = "res/scenes/scene.txt";
+
+			//Clean current scene
 			cleanScene();
 			Manager::getInstance()->destroy();
-			graph.loadScene(path);
+			SceneNode* newRoot = graph.loadScene(path);
+			graph.setRoot(newRoot);
+
+			//Draw new scene
+			graph.draw();
+
 			cout << "Scene Loaded.\n";
 			break;
 		}

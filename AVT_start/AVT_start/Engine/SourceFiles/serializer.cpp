@@ -643,6 +643,31 @@ SceneNode* SceneSerializer::deserialize(const std::string& filepath)
 				Matrix4 transformation_mat(aux[0], aux[1], aux[2], aux[3], aux[4], aux[5], aux[6], aux[7], aux[8], aux[9], aux[10], aux[11], aux[12], aux[13], aux[14], aux[15]);
 				
 				graph.addChild(node_material, node_mesh, node_name);
+				std::string node_aux, name, parent = "root", temp;
+				node_aux = node_name;
+				std::replace(node_aux.begin(), node_aux.end(), ':', ' ');
+
+				if (node_aux != "root") {
+					for (int x = 0; x < node_aux.length(); x++) {
+						if (node_aux[x] != ' ') {
+							temp.push_back(node_aux[x]);
+						}
+						else if (node_aux[x] == ' ' && node_aux[x + 1] == ' ') {
+							name = temp;
+							temp.clear();
+						}
+						else if (node_aux[x] == ' ') {}
+						else {
+							parent = temp;
+							temp.clear();
+						}
+					}
+				}
+
+				SceneNode* n = graph.getNode(node_name);
+				if (node_name == "root") n->parent = graph.getNode("root");
+				else n->parent = graph.getNode(parent);
+				n->transform = transformation_mat;
 				//graph.setTransforms(node_name, { {transformation_mat, inverse_mat}};
 				std::getline(file, line);
 			}

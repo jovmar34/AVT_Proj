@@ -32,4 +32,3 @@ public:
 	SceneNode* deserialize(const std::string& filepath);
 
 };
-

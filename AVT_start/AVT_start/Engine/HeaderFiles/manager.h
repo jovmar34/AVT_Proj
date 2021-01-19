@@ -27,6 +27,13 @@ protected:
 		instance = nullptr;
 	}
 
+	Manager() {
+		shaders["None"] = nullptr;
+		meshes["None"] = nullptr;
+		materials["None"] = nullptr;
+		textures["None"] = nullptr;
+	}
+
 
 public:
 	static Manager* getInstance() {
@@ -110,6 +117,7 @@ public:
 
 	void init() {
 		for (auto mesh_entry : meshes) {
+			if (mesh_entry.second)
 			mesh_entry.second->init();
 		}
 	}

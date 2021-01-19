@@ -87,7 +87,7 @@ public:
 
 	friend inline ostream& operator << (ostream& s, Vector2D& v)
 	{
-		s << "("<< v.x << "," << v.y << ")";
+		s << v.x << " " << v.y;
 		return s;
 	}
 
@@ -174,7 +174,7 @@ public:
 
 	friend inline ostream& operator << (ostream& s, Vector3D& v)
 	{
-		s << "(" << v.x << "," << v.y << "," << v.z << ")";
+		s << v.x << " " << v.y << " " << v.z;
 		return s;
 	}
 
@@ -268,7 +268,7 @@ public:
 
 	friend inline ostream& operator << (ostream& s, Vector4D& v)
 	{
-		s << "(" << v.x << "," << v.y << "," << v.z << "," << v.w << ")";
+		s << v.x << " " << v.y << " " << v.z << " " << v.w;
 		return s;
 	}
 

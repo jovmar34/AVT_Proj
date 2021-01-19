@@ -8,6 +8,12 @@
 #include "camera.h"
 #include <fstream>
 
+struct NodeDescription {
+	TransformInfo myTransf;
+	std::string mesh_name, material_name,
+		node_name, parent_name;
+};
+
 class SceneSerializer {
 private:
 	Camera* _camera;
@@ -28,7 +34,7 @@ public:
 	void serializeCamera(std::ofstream& out);
 	void serializeManager(std::ofstream& out);
 	void serializeNode(SceneNode* node, std::ofstream& out);
-	void serialize(const std::string& filepath);
-	SceneNode* deserialize(const std::string& filepath);
 
+	void newSerialize(const std::string& filepath);
+	vector<NodeDescription*> newDeserialize(const std::string& filepath);
 };

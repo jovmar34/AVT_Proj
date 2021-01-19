@@ -1,26 +1,3 @@
---- Camera ---
-Camera:
-- Type: Perspective
-- Eye, Center, Up: (8,8,8), (0,0,0), (0,1,0)
-- Working State: On
-- View Matrix: 
-[0.7 -0.4 0.57 0.]
-[0. 0.81 0.57 0.]
-[-0.7 -0.4 0.57 0.]
-[0. 0. -13.85 1.]
-
-- Projection Matrix: 
-[0.97 0. 0. 0.]
-[0. 1.73 0. 0.]
-[0. 0. -1.01 -1.]
-[0. 0. -2.01 0.]
-
-- InvView Matrix: 
-[0.7 0. -0.7 0.]
-[-0.4 0.81 -0.4 0.]
-[0.57 0.57 0.57 0.]
-[8. 8. 8. 1.]
-
 --- Manager ---
 Manager:
 - Shader:
@@ -36,6 +13,10 @@ Manager:
 	- Vertex Shader Filepath: res/shaders/grid_vs.glsl
 	- Fragment Shader Filepath: res/shaders/grid_fs.glsl
 - Shader:
+	- Name: hud_shader
+	- Vertex Shader Filepath: res/shaders/hud_vs.glsl
+	- Fragment Shader Filepath: res/shaders/hud_fs.glsl
+- Shader:
 	- Name: gizmo_shader
 	- Vertex Shader Filepath: res/shaders/gizmo_vs.glsl
 	- Fragment Shader Filepath: res/shaders/gizmo_fs.glsl
@@ -49,35 +30,46 @@ Manager:
 	- Name: plane_mesh
 	- Filepath: res/meshes/plane.obj
 - Mesh:
+	- Name: hud_mesh
+	- Filepath: res/meshes/hud.obj
+- Mesh:
+	- Name: rotation_gizmo
+	- Filepath: res/meshes/Gizmos/AltRotationGizmo.obj
+- Mesh:
 	- Name: translation_gizmo
 	- Filepath: res/meshes/Gizmos/TranslationGizmo.obj
 - Mesh:
 	- Name: scale_gizmo
 	- Filepath: res/meshes/Gizmos/ScaleGizmo.obj
-- Mesh:
-	- Name: rotation_gizmo
-	- Filepath: res/meshes/Gizmos/AltRotationGizmo.obj
+- Texture:
+	- Name: hud_texture
+	- Filepath: res/textures/hud_texture.psd
 - Material:
 	- Name: blinnphong_mat
 	- Shader: blinn_phong_shader
 	- Uniforms:
 		 - Vector3D:
 			- Name: u_AlbedoColor
-			- Values: (0.8, 0.8, 0.8)
+			- Values: 0.8 0.8 0.8
 - Material:
 	- Name: gooch_mat
 	- Shader: gooch_shader
 	- Uniforms:
 		 - Vector3D:
 			- Name: u_AlbedoColor
-			- Values: (0.8, 0.8, 0.8)
+			- Values: 0.8 0.8 0.8
 - Material:
 	- Name: grid_mat
 	- Shader: grid_shader
 	- Uniforms:
+- Material:
+	- Name: hud_mat
+	- Shader: hud_shader
+	- Uniforms:
 --- Graph ---
 Node:
 - Name: root
+- Parent: None
 - Children: 2
 - Material:
 	- Name: None
@@ -88,19 +80,19 @@ Node:
 - Mesh: 
 	- Name: None
 - Transformation: 
-[1. 0. 0. 0.]
-[0. 1. 0. 0.]
-[0. 0. 1. 0.]
-[0. 0. 0. 1.]
-
+1 0 0 0
+0 1 0 0
+0 0 1 0
+0 0 0 1
 - Inverse: 
-[1. 0. 0. 0.]
-[0. 1. 0. 0.]
-[0. 0. 1. 0.]
-[0. 0. 0. 1.]
+1 0 0 0
+0 1 0 0
+0 0 1 0
+0 0 0 1
 
 Node:
-- Name: root::cube
+- Name: cube
+- Parent: root
 - Children: 0
 - Material:
 	- Name: gooch_mat
@@ -111,19 +103,19 @@ Node:
 - Mesh: 
 	- Name: cube_mesh
 - Transformation: 
-[1. 0. 0. 0.]
-[0. 1. 0. 0.]
-[0. 0. 1. 0.]
-[0. 0. 0. 1.]
-
+1 0 0 0
+0 1 0 0
+0 0 1 0
+0 0 0 1
 - Inverse: 
-[1. 0. 0. 0.]
-[0. 1. 0. 0.]
-[0. 0. 1. 0.]
-[0. 0. 0. 1.]
+1 0 0 0
+0 1 0 0
+0 0 1 0
+0 0 0 1
 
 Node:
-- Name: root::torus
+- Name: torus
+- Parent: root
 - Children: 0
 - Material:
 	- Name: blinnphong_mat
@@ -134,14 +126,13 @@ Node:
 - Mesh: 
 	- Name: torus_mesh
 - Transformation: 
-[1. 0. 0. 0.]
-[0. 1. 0. 0.]
-[0. 0. 1. 0.]
-[0. 0. -5. 1.]
-
+1 0 0 0
+0 1 0 0
+0 0 1 -5
+0 0 0 1
 - Inverse: 
-[1. 0. 0. 0.]
-[0. 1. 0. 0.]
-[0. 0. 1. 0.]
-[0. 0. 0. 1.]
+1 0 0 0
+0 1 0 0
+0 0 1 0
+0 0 0 1
 

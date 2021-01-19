@@ -8,6 +8,7 @@ SceneGraph::SceneGraph()
 	root->transform = MxFactory::identity4();
 	root->name = "root";
 	nameMap[root->name] = root;
+	nameMap["None"] = nullptr;
 	idMap[0] = nullptr;
 }
 
@@ -108,11 +109,11 @@ void SceneGraph::drawGizmos()
 			break;
 		case 1:
 			color = Vector3D(0, 1, 0);
-			rotate = MxFactory::rotation4(Vector3D(0, 0, 1), 90 * sign) * rotate;
+			rotate = MxFactory::rotation4(Vector3D(0, 0, 1), 90.0f * sign) * rotate;
 			break;
 		case 2:
 			color = Vector3D(0, 0, 1);
-			rotate = MxFactory::rotation4(Vector3D(1, 0, 0), 90 * sign) * rotate;
+			rotate = MxFactory::rotation4(Vector3D(1, 0, 0), 90.0f * sign) * rotate;
 			break;
 		}
 
@@ -422,11 +423,22 @@ void SceneGraph::setRoot(SceneNode* node) {
 
 void SceneGraph::serializeScene(Camera* cam, Manager* man, const std::string& filepath) {
 	SceneSerializer ss = SceneSerializer(cam, man, root);
-	ss.serialize(filepath);
+	ss.newSerialize(filepath);
 }
 
-SceneNode* SceneGraph::loadScene(const std::string& filepath) {
+void SceneGraph::loadScene(const std::string& filepath) {
 	SceneSerializer ss = SceneSerializer();
-	SceneNode* new_root = ss.deserialize(filepath);
-	return new_root;
+	vector<NodeDescription*> description = ss.newDeserialize(filepath);
+
+	Manager* h = Manager::getInstance();
+	for (auto node : description) {
+		if (node->node_name != "root") {
+			setCurr(node->parent_name);
+			addChild(h->getMaterial(node->material_name), 
+				h->getMesh(node->mesh_name), node->node_name);
+			setTransforms(node->node_name, { node->myTransf });
+		}
+	}
+
+	std::cout << "load" << std::endl;
 }

@@ -404,14 +404,10 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 			//Clean current scene
 			cleanScene();
 			Manager::getInstance()->destroy();
-			SceneNode* newRoot = graph.loadScene(path);
-			graph.setRoot(newRoot);
+			graph.loadScene(path);
 
-			//Draw new scene
-			graph.draw();
-			graph.describe();
-
-			cout << "Scene Loaded.\n";
+			Manager* h = Manager::getInstance();
+			cout << h->getShaders().size();
 			break;
 		}
 	}

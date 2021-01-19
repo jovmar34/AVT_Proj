@@ -5,6 +5,11 @@ layout(location=2) in vec3 inNormal;
 
 out vec2 exTexcoord;
 
+layout(std140) uniform Matrices{
+	mat4 ViewMatrix;
+	mat4 ProjectionMatrix;
+};
+
 void main() 
 {
 	exTexcoord = inTexcoord;

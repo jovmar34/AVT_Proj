@@ -86,7 +86,7 @@ void SceneSerializer::serializeManager(std::ofstream& out)
 			out << "\t\t - Vector4D:\n";
 			for (itUniformsV4 = vals_Vec4.begin(); itUniformsV4 != vals_Vec4.end(); itUniformsV4++)
 			{
-				out << "\t\t\t- Name: " << itUniformsV4->first << "\n\t\t\t- Values: " << itUniformsV4->second.toString() << std::endl;
+				out << "\t\t\t- Name: " << itUniformsV4->first << "\n\t\t\t- Values: " << itUniformsV4->second << std::endl;
 			}
 		}
 
@@ -95,7 +95,7 @@ void SceneSerializer::serializeManager(std::ofstream& out)
 			out << "\t\t - Vector3D:\n";
 			for (itUniformsV3 = vals_Vec3.begin(); itUniformsV3 != vals_Vec3.end(); itUniformsV3++)
 			{
-				out << "\t\t\t- Name: " << itUniformsV3->first << "\n\t\t\t- Values: " << itUniformsV3->second.toString() << std::endl;
+				out << "\t\t\t- Name: " << itUniformsV3->first << "\n\t\t\t- Values: " << itUniformsV3->second << std::endl;
 			}
 		}
 
@@ -104,7 +104,7 @@ void SceneSerializer::serializeManager(std::ofstream& out)
 			out << "\t\t - Vector2D:\n";
 			for (itUniformsV2 = vals_Vec2.begin(); itUniformsV2 != vals_Vec2.end(); itUniformsV2++)
 			{
-				out << "\t\t\t- Name: " << itUniformsV2->first << "\n\t\t\t- Values: " << itUniformsV2->second.toString() << std::endl;
+				out << "\t\t\t- Name: " << itUniformsV2->first << "\n\t\t\t- Values: " << itUniformsV2->second << std::endl;
 			}
 		}
 
@@ -113,7 +113,7 @@ void SceneSerializer::serializeManager(std::ofstream& out)
 			out << "\t\t - Matrix4:\n";
 			for (itUniformsM4 = vals_Mat4.begin(); itUniformsM4 != vals_Mat4.end(); itUniformsM4++)
 			{
-				out << "\t\t\t- Name: " << itUniformsM4->first << "\n\t\t\t- Matrix: " << itUniformsM4->second.toString() << std::endl;
+				out << "\t\t\t- Name: " << itUniformsM4->first << "\n\t\t\t- Matrix: " << itUniformsM4->second << std::endl;
 			}
 		}
 
@@ -141,36 +141,16 @@ void SceneSerializer::serializeManager(std::ofstream& out)
 
 void SceneSerializer::serializeNode(SceneNode* node, std::ofstream& out)
 {
-	out << "Node:\n" << "- Name: " << node->getName() << "\n- Children: " << node->children.size()
+	out << "Node:\n" << "- Name: " << node->name << "\n- Parent: " << node->parent->name << "\n- Children: " << node->children.size()
 		<< "\n- Material:" << "\n\t- Name: " << node->materialName << "\n- Texture:\n\t- Name: " << node->textureName
 		<< "\n- Shaders:\n\t- Name: " << node->shaderName
 		<< "\n- Mesh: \n\t- Name: " << node->meshName
-		<< "\n- Transformation: " << node->getTransform().toString() << "\n- Inverse: " << _parent->getInverse().toString() << std::endl;
+		<< "\n- Transformation: \n" << node->transform << "- Inverse: \n" << _parent->inverse << std::endl;
 	SceneNode* n;
 	for (int i = 0; i < node->children.size(); i++) {
 		n = node->children[i];
 		serializeNode(n, out);
 	}
-}
-
-void SceneSerializer::serialize(const std::string& filepath)
-{
-	SceneNode* n;
-	std::ofstream file(filepath);
-	serializeCamera(file);
-	serializeManager(file);
-	file << "--- Graph ---\n";
-	file << "Node:\n" << "- Name: " << _parent->getName() << "\n- Children: " << _parent->children.size() 
-		<< "\n- Material:" << "\n\t- Name: " << _parent->materialName << "\n- Texture:\n\t Name: " << _parent->textureName 
-		<< "\n- Shaders:\n\t- Name: " << _parent->shaderName
-		<< "\n- Mesh: \n\t- Name: " << _parent->meshName
-		<< "\n- Transformation: " << _parent->getTransform().toString() << "\n- Inverse: " << _parent->getInverse().toString() << std::endl;
-
-	for (int i = 0; i < _parent->children.size(); i++) {
-		n = _parent->children[i];
-		serializeNode(n, file);
-	}
-	file.close();
 }
 
 //Auxiliar functions
@@ -226,122 +206,47 @@ double* extractMatrixValues(std::string str)
 	return numbers;
 }
 
+void SceneSerializer::newSerialize(const std::string& filepath)
+{
+	SceneNode* n;
+	std::ofstream file(filepath);
+	serializeManager(file);
+	file << "--- Graph ---\n";
+	file << "Node:\n" << "- Name: " << _parent->name << "\n- Parent: None" << "\n- Children: " << _parent->children.size()
+		<< "\n- Material:" << "\n\t- Name: " << _parent->materialName << "\n- Texture:\n\t Name: " << _parent->textureName
+		<< "\n- Shaders:\n\t- Name: " << _parent->shaderName
+		<< "\n- Mesh: \n\t- Name: " << _parent->meshName
+		<< "\n- Transformation: \n" << _parent->transform << "- Inverse: \n" << _parent->inverse << std::endl;
 
-SceneNode* SceneSerializer::deserialize(const std::string& filepath)
+	for (int i = 0; i < _parent->children.size(); i++) {
+		n = _parent->children[i];
+		serializeNode(n, file);
+	}
+
+	file.close();
+}
+
+vector<NodeDescription*> SceneSerializer::newDeserialize(const std::string& filepath)
 {
 	std::ifstream file(filepath, ios::in);
 	std::string line, delimiter, type, ecu, workingState, matrix;
 	std::string shader_name, shaderV_path, shaderF_path, mesh_name, mesh_filepath, texture_name, texture_filepath, material_name;
-	std::string vector_name, matrix_name, int_name, float_name, node_name;
+	std::string parent_name, vector_name, matrix_name, int_name, float_name, node_name;
 	size_t pos = 0;
 	int l, ind, children;
 	double* numbers;
 	double* aux = new double[16];
 	Matrix4 invViewMatrix;
 
-	//Creation objects
-	Camera cam;
 	Manager* man = Manager::getInstance();
 	Material* mt;
-	SceneGraph graph;
+	SceneGraph* graph = new SceneGraph();
+	vector<NodeDescription*> ret;
 
-	while (std::getline(file, line))
-	{
+	while (std::getline(file, line)) {
 		std::istringstream iss(line);
-		if (line == "Camera:") {
-			//Type
-			std::getline(file, type);
-			delimiter = "- Type: ";
-			pos = type.find(delimiter);
-			type.erase(0, pos + delimiter.length());
-
-			//Eye, Center, Up
-			std::getline(file, ecu);
-			delimiter = "- Eye, Center, Up: ";
-			pos = ecu.find(delimiter);
-			ecu.erase(0, pos + delimiter.length());
-			//ecu = "(x, x, x), (y, y, y), (z, z, z)
-			numbers = extractVectorValues(ecu);
-			Vector3D eye(numbers[0], numbers[1], numbers[2]);
-			Vector3D center(numbers[3], numbers[4], numbers[5]);
-			Vector3D up(numbers[6], numbers[7], numbers[8]);
-
-			//Working state
-			std::getline(file, workingState);
-			delimiter = "- Working State: ";
-			pos = workingState.find(delimiter);
-			workingState.erase(0, pos + delimiter.length());
-
-			//View Matrix
-			std::getline(file, matrix);
-			l = 0;
-			ind = 0;
-			if (matrix == "- View Matrix: ") {
-				int j = 0;
-				while (l < 4) {
-					std::getline(file, matrix);
-					numbers = extractMatrixValues(matrix);
-					aux[j] = numbers[0];
-					aux[j + 1] = numbers[1];
-					aux[j + 2] = numbers[2];
-					aux[j + 3] = numbers[3];
-					l++;
-					j += 4;
-				}
-			}
-			Matrix4 viewMatrix(aux[0], aux[1], aux[2], aux[3], aux[4], aux[5], aux[6], aux[7], aux[8], aux[9], aux[10], aux[11], aux[12], aux[13], aux[14], aux[15]);
-			std::getline(file, matrix);
-
-			//Projection Matrix
-			std::getline(file, matrix);
-			l = 0;
-			ind = 0;
-			if (matrix == "- Projection Matrix: ") {
-				int j = 0;
-				while (l < 4) {
-					std::getline(file, matrix);
-					numbers = extractMatrixValues(matrix);
-					aux[j] = numbers[0];
-					aux[j + 1] = numbers[1];
-					aux[j + 2] = numbers[2];
-					aux[j + 3] = numbers[3];
-					l++;
-					j += 4;
-				}
-			}
-			Matrix4 projMatrix(aux[0], aux[1], aux[2], aux[3], aux[4], aux[5], aux[6], aux[7], aux[8], aux[9], aux[10], aux[11], aux[12], aux[13], aux[14], aux[15]);
-			std::getline(file, matrix);
-
-			//InvView Matrix
-			std::getline(file, matrix);
-			l = 0;
-			if (matrix == "- InvView Matrix: ") {
-				int j = 0;
-				while (l < 4) {
-					std::getline(file, matrix);
-					numbers = extractMatrixValues(matrix);
-					aux[j] = numbers[0];
-					aux[j+1] = numbers[1];
-					aux[j+2] = numbers[2];
-					aux[j+3] = numbers[3];
-					l++;
-					j += 4;
-				}
-			}
-			
-			Matrix4 invViewMatrix(aux[0], aux[1], aux[2], aux[3], aux[4], aux[5], aux[6], aux[7], aux[8], aux[9], aux[10], aux[11], aux[12], aux[13], aux[14], aux[15]);
-
-			//Camera creation
-			cam = Camera(eye, center, up);
-			if (type == "Parallel") cam.projType = CameraProj::Parallel;
-			else if (type == "Perspective") cam.projType = CameraProj::Perspective;
-			if (workingState == "On") cam.state = Working::On;
-			cam.view = viewMatrix;
-			cam.projection = projMatrix;
-			cam.invView = invViewMatrix;
-			
-		}
-		else if (line == "Manager:") {
+		
+		if (line == "Manager:") {
 			std::getline(file, line);
 
 			//Shaders
@@ -442,7 +347,7 @@ SceneNode* SceneSerializer::deserialize(const std::string& filepath)
 				//Uniforms
 				std::getline(file, line); //uniforms line
 				std::getline(file, line);
-				while (line == "- Vector4D:") {
+				while (line == "\t\t - Vector4D:") {
 					std::getline(file, line);
 					//Name
 					delimiter = "- Name: ";
@@ -456,14 +361,15 @@ SceneNode* SceneSerializer::deserialize(const std::string& filepath)
 					pos = line.find(delimiter);
 					line.erase(0, pos + delimiter.length());
 					//line = "(x, x, x, x)"
-					numbers = extractVectorValues(line);
-					Vector4D vec4(numbers[0], numbers[1], numbers[2], numbers[3]);
+					Vector4D vec4;
+					file >> vec4;
+
 					mt->setUniformVec4(vector_name, vec4);
 
 					std::getline(file, line);
 				}
 
-				while (line == "- Vector3D:") {
+				while (line == "\t\t - Vector3D:") {
 					std::getline(file, line);
 					//Name
 					delimiter = "- Name: ";
@@ -477,14 +383,15 @@ SceneNode* SceneSerializer::deserialize(const std::string& filepath)
 					pos = line.find(delimiter);
 					line.erase(0, pos + delimiter.length());
 					//line = "(x, x, x)"
-					numbers = extractVectorValues(line);
+					Vector3D vec3;
+					stringstream ss(line);
+					ss >> vec3;
 
-					Vector3D vec3(numbers[0], numbers[1], numbers[2]);
 					mt->setUniformVec3(vector_name, vec3);
 
 					std::getline(file, line);
 				}
-				while (line == "- Vector2D:") {
+				while (line == "\t\t - Vector2D:") {
 					std::getline(file, line);
 					//Name
 					delimiter = "- Name: ";
@@ -498,13 +405,13 @@ SceneNode* SceneSerializer::deserialize(const std::string& filepath)
 					pos = line.find(delimiter);
 					line.erase(0, pos + delimiter.length());
 					//line = "(x, x)"
-					numbers = extractVectorValues(line);
-					Vector2D vec2(numbers[0], numbers[1]);
+					Vector2D vec2;
+					file >> vec2;
 					mt->setUniformVec2(vector_name, vec2);
 
 					std::getline(file, line);
 				}
-				while (line == "- Matrix4:") {
+				while (line == "\t\t - Matrix4:") {
 					std::getline(file, line);
 					//Name
 					delimiter = "- Name: ";
@@ -518,21 +425,12 @@ SceneNode* SceneSerializer::deserialize(const std::string& filepath)
 					pos = line.find(delimiter);
 					line.erase(0, pos + delimiter.length());
 					int j = 0;
-					while (l < 4) {
-						std::getline(file, matrix);
-						numbers = extractMatrixValues(matrix);
-						aux[j] = numbers[0];
-						aux[j + 1] = numbers[1];
-						aux[j + 2] = numbers[2];
-						aux[j + 3] = numbers[3];
-						l++;
-						j += 4;
-					}
-					Matrix4 mat(aux[0], aux[1], aux[2], aux[3], aux[4], aux[5], aux[6], aux[7], aux[8], aux[9], aux[10], aux[11], aux[12], aux[13], aux[14], aux[15]);
+					Matrix4 mat;
+					file >> mat;
 					mt->setUniformMat4(matrix_name, mat);
 					std::getline(file, line);
 				}
-				while (line == "- 1int:") {
+				while (line == "\t\t - 1int:") {
 					std::getline(file, line);
 					//Name
 					delimiter = "- Name: ";
@@ -570,8 +468,8 @@ SceneNode* SceneSerializer::deserialize(const std::string& filepath)
 				man->addMaterial(material_name, mt);
 			}
 
-
 		}
+
 		else if (line == "Node:") {
 			while (line == "Node:") {
 				std::getline(file, line);
@@ -581,6 +479,14 @@ SceneNode* SceneSerializer::deserialize(const std::string& filepath)
 				pos = line.find(delimiter);
 				line.erase(0, pos + delimiter.length());
 				node_name = line;
+
+				//Parent
+				std::getline(file, line);
+
+				delimiter = "- Parent: ";
+				pos = line.find(delimiter);
+				line.erase(0, pos + delimiter.length());
+				parent_name = line;
 
 				//Children
 				std::getline(file, line);
@@ -625,71 +531,33 @@ SceneNode* SceneSerializer::deserialize(const std::string& filepath)
 
 				//Transformation Matrix
 				std::getline(file, line);
-				std::getline(file, line);
-				int j = 0;
-				while (l < 4) {
-					std::getline(file, matrix);
-					numbers = extractMatrixValues(matrix);
-					aux[j] = numbers[0];
-					aux[j + 1] = numbers[1];
-					aux[j + 2] = numbers[2];
-					aux[j + 3] = numbers[3];
-					l++;
-					j += 4;
-				}
-				Matrix4 transformation_mat(aux[0], aux[1], aux[2], aux[3], aux[4], aux[5], aux[6], aux[7], aux[8], aux[9], aux[10], aux[11], aux[12], aux[13], aux[14], aux[15]);
+				
+				Matrix4 transform_mat;
+
+				file >> transform_mat;
 
 				//Inverse Matrix
 				std::getline(file, line);
 				std::getline(file, line);
-				j = 0;
-				while (l < 4) {
-					std::getline(file, matrix);
-					numbers = extractMatrixValues(matrix);
-					aux[j] = numbers[0];
-					aux[j + 1] = numbers[1];
-					aux[j + 2] = numbers[2];
-					aux[j + 3] = numbers[3];
-					l++;
-					j += 4;
-				}
-				Matrix4 inverse_mat(aux[0], aux[1], aux[2], aux[3], aux[4], aux[5], aux[6], aux[7], aux[8], aux[9], aux[10], aux[11], aux[12], aux[13], aux[14], aux[15]);
+
+				Matrix4 inverse_mat;
+
+				file >> inverse_mat;
+
+				NodeDescription* node = new NodeDescription();
+				node->myTransf = { transform_mat, inverse_mat };
+				node->mesh_name = mesh_name;
+				node->material_name = material_name;
+				node->node_name = node_name;
+				node->parent_name = parent_name;
+
+				ret.push_back(node);
 				
-				graph.addChild(node_material, node_mesh, node_name);
-				std::string node_aux, name, parent = "root", temp;
-				node_aux = node_name;
-				std::replace(node_aux.begin(), node_aux.end(), ':', ' ');
-
-				if (node_aux != "root") {
-					for (int x = 0; x < node_aux.length(); x++) {
-						if (node_aux[x] != ' ') {
-							temp.push_back(node_aux[x]);
-						}
-						else if (node_aux[x] == ' ' && node_aux[x + 1] == ' ') {
-							name = temp;
-							temp.clear();
-						}
-						else if (node_aux[x] == ' ') {}
-						else {
-							parent = temp;
-							temp.clear();
-						}
-					}
-				}
-
-				SceneNode* n = graph.getNode(node_name);
-				if (node_name == "root") n->parent = nullptr;
-				else n->parent = graph.getNode(parent);
-				n->transform = transformation_mat.transpose();
-				n->inverse = inverse_mat.transpose();
-				graph.setTransforms(node_name, { {transformation_mat, inverse_mat} });
 				std::getline(file, line);
 			}
 		}
-
 	}
-
 	file.close();
 
-	return graph.getNode("root");
+	return ret;
 }

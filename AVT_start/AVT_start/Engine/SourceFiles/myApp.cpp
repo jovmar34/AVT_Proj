@@ -358,6 +358,7 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 
 			//Draw new scene
 			graph.draw();
+			graph.describe();
 
 			cout << "Scene Loaded.\n";
 			break;

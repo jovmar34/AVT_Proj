@@ -678,7 +678,7 @@ SceneNode* SceneSerializer::deserialize(const std::string& filepath)
 				}
 
 				SceneNode* n = graph.getNode(node_name);
-				if (node_name == "root") n->parent = graph.getNode("root");
+				if (node_name == "root") n->parent = nullptr;
 				else n->parent = graph.getNode(parent);
 				n->transform = transformation_mat.transpose();
 				n->inverse = inverse_mat.transpose();
@@ -688,9 +688,6 @@ SceneNode* SceneSerializer::deserialize(const std::string& filepath)
 		}
 
 	}
-
-	/*
-	graph.removeObject(objname);*/
 
 	file.close();
 

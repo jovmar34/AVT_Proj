@@ -94,7 +94,7 @@ void SceneGraph::drawGizmos()
 	double percentage = (cam->eye - absPos).length() / dist;
 	Matrix4 model,
 		rotate = MxFactory::identity4(),
-		scale = MxFactory::scaling4(percentage * Vector3D(1.5,1.5,1.5)),
+		scale = MxFactory::scaling4(percentage * Vector3D(2,2,2)),
 		translate = MxFactory::translation4(absPos);
 
 

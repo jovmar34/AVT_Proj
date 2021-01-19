@@ -75,6 +75,9 @@
     <ClCompile Include="Engine\SourceFiles\manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\SourceFiles\serializer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\HeaderFIles\vector.h">
@@ -143,6 +146,9 @@
     <ClInclude Include="Engine\HeaderFiles\myApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\HeaderFiles\serializer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\texture_fs.glsl" />
@@ -163,6 +169,8 @@
     <None Include="res\shaders\gizmo_vs.glsl" />
     <None Include="res\shaders\gooch_fs.glsl" />
     <None Include="res\shaders\gooch_vs.glsl" />
+    <None Include="res\shaders\hud_fs.glsl" />
+    <None Include="res\shaders\hud_vs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\test_texture.png">

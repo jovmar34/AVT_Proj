@@ -33,6 +33,7 @@ class SceneGraph {
 
 	Material* outline;
 	SceneNode* grid = nullptr;
+	SceneNode* hud = nullptr;
 	SceneNode* gizmo = nullptr;
 	GizmoType gizmoType = GizmoType::Translation;
 	double dist = 0;
@@ -53,6 +54,7 @@ public:
 	void saveCurr();
 	void setOutline(Material* mat);
 	void setGrid(Material* mat, Mesh* mesh, TransformInfo info);
+	void setHud(Material* mat, Mesh* mesh);
 	void setGizmo(Material* mat, Mesh* mesh);
 	void setDist(double val) { dist = val; }
 	void setGizmoType(GizmoType type) { gizmoType = type; }

@@ -187,6 +187,14 @@ void myApp::populateScene()
 	Material* grid_mat = h->addMaterial("grid_mat", new Material(grid_shader));
 	graph.setGrid(grid_mat, plane_mesh, MxFactory::scale(Vector3D(100, 100, 100)));
 
+	//HUD
+	Mesh* hud_mesh = h->addMesh("hud_mesh", new Mesh("hud_mesh", "res/meshes/hud.obj"));
+	Texture* hud_texture = h->addTexture("hud_texture", new Texture("hud_texture", "res/textures/hud_texture.psd"));
+	Shader* hud_shader = h->addShader("hud_shader", new Shader("hud_shader", "res/shaders/hud_vs.glsl", "res/shaders/hud_fs.glsl"));
+	Material* hud_mat = h->addMaterial("hud_mat", new Material(hud_shader));
+	hud_mat->setTexture(hud_texture);
+	graph.setHud(hud_mat, hud_mesh);
+
 	//Gizmos
 	h->addMesh("translation_gizmo", new Mesh("translation_gizmo", "res/meshes/Gizmos/TranslationGizmo.obj"));
 	h->addMesh("scale_gizmo", new Mesh("scale_gizmo", "res/meshes/Gizmos/ScaleGizmo.obj"));

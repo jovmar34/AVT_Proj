@@ -48,7 +48,7 @@ void Camera::move(Vector3D dir, double speed)
 {
 	if (state == Working::Off) return;
 
-	Vector3D transform = dir.x * s + -dir.z * v;
+	Vector3D transform = dir.x * s + dir.y * u + dir.z * v;
 	eye += transform * speed;
 	center += transform * speed;
 
@@ -67,6 +67,18 @@ void Camera::look(double angle_h, double angle_v)
 	eye = (transform * Vector4D(0, 0, 0, 1)).to3D();
 
 	updateView();
+}
+
+void Camera::zoom(double zoom_val)
+{
+	Vector3D new_eye = eye + v * zoom_val;
+
+	Vector3D center_dir = new_eye - center;
+
+	if (center_dir * v < 0) {
+		eye = new_eye;
+		updateView();
+	}
 }
 
 

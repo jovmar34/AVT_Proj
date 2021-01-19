@@ -377,20 +377,34 @@ void myApp::scrollCallback(GLFWwindow* win, double xoffset, double yoffset) {
 
 void myApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mods)
 {
-	if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
+	if (button == GLFW_MOUSE_BUTTON_RIGHT) {
 		if (action == GLFW_PRESS) {
-			//glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-			move_camera = true;
-			
+			first_person = true;
+
 			double x, y;
 			glfwGetCursorPos(win, &x, &y);
-
 			glfwGetWindowSize(win, &w, &h);
 
 			old_x = x; old_y = y;
 		}
 		else if (action == GLFW_RELEASE) {
-			//glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			first_person = false;
+		}
+	}
+	
+	if (first_person) return;
+
+	if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
+		if (action == GLFW_PRESS) {
+			first_person = true;
+			
+			double x, y;
+			glfwGetCursorPos(win, &x, &y);
+			glfwGetWindowSize(win, &w, &h);
+
+			old_x = x; old_y = y;
+		}
+		else if (action == GLFW_RELEASE) {
 			move_camera = false;
 		}
 	}

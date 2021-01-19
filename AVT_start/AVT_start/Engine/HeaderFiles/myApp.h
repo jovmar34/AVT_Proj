@@ -8,6 +8,8 @@
 class myApp : IApp {
 private:
 	bool move_camera = false;
+	bool first_person = true;
+
 	bool reset_cam = false;
 	bool save_img = false;
 	bool add_mesh = false;

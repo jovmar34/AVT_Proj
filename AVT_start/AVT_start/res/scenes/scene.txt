@@ -1,6 +1,10 @@
 --- Manager ---
 Manager:
 - Shader:
+	- Name: grid_shader
+	- Vertex Shader Filepath: res/shaders/grid_vs.glsl
+	- Fragment Shader Filepath: res/shaders/grid_fs.glsl
+- Shader:
 	- Name: blinn_phong_shader
 	- Vertex Shader Filepath: res/shaders/blinn_phong_vs.glsl
 	- Fragment Shader Filepath: res/shaders/blinn_phong_fs.glsl
@@ -8,10 +12,6 @@ Manager:
 	- Name: gooch_shader
 	- Vertex Shader Filepath: res/shaders/gooch_vs.glsl
 	- Fragment Shader Filepath: res/shaders/gooch_fs.glsl
-- Shader:
-	- Name: grid_shader
-	- Vertex Shader Filepath: res/shaders/grid_vs.glsl
-	- Fragment Shader Filepath: res/shaders/grid_fs.glsl
 - Shader:
 	- Name: hud_shader
 	- Vertex Shader Filepath: res/shaders/hud_vs.glsl

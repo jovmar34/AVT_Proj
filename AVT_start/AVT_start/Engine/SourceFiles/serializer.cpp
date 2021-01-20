@@ -45,25 +45,28 @@ void SceneSerializer::serializeManager(std::ofstream& out)
 
 	for (itShaders = shaders.begin(); itShaders != shaders.end(); itShaders++)
 	{
+		if (itShaders->second == nullptr) continue;
 		std::string name = itShaders->first;
 		out << "- Shader:\n\t- Name: " << name << "\n\t- Vertex Shader Filepath: " << _manager->getShader(name)->vertexShaderFilepath << "\n\t- Fragment Shader Filepath: " << _manager->getShader(name)->fragmentShaderFilepath << std::endl;
 	}
 
 	for (itMeshes = meshes.begin(); itMeshes != meshes.end(); itMeshes++)
 	{
+		if (itMeshes->second == nullptr) continue;
 		std::string name = itMeshes->first;
 		out << "- Mesh:\n\t- Name: " << name << "\n\t- Filepath: " << _manager->getMesh(name)->file_path << std::endl;
 	}
 
 	for (itTextures = textures.begin(); itTextures != textures.end(); itTextures++)
 	{
+		if (itTextures->second == nullptr) continue;
 		std::string name = itTextures->first;
 		out << "- Texture:\n\t- Name: " << name << "\n\t- Filepath: " << _manager->getTexture(name)->file_path << std::endl;
 	}
 
 	for (itMaterials = materials.begin(); itMaterials != materials.end(); itMaterials++)
 	{
-
+		if (itMaterials->second == nullptr) continue;
 		std::unordered_map<std::string, Vector4D> vals_Vec4 = itMaterials->second->getValsVec4();
 		std::unordered_map<std::string, Vector4D>::iterator itUniformsV4;
 		std::unordered_map<std::string, Vector3D> vals_Vec3 = itMaterials->second->getValsVec3();
@@ -464,7 +467,7 @@ vector<NodeDescription*> SceneSerializer::newDeserialize(const std::string& file
 
 					std::getline(file, line);
 				}
-				std::getline(file, line);
+				if (line != "- Material:") std::getline(file, line);
 				man->addMaterial(material_name, mt);
 			}
 

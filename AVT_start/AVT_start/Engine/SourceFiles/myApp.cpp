@@ -735,10 +735,22 @@ void myApp::executeCommand(std::string command)
 		objectSetParent(tokens[1], tokens[2]);
 	}
 	else if (tokens[0] == "LoadScene") {
-		//
+		const std::string path = "res/scenes/scene.txt";
+
+		//Clean current scene
+		cleanScene();
+		Manager::getInstance()->destroy();
+		graph.loadScene(path);
+
+		Manager* h = Manager::getInstance();
+		cout << h->getShaders().size();
 	}
 	else if (tokens[0] == "SaveScene") {
-		//
+		Manager* h = Manager::getInstance();
+		Camera* cam = graph.getCam();
+		const std::string path = "res/scenes/scene.txt";
+		graph.serializeScene(cam, h, path);
+		cout << "Scene saved.\n";
 	}
 	else if (tokens[0] == "SeeAssets") {
 		seeAssets();
@@ -768,7 +780,7 @@ void myApp::executeCommand(std::string command)
 	   		 << "| * SeeAssets                                                            |\n"
 			 << "| * DescribeScene                                                        |\n"
 			 << "| * SaveScene                                                            |\n"
-			// << "| * LoadScene //WIP                                                      |\n"
+			 << "| * LoadScene                                                            |\n"
 			 << "|                                                                        |\n" 
 			 << "| For more detailed information please refer to the manual               |\n"
 			 << "-------------------------------------------------------------------------\n";

@@ -30,17 +30,20 @@ Manager:
 	- Name: plane_mesh
 	- Filepath: res/meshes/plane.obj
 - Mesh:
-	- Name: hud_mesh
-	- Filepath: res/meshes/hud.obj
-- Mesh:
 	- Name: rotation_gizmo
 	- Filepath: res/meshes/Gizmos/AltRotationGizmo.obj
+- Mesh:
+	- Name: hud_mesh
+	- Filepath: res/meshes/hud.obj
 - Mesh:
 	- Name: translation_gizmo
 	- Filepath: res/meshes/Gizmos/TranslationGizmo.obj
 - Mesh:
 	- Name: scale_gizmo
 	- Filepath: res/meshes/Gizmos/ScaleGizmo.obj
+- Mesh:
+	- Name: cube
+	- Filepath: res/meshes/cube.obj
 - Texture:
 	- Name: hud_texture
 	- Filepath: res/textures/hud_texture.psd
@@ -70,7 +73,7 @@ Manager:
 Node:
 - Name: root
 - Parent: None
-- Children: 2
+- Children: 3
 - Material:
 	- Name: None
 - Texture:
@@ -129,6 +132,29 @@ Node:
 1 0 0 0
 0 1 0 0
 0 0 1 -5
+0 0 0 1
+- Inverse: 
+1 0 0 0
+0 1 0 0
+0 0 1 0
+0 0 0 1
+
+Node:
+- Name: cube3
+- Parent: root
+- Children: 0
+- Material:
+	- Name: None
+- Texture:
+	- Name: None
+- Shaders:
+	- Name: None
+- Mesh: 
+	- Name: None
+- Transformation: 
+1 0 0 1
+0 1 0 1
+0 0 1 1
 0 0 0 1
 - Inverse: 
 1 0 0 0

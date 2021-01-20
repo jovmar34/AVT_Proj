@@ -392,22 +392,11 @@ void myApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 		switch (key)
 		{
 		case GLFW_KEY_ENTER: { //save a scene
-			Manager* h = Manager::getInstance();
-			const std::string path = "res/scenes/scene.txt";
-			graph.serializeScene(cam, h, path);
-			cout << "Scene saved.\n";
+			saveScene("scene");
 			break;
 		}
 		case GLFW_KEY_L: //load a saved scene
-			const std::string path = "res/scenes/scene.txt";
-
-			//Clean current scene
-			cleanScene();
-			Manager::getInstance()->destroy();
-			graph.loadScene(path);
-
-			Manager* h = Manager::getInstance();
-			cout << h->getShaders().size();
+			loadScene("scene");
 			break;
 		}
 	}
@@ -735,22 +724,10 @@ void myApp::executeCommand(std::string command)
 		objectSetParent(tokens[1], tokens[2]);
 	}
 	else if (tokens[0] == "LoadScene") {
-		const std::string path = "res/scenes/scene.txt";
-
-		//Clean current scene
-		cleanScene();
-		Manager::getInstance()->destroy();
-		graph.loadScene(path);
-
-		Manager* h = Manager::getInstance();
-		cout << h->getShaders().size();
+		loadScene(tokens[1]);
 	}
 	else if (tokens[0] == "SaveScene") {
-		Manager* h = Manager::getInstance();
-		Camera* cam = graph.getCam();
-		const std::string path = "res/scenes/scene.txt";
-		graph.serializeScene(cam, h, path);
-		cout << "Scene saved.\n";
+		saveScene(tokens[1]);
 	}
 	else if (tokens[0] == "SeeAssets") {
 		seeAssets();
@@ -779,8 +756,8 @@ void myApp::executeCommand(std::string command)
 			 << "|                          -----Scene-----                               |\n"
 	   		 << "| * SeeAssets                                                            |\n"
 			 << "| * DescribeScene                                                        |\n"
-			 << "| * SaveScene                                                            |\n"
-			 << "| * LoadScene                                                            |\n"
+			 << "| * SaveScene,savename                                                   |\n"
+			 << "| * LoadScene,savename                                                   |\n"
 			 << "|                                                                        |\n" 
 			 << "| For more detailed information please refer to the manual               |\n"
 			 << "-------------------------------------------------------------------------\n";
@@ -934,4 +911,24 @@ void myApp::seeAssets() {
 	for (auto i : materials) {
 		cout << " - " + i.first + "\n";
 	}
+}
+
+void myApp::saveScene(string savename) {
+	Manager* h = Manager::getInstance();
+	Camera* cam = graph.getCam();
+	const std::string path = "res/scenes/" + savename + ".txt";
+	graph.serializeScene(cam, h, path);
+	cout << "Scene saved.\n";
+}
+
+void myApp::loadScene(string savename) {
+	const std::string path = "res/scenes/" + savename + ".txt";
+
+	//Clean current scene
+	cleanScene();
+	Manager::getInstance()->destroy();
+	graph.loadScene(path);
+
+	Manager* h = Manager::getInstance();
+	cout << h->getShaders().size();
 }

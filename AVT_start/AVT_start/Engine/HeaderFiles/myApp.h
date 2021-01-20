@@ -79,4 +79,7 @@ public:
 	
 	void seeAssets();
 	bool checkFile(string filename);
+
+	void saveScene(string savename);
+	void loadScene(string savename);
 };

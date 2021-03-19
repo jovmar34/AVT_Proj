@@ -1,27 +1,24 @@
-# AVT_Proj
+# AVTblender
+Basic 3D Engine for visualizing models and composing simple scenes.
+Written in C++ and OpenGL. Developed by João Martinho, Francisco Nicolau, Joana Teodoro and Daniel Ramalho.
 
-## Assignment 4
+## Features
 
-- Movement controls: W - forward, S - backwards, A - pan left, D - pan right (all relative to v and s vectors)
-- Camera (looking): moving mouse controls camera
+* Load and Visualize 3D meshes (.obj files);
+* Load and Save Scene Files (custom file format);
 
-- Extras:
-1. Background color different from default black
-2. Sprint feature (movement faster when pressing LEFT SHIFT key)
-3. Pause button (ESC toggles camera control; game needs to be paused to close the window)
+* Camera Movement (Panning, Orbiting and First Person Control);
 
-## Assignment 5
+* Object Transforms (Position, Rotation and Scale); 
+* Scene Parenting Hierarchy;
+* Mouse Selection and Outline;
+* Custom Gizmos for manipulation;
 
-- Change rotation type: G
-- Animate: N
-- Camera controls activated by pressing ESC; controls similar to last assignment
+* Materials and Shaders abstraction;
+* Shading Model examples (Gouraud, Blinn-Phong, Gooch and Toon Shaders);
 
-## Assignemnt 6
+* Simple Command-based interface; 
 
-- Camera Controls same as assignment 5.
-- Toggle Cubes Animation: C
-- Animate Frame: F
 
-- Extras:
-1. Reset camera position and direction: R
-2. Frame and Backpiece are different from the assignment
+## Demo
+[![Watch the video](https://i.vimeocdn.com/video/1089074469_1040x584.jpg)](https://vimeo.com/526104895)

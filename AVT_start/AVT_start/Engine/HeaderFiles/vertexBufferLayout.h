@@ -29,12 +29,16 @@ private:
 	std::vector<VertexBufferElement> elements;
 	unsigned int stride;
 
+	template<typename T>
+	struct falsey : std::false_type
+	{ };
+
 public:
 	VertexBufferLayout() : stride(0) {}
 
 	template<typename T>
 	static VertexBufferElement getElement(unsigned int count) {
-		static_assert(false); // for non-handled types
+		static_assert(falsey<T>::value); // for non-handled types
 	}
 
 	template<>
@@ -44,7 +48,7 @@ public:
 
 	template<typename T>
 	void push(unsigned int count) {
-		static_assert(false); // for non-handled types
+		static_assert(falsey<T>::value); // for non-handled types
 	}
 
 	template<>
